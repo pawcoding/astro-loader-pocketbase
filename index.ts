@@ -1,6 +1,5 @@
-// Do not write code directly here, instead use the `src` folder!
-// Then, use this file to export everything you want your user to access.
+import { pocketbaseLoader } from "./src/pocketbase-loader";
+import type { PocketBaseLoaderOptions } from "./src/types/pocketbase-loader-options.type";
 
-import MyComponent from './src/MyComponent.astro';
-
-export default MyComponent;
+export { pocketbaseLoader };
+export type { PocketBaseLoaderOptions };

@@ -1,35 +1,42 @@
-# Astro Starter Kit: Component Package
+# astro-pocketbase-loader
 
-This is a template for an Astro component library. Use this template for writing components to use in multiple projects or publish to NPM.
+This package is a simple loader to load data from a PocketBase database into Astro using the [Astro Loader API](https://5-0-0-beta.docs.astro.build/en/reference/loader-reference/) introduced in Astro 5.
 
-```sh
-npm create astro@latest -- --template component
+## Usage
+
+In your content configuration file, you can use the `pocketbaseLoader` function to use your PocketBase database as a data source.
+
+```ts
+import { pocketbaseLoader } from "astro-pocketbase-loader";
+import { defineCollection } from "astro:content";
+
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    url: "https://<your-pocketbase-url>",
+    collectionName: "<collection-in-pocketbase>",
+    content: "<field-in-collection>"
+  })
+});
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/non-html-pages)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/non-html-pages)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/component/devcontainer.json)
+### Type Generation
 
-## 🚀 Project Structure
+The loader can automatically generate types for your collection.
+To do this, you need to provide the email and password of an admin of the PocketBase instance.
+Under the hood, the loader will use the [PocketBase API](https://pocketbase.io/docs/api-collections/#view-collection) to fetch the schema of your collection and generate types with Zod based on that schema.
 
-Inside of your Astro project, you'll see the following folders and files:
+### Private Collections
 
-```text
-/
-├── index.ts
-├── src
-│   └── MyComponent.astro
-├── tsconfig.json
-├── package.json
-```
+If you want to access a private collection, you also need to provide the admin credentials.
+Otherwise, you need to make the collection public in the PocketBase dashboard.
 
-The `index.ts` file is the "entry point" for your package. Export your components in `index.ts` to make them importable from your package.
+### Options
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command       | Action                                                                                                                                                                                                                           |
-| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm link`    | Registers this package locally. Run `npm link my-component-library` in an Astro project to install your components                                                                                                               |
-| `npm publish` | [Publishes](https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages#publishing-unscoped-public-packages) this package to NPM. Requires you to be [logged in](https://docs.npmjs.com/cli/v8/commands/npm-adduser) |
+| Option           | Type                      | Required | Description                                                                                                                         |
+| ---------------- | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `url`            | `string`                  | x        | The URL of your PocketBase instance.                                                                                                |
+| `collectionName` | `string`                  | x        | The name of the collection in your PocketBase instance.                                                                             |
+| `content`        | `string \| Array<string>` | x        | The field in the collection to use as content. This can also be an array of fields.                                                 |
+| `adminEmail`     | `string`                  |          | The email of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections.    |
+| `adminPassword`  | `string`                  |          | The password of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections. |
+| `forceUpdate`    | `boolean`                 |          | If set to `true`, the loader will fetch every entry instead of only the ones modified since the last build.                         |
