@@ -1,8 +1,9 @@
 import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
-import { getAdminToken } from "./utils/get-admin-token";
+import { getRemoteSchema } from "./utils/get-remote-schema";
 import { parseSchema } from "./utils/parse-schema";
+import { readLocalSchema } from "./utils/read-local-schema";
 
 /**
  * Basic schema for every PocketBase collection.
@@ -24,57 +25,26 @@ const BASIC_SCHEMA = {
 export async function generateSchema(
   options: PocketBaseLoaderOptions
 ): Promise<ZodSchema> {
-  // TODO: Add support for local schema files
+  let schema: Array<Record<string, any>> | undefined;
 
-  // If no admin email and password are provided, we can't get the schema from the API
-  if (!options.adminEmail || !options.adminPassword) {
-    console.warn(
-      "Make sure to add an admin email and password to the config to get automatic type generation."
+  // Try to get the schema directly from the PocketBase instance
+  schema = await getRemoteSchema(options);
+
+  // If the schema is not available, try to read it from a local schema file
+  if (!schema && options.localSchema) {
+    schema = await readLocalSchema(options.localSchema, options.collectionName);
+  }
+
+  // If the schema is still not available, return the basic schema
+  if (!schema) {
+    console.error(
+      `No schema available for ${options.collectionName}. Only basic types are available. Please check your configuration and provide a valid schema file or admin credentials.`
     );
-
-    // Return the basic schema
     return z.object(BASIC_SCHEMA);
   }
-
-  // Get the admin token
-  const token = await getAdminToken(
-    options.url,
-    options.adminEmail,
-    options.adminPassword
-  );
-
-  // If the token is invalid, return the basic schema
-  if (!token) {
-    return z.object(BASIC_SCHEMA);
-  }
-
-  // Build URL and headers for the schema request
-  const schemaUrl = new URL(
-    `api/collections/${options.collectionName}`,
-    options.url
-  ).href;
-  const schemaHeaders = new Headers();
-  schemaHeaders.set("Authorization", token);
-
-  // Fetch the schema
-  const schemaRequest = await fetch(schemaUrl, {
-    headers: schemaHeaders
-  });
-
-  // If the request was not successful, return the basic schema
-  if (!schemaRequest.ok) {
-    const reason = await schemaRequest.json().then((data) => data.message);
-    const errorMessage = `Fetching schema from ${options.collectionName} failed with status code ${schemaRequest.status}.\nReason: ${reason}`;
-    console.error(errorMessage);
-
-    return z.object(BASIC_SCHEMA);
-  }
-
-  // Get the schema from the response
-  const schema = await schemaRequest.json();
 
   // Parse the schema
-  const fields = parseSchema(schema.schema);
+  const fields = parseSchema(schema);
 
   // Check if the content field is present
   if (typeof options.content === "string" && !fields[options.content]) {

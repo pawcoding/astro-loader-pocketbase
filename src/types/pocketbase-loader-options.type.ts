@@ -31,6 +31,12 @@ export type PocketBaseLoaderOptions = {
    */
   adminPassword?: string;
   /**
+   * File path to the local schema file.
+   * This file will be used to generate the schema for the collection.
+   * If admin credentials are provided (see `adminEmail` and `adminPassword`), this option will be ignored.
+   */
+  localSchema?: string;
+  /**
    * By default, the loader will only fetch entries that have been modified since the last fetch.
    * If you want to fetch all entries, set this to `true`.
    */
