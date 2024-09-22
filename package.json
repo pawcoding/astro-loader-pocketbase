@@ -2,7 +2,7 @@
   "name": "astro-loader-pocketbase",
   "description": "A content loader for Astro that uses the PocketBase API",
   "homepage": "https://github.com/pawcoding/astro-loader-pocketbase",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "exports": {
     ".": "./index.ts"
