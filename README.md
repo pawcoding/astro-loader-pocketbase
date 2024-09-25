@@ -1,4 +1,10 @@
-# astro-pocketbase-loader
+# astro-loader-pocketbase
+
+<!-- ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pawcoding/astro-loader-pocketbase/release.yaml?style=flat-square) -->
+[![NPM Version](https://img.shields.io/npm/v/astro-loader-pocketbase?style=flat-square)](https://www.npmjs.com/package/astro-loader-pocketbase)
+[![NPM Downloads](https://img.shields.io/npm/dw/astro-loader-pocketbase?style=flat-square)](https://www.npmjs.com/package/astro-loader-pocketbase)
+[![GitHub License](https://img.shields.io/github/license/pawcoding/astro-loader-pocketbase?style=flat-square)](https://github.com/pawcoding/astro-loader-pocketbase/blob/master/LICENSE)
+[![Discord](https://img.shields.io/discord/484669557747875862?style=flat-square&label=Discord)](https://discord.gg/GzgTh4hxrx)
 
 This package is a simple loader to load data from a PocketBase database into Astro using the [Astro Loader API](https://5-0-0-beta.docs.astro.build/en/reference/loader-reference/) introduced in Astro 5.
 
