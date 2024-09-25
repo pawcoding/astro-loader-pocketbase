@@ -1,4 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
+import type { PocketBaseEntry } from "../types/pocketbase-base.type";
 
 /**
  * Parse an entry from PocketBase to match the schema and store it in the store.
@@ -9,7 +10,7 @@ import type { LoaderContext } from "astro/loaders";
  *                      If multiple fields are used, they will be concatenated and wrapped in `<section>` elements.
  */
 export async function parseEntry(
-  entry: Record<string, any>,
+  entry: PocketBaseEntry,
   { generateDigest, parseData, store }: LoaderContext,
   contentFields: string | Array<string>
 ): Promise<void> {
@@ -28,7 +29,7 @@ export async function parseEntry(
   let content: string;
   if (typeof contentFields === "string") {
     // Only one field is used as content
-    content = entry[contentFields];
+    content = `${entry[contentFields]}`;
   } else {
     // Multiple fields are used as content, wrap each block in a section and concatenate them
     content = contentFields

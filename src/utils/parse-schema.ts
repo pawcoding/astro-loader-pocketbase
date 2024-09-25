@@ -1,7 +1,8 @@
 import { z } from "astro/zod";
+import type { PocketBaseSchemaEntry } from "../types/pocketbase-schema.type";
 
 export function parseSchema(
-  schema: Array<Record<string, any>>
+  schema: Array<PocketBaseSchemaEntry>
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
@@ -25,18 +26,25 @@ export function parseSchema(
         fieldType = z.date({ coerce: true });
         break;
       case "select":
+        if (!field.options.values) {
+          throw new Error(
+            `Field ${field.name} is of type "select" but has no values defined.`
+          );
+        }
+
         // Create an enum for the select values
+        // @ts-expect-error - Zod complains because the values are not known at compile time and thus the array is not static.
         const values = z.enum(field.options.values);
 
         // Parse the field type based on the number of values it can have
-        fieldType = parseSingleOrMultipleValues(field as any, values);
+        fieldType = parseSingleOrMultipleValues(field, values);
         break;
       case "relation":
       case "file":
         // NOTE: Relations and files are currently not supported and are treated as strings
 
         // Parse the field type based on the number of values it can have
-        fieldType = parseSingleOrMultipleValues(field as any, z.string());
+        fieldType = parseSingleOrMultipleValues(field, z.string());
         break;
       case "json":
         // Parse the field as an object
@@ -69,11 +77,11 @@ export function parseSchema(
  * @returns The parsed field type
  */
 function parseSingleOrMultipleValues(
-  field: { options: { maxSelect: number } },
+  field: PocketBaseSchemaEntry,
   type: z.ZodType
 ) {
   // If the select allows multiple values, create an array of the enum
-  if (field.options.maxSelect === 1) {
+  if (field.options.maxSelect === undefined || field.options.maxSelect === 1) {
     return type;
   } else {
     return z.array(type);

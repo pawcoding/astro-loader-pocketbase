@@ -1,6 +1,7 @@
 import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
+import type { PocketBaseSchemaEntry } from "./types/pocketbase-schema.type";
 import { getRemoteSchema } from "./utils/get-remote-schema";
 import { parseSchema } from "./utils/parse-schema";
 import { readLocalSchema } from "./utils/read-local-schema";
@@ -25,7 +26,7 @@ const BASIC_SCHEMA = {
 export async function generateSchema(
   options: PocketBaseLoaderOptions
 ): Promise<ZodSchema> {
-  let schema: Array<Record<string, any>> | undefined;
+  let schema: Array<PocketBaseSchemaEntry> | undefined;
 
   // Try to get the schema directly from the PocketBase instance
   schema = await getRemoteSchema(options);

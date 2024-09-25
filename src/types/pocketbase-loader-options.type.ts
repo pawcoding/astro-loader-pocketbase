@@ -1,7 +1,7 @@
 /**
  * Options for the PocketBase loader.
  */
-export type PocketBaseLoaderOptions = {
+export interface PocketBaseLoaderOptions {
   /**
    * URL of the PocketBase instance.
    */
@@ -41,4 +41,4 @@ export type PocketBaseLoaderOptions = {
    * If you want to fetch all entries, set this to `true`.
    */
   forceUpdate?: boolean;
-};
+}
