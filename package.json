@@ -1,36 +1,41 @@
 {
   "name": "astro-loader-pocketbase",
-  "description": "A content loader for Astro that uses the PocketBase API",
-  "homepage": "https://github.com/pawcoding/astro-loader-pocketbase",
   "version": "0.2.0",
+  "description": "A content loader for Astro that uses the PocketBase API",
+  "license": "MIT",
+  "author": "Luis Wolf <development@pawcode.de> (https://pawcode.de)",
+  "homepage": "https://github.com/pawcoding/astro-loader-pocketbase",
   "type": "module",
   "exports": {
     ".": "./index.ts"
   },
   "files": [
-    "src",
-    "index.ts"
+    "index.ts",
+    "src"
   ],
-  "author": {
-    "name": "Luis Wolf",
-    "email": "development@pawcode.de",
-    "url": "https://pawcode.de"
-  },
-  "keywords": [
-    "withastro",
-    "astro",
-    "astro-loader",
-    "astro-content-loader",
-    "pocketbase"
-  ],
-  "scripts": {},
-  "devDependencies": {
-    "@types/node": "^22.5.5",
-    "astro": "^5.0.0-beta.1",
-    "typescript": "^5.6.2"
+  "scripts": {
+    "lint": "npx eslint",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "astro": "^5.0.0"
   },
-  "license": "MIT"
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@stylistic/eslint-plugin": "^2.8.0",
+    "@types/node": "^22.5.5",
+    "astro": "^5.0.0-beta.1",
+    "eslint": "^9.11.1",
+    "globals": "^15.9.0",
+    "husky": "^9.1.6",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.7.0"
+  },
+  "keywords": [
+    "astro",
+    "astro-content-loader",
+    "astro-loader",
+    "pocketbase",
+    "withastro"
+  ]
 }
