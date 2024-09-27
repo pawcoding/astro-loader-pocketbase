@@ -15,15 +15,15 @@ export function parseSchema(
     switch (field.type) {
       case "number":
         // Coerce the value to a number
-        fieldType = z.number({ coerce: true });
+        fieldType = z.coerce.number();
         break;
       case "bool":
         // Coerce the value to a boolean
-        fieldType = z.boolean({ coerce: true });
+        fieldType = z.coerce.boolean();
         break;
       case "date":
         // Coerce and parse the value as a date
-        fieldType = z.date({ coerce: true });
+        fieldType = z.coerce.date();
         break;
       case "select":
         if (!field.options.values) {
@@ -58,7 +58,10 @@ export function parseSchema(
 
     // If the field is not required, mark it as optional
     if (!field.required) {
-      fieldType.isOptional();
+      fieldType = z.preprocess(
+        (val) => val || undefined,
+        z.optional(fieldType)
+      );
     }
 
     // Add the field to the fields object
