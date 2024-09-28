@@ -1,14 +1,17 @@
 import { z } from "astro/zod";
-import type { PocketBaseSchemaEntry } from "../types/pocketbase-schema.type";
+import type {
+  PocketBaseCollection,
+  PocketBaseSchemaEntry
+} from "../types/pocketbase-schema.type";
 
 export function parseSchema(
-  schema: Array<PocketBaseSchemaEntry>
+  collection: PocketBaseCollection
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
 
   // Parse every field in the schema
-  for (const field of schema) {
+  for (const field of collection.schema) {
     let fieldType;
 
     // Determine the field type and create the corresponding Zod type

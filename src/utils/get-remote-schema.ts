@@ -1,8 +1,5 @@
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
-import type {
-  PocketBaseCollection,
-  PocketBaseSchemaEntry
-} from "../types/pocketbase-schema.type";
+import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
 import { getAdminToken } from "./get-admin-token";
 
 /**
@@ -12,7 +9,7 @@ import { getAdminToken } from "./get-admin-token";
  */
 export async function getRemoteSchema(
   options: PocketBaseLoaderOptions
-): Promise<Array<PocketBaseSchemaEntry> | undefined> {
+): Promise<PocketBaseCollection | undefined> {
   if (!options.adminEmail || !options.adminPassword) {
     return undefined;
   }
@@ -52,6 +49,5 @@ export async function getRemoteSchema(
   }
 
   // Get the schema from the response
-  const schema: PocketBaseCollection = await schemaRequest.json();
-  return schema.schema;
+  return await schemaRequest.json();
 }

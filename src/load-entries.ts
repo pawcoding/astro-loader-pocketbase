@@ -9,13 +9,15 @@ import { parseEntry } from "./utils/parse-entry";
  * @param context Context of the loader.
  * @param adminToken Admin token to access all resources.
  * @param lastModified Date of the last fetch to only update changed entries.
+ *
+ * @returns `true` if the collection has an updated column, `false` otherwise.
  */
 export async function loadEntries(
   options: PocketBaseLoaderOptions,
   context: LoaderContext,
   adminToken: string | undefined,
   lastModified: string | undefined
-): Promise<void> {
+): Promise<boolean> {
   // Build the URL for the collections endpoint
   const collectionUrl = new URL(
     `api/collections/${options.collectionName}/records`,
@@ -41,14 +43,17 @@ export async function loadEntries(
   let page = 1;
   let totalPages = 0;
   let entries = 0;
+  let hasUpdatedColumn = false;
 
   // Fetch all (modified) entries
   do {
     // Fetch entries from the collection
     // If `lastModified` is set, only fetch entries that have been modified since the last fetch
     const collectionRequest = await fetch(
-      `${collectionUrl}?page=${page}&perPage=100&sort=-updated,id${
-        lastModified ? `&filter=(updated>"${lastModified}")` : ""
+      `${collectionUrl}?page=${page}&perPage=100${
+        lastModified
+          ? `&sort=-updated,id&filter=(updated>"${lastModified}")`
+          : ""
       }`,
       {
         headers: collectionHeaders
@@ -59,10 +64,9 @@ export async function loadEntries(
     if (!collectionRequest.ok) {
       // If the collection is locked, an admin token is required
       if (collectionRequest.status === 403) {
-        context.logger.error(
+        throw new Error(
           `The collection ${options.collectionName} is not accessible without an admin rights. Please provide an admin email and password in the config.`
         );
-        return;
       }
 
       // Get the reason for the error
@@ -70,8 +74,7 @@ export async function loadEntries(
         .json()
         .then((data) => data.message);
       const errorMessage = `Fetching data from ${options.collectionName} failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
-      context.logger.error(errorMessage);
-      return;
+      throw new Error(errorMessage);
     }
 
     // Get the data from the response
@@ -80,6 +83,12 @@ export async function loadEntries(
     // Parse and store the entries
     for (const entry of response.items) {
       await parseEntry(entry, context, options.content);
+
+      // Check if the entry has an `updated` column
+      // This is used to enable the incremental fetching of entries
+      if (!hasUpdatedColumn && "updated" in entry) {
+        hasUpdatedColumn = true;
+      }
     }
 
     // Update the page and total pages
@@ -94,4 +103,7 @@ export async function loadEntries(
       context.collection
     }`
   );
+
+  // Return if the collection has an updated column
+  return hasUpdatedColumn;
 }

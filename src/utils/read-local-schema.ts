@@ -1,9 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import type {
-  PocketBaseCollection,
-  PocketBaseSchemaEntry
-} from "../types/pocketbase-schema.type";
+import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
 
 /**
  * Reads the local PocketBase schema file and returns the schema for the specified collection.
@@ -14,7 +11,7 @@ import type {
 export async function readLocalSchema(
   localSchemaPath: string,
   collectionName: string
-): Promise<Array<PocketBaseSchemaEntry> | undefined> {
+): Promise<PocketBaseCollection | undefined> {
   const realPath = path.join(process.cwd(), localSchemaPath);
 
   try {
@@ -38,7 +35,7 @@ export async function readLocalSchema(
       );
     }
 
-    return schema.schema;
+    return schema;
   } catch (error) {
     console.error(
       `Failed to read local schema from ${localSchemaPath}. No types will be generated.\nReason: ${error}`

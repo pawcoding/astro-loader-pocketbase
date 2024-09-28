@@ -1,7 +1,7 @@
 import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
-import type { PocketBaseSchemaEntry } from "./types/pocketbase-schema.type";
+import type { PocketBaseCollection } from "./types/pocketbase-schema.type";
 import { getRemoteSchema } from "./utils/get-remote-schema";
 import { parseSchema } from "./utils/parse-schema";
 import { readLocalSchema } from "./utils/read-local-schema";
@@ -13,39 +13,56 @@ const BASIC_SCHEMA = {
   id: z.string().length(15),
   collectionId: z.string().length(15),
   collectionName: z.string(),
-  created: z.date({ coerce: true }),
-  updated: z.date({ coerce: true })
+  created: z.coerce.date(),
+  updated: z.coerce.date()
+};
+
+/**
+ * Basic schema for a view in PocketBase.
+ */
+const VIEW_SCHEMA = {
+  id: z.string(),
+  collectionId: z.string().length(15),
+  collectionName: z.string(),
+  created: z.preprocess((val) => val || undefined, z.optional(z.coerce.date())),
+  updated: z.preprocess((val) => val || undefined, z.optional(z.coerce.date()))
 };
 
 /**
  * Generate a schema for the collection based on the collection's schema in PocketBase.
- * If no login credentials are provided, a {@link BASIC_SCHEMA} for every PocketBase collection is returned.
+ * By default, a basic schema is returned if no other schema is available.
+ * If admin credentials are provided, the schema is fetched from the PocketBase API.
+ * If a path to a local schema file is provided, the schema is read from the file.
  *
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
  */
 export async function generateSchema(
   options: PocketBaseLoaderOptions
 ): Promise<ZodSchema> {
-  let schema: Array<PocketBaseSchemaEntry> | undefined;
+  let collection: PocketBaseCollection | undefined;
 
   // Try to get the schema directly from the PocketBase instance
-  schema = await getRemoteSchema(options);
+  collection = await getRemoteSchema(options);
 
   // If the schema is not available, try to read it from a local schema file
-  if (!schema && options.localSchema) {
-    schema = await readLocalSchema(options.localSchema, options.collectionName);
+  if (!collection && options.localSchema) {
+    collection = await readLocalSchema(
+      options.localSchema,
+      options.collectionName
+    );
   }
 
   // If the schema is still not available, return the basic schema
-  if (!schema) {
+  if (!collection) {
     console.error(
       `No schema available for ${options.collectionName}. Only basic types are available. Please check your configuration and provide a valid schema file or admin credentials.`
     );
-    return z.object(BASIC_SCHEMA);
+    // Return the view schema since every collection has at least the view schema
+    return z.object(VIEW_SCHEMA);
   }
 
   // Parse the schema
-  const fields = parseSchema(schema);
+  const fields = parseSchema(collection);
 
   // Check if the content field is present
   if (typeof options.content === "string" && !fields[options.content]) {
@@ -62,9 +79,13 @@ export async function generateSchema(
     }
   }
 
+  // Use the corresponding base schema for the type of collection
+  // Auth collections are basically a superset of the basic schema.
+  const base = collection.type === "view" ? VIEW_SCHEMA : BASIC_SCHEMA;
+
   // Combine the basic schema with the parsed fields
   return z.object({
-    ...BASIC_SCHEMA,
+    ...base,
     ...fields
   });
 }

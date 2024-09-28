@@ -20,6 +20,9 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
         ? undefined
         : context.meta.get("last-modified");
 
+      // Get the `has-updated-column` meta to check if the collection has an updated column
+      let hasUpdatedColumn = context.meta.get("has-updated-column") === "true";
+
       // Clear the store if we want to fetch all entries again
       if (options.forceUpdate) {
         context.store.clear();
@@ -42,7 +45,25 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       }
 
       // Load the (modified) entries
-      await loadEntries(options, context, token, lastModified);
+      try {
+        hasUpdatedColumn = await loadEntries(
+          options,
+          context,
+          token,
+          // Only fetch entries that have been modified since the last fetch
+          // If the collection does not have an updated column, all entries will be fetched
+          hasUpdatedColumn ? lastModified : undefined
+        );
+      } catch (error) {
+        // Set the `has-updated-column` meta to `false` if an error occurred
+        // This will force the loader to fetch all entries again in the next run
+        context.meta.set("has-updated-column", `${false}`);
+
+        throw error;
+      }
+
+      // Set the `has-updated-column` meta to `true` if the collection has an updated column
+      context.meta.set("has-updated-column", `${hasUpdatedColumn}`);
 
       // Set the last modified date to the current date
       context.meta.set("last-modified", new Date().toISOString());
