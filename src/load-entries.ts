@@ -43,7 +43,7 @@ export async function loadEntries(
   let page = 1;
   let totalPages = 0;
   let entries = 0;
-  let hasUpdatedColumn = false;
+  let hasUpdatedColumn = !!lastModified;
 
   // Fetch all (modified) entries
   do {
