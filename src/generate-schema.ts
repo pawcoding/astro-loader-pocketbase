@@ -5,6 +5,7 @@ import type { PocketBaseCollection } from "./types/pocketbase-schema.type";
 import { getRemoteSchema } from "./utils/get-remote-schema";
 import { parseSchema } from "./utils/parse-schema";
 import { readLocalSchema } from "./utils/read-local-schema";
+import { transformFiles } from "./utils/transform-files";
 
 /**
  * Basic schema for every PocketBase collection.
@@ -84,8 +85,21 @@ export async function generateSchema(
   const base = collection.type === "view" ? VIEW_SCHEMA : BASIC_SCHEMA;
 
   // Combine the basic schema with the parsed fields
-  return z.object({
+  const schema = z.object({
     ...base,
     ...fields
   });
+
+  // Get all file fields
+  const fileFields = collection.schema.filter((field) => field.type === "file");
+
+  if (fileFields.length === 0) {
+    return schema;
+  }
+
+  // Transform file names to file urls
+  return schema.transform((entry) =>
+    // @ts-expect-error - `updated` and `created` are already transformed to dates
+    transformFiles(options.url, fileFields, entry)
+  );
 }

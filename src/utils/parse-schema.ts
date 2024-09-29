@@ -44,7 +44,8 @@ export function parseSchema(
         break;
       case "relation":
       case "file":
-        // NOTE: Relations and files are currently not supported and are treated as strings
+        // NOTE: Relations are currently not supported and are treated as strings
+        // NOTE: Files are later transformed to URLs
 
         // Parse the field type based on the number of values it can have
         fieldType = parseSingleOrMultipleValues(field, z.string());
