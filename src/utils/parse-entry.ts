@@ -12,7 +12,7 @@ import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 export async function parseEntry(
   entry: PocketBaseEntry,
   { generateDigest, parseData, store }: LoaderContext,
-  contentFields: string | Array<string>
+  contentFields?: string | Array<string>
 ): Promise<void> {
   // Parse the data to match the schema
   // This will throw an error if the data does not match the schema
@@ -26,6 +26,16 @@ export async function parseEntry(
   // If the entry was never updated, the created date can be used as a fallback.
   // View collections don't necessarily publish the updated date, so the whole entry is used for the digest.
   const digest = generateDigest(entry.updated ?? entry.created ?? entry);
+
+  if (!contentFields) {
+    // Store the entry
+    store.set({
+      id: entry.id,
+      data,
+      digest
+    });
+    return;
+  }
 
   // Generate the content for the entry
   let content: string;
