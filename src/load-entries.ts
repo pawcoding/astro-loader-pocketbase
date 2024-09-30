@@ -40,7 +40,7 @@ export async function loadEntries(
   );
 
   // Prepare pagination variables
-  let page = 1;
+  let page = 0;
   let totalPages = 0;
   let entries = 0;
   let hasUpdatedColumn = !!lastModified;
@@ -50,7 +50,7 @@ export async function loadEntries(
     // Fetch entries from the collection
     // If `lastModified` is set, only fetch entries that have been modified since the last fetch
     const collectionRequest = await fetch(
-      `${collectionUrl}?page=${page}&perPage=100${
+      `${collectionUrl}?page=${++page}&perPage=100${
         lastModified
           ? `&sort=-updated,id&filter=(updated>"${lastModified}")`
           : ""

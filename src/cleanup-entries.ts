@@ -26,7 +26,7 @@ export async function cleanupEntries(
   }
 
   // Prepare pagination variables
-  let page = 1;
+  let page = 0;
   let totalPages = 0;
   const entries = new Set<string>();
 
@@ -34,7 +34,7 @@ export async function cleanupEntries(
   do {
     // Fetch ids from the collection
     const collectionRequest = await fetch(
-      `${collectionUrl}?page=${page}&perPage=1000&fields=id`,
+      `${collectionUrl}?page=${++page}&perPage=1000&fields=id`,
       {
         headers: collectionHeaders
       }
