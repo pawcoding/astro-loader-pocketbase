@@ -17,11 +17,11 @@ interface PocketBaseBaseEntry {
   /**
    * Date the entry was created.
    */
-  created: string;
+  created?: string | undefined;
   /**
    * Date the entry was last updated.
    */
-  updated: string;
+  updated?: string | undefined;
 }
 
 /**

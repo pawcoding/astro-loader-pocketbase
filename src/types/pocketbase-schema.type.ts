@@ -40,6 +40,10 @@ export interface PocketBaseCollection {
    */
   name: string;
   /**
+   * Type of the collection.
+   */
+  type: 'base' | 'view' | 'auth';
+  /**
    * Schema of the collection.
    */
   schema: Array<PocketBaseSchemaEntry>;

@@ -1,5 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
-import type { PocketBaseEntry } from "../types/pocketbase-base.type";
+import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 
 /**
  * Parse an entry from PocketBase to match the schema and store it in the store.
@@ -12,7 +12,7 @@ import type { PocketBaseEntry } from "../types/pocketbase-base.type";
 export async function parseEntry(
   entry: PocketBaseEntry,
   { generateDigest, parseData, store }: LoaderContext,
-  contentFields: string | Array<string>
+  contentFields?: string | Array<string>
 ): Promise<void> {
   // Parse the data to match the schema
   // This will throw an error if the data does not match the schema
@@ -22,8 +22,20 @@ export async function parseEntry(
   });
 
   // Generate a digest for the entry
-  // We can use the updated data as an identifier if the entry has changed since PocketBase automatically updates this value on every change
-  const digest = generateDigest(entry.updated);
+  // Normal collections use the updated date that is always updated when the entry is updated.
+  // If the entry was never updated, the created date can be used as a fallback.
+  // View collections don't necessarily publish the updated date, so the whole entry is used for the digest.
+  const digest = generateDigest(entry.updated ?? entry.created ?? entry);
+
+  if (!contentFields) {
+    // Store the entry
+    store.set({
+      id: entry.id,
+      data,
+      digest
+    });
+    return;
+  }
 
   // Generate the content for the entry
   let content: string;

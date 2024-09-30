@@ -19,7 +19,7 @@ export interface PocketBaseLoaderOptions {
    * The loader will concatenate the content of all fields in the order they are defined in the array.
    * Each block will be contained in a `<section>` element.
    */
-  content: string | Array<string>;
+  content?: string | Array<string>;
   /**
    * Email of an admin to get full access to the PocketBase instance.
    * Together with `adminPassword` this is required to get automatic type generation and to access all resources even if they are not public.
