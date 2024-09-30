@@ -1,6 +1,7 @@
 # astro-loader-pocketbase
 
 <!-- ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pawcoding/astro-loader-pocketbase/release.yaml?style=flat-square) -->
+
 [![NPM Version](https://img.shields.io/npm/v/astro-loader-pocketbase?style=flat-square)](https://www.npmjs.com/package/astro-loader-pocketbase)
 [![NPM Downloads](https://img.shields.io/npm/dw/astro-loader-pocketbase?style=flat-square)](https://www.npmjs.com/package/astro-loader-pocketbase)
 [![GitHub License](https://img.shields.io/github/license/pawcoding/astro-loader-pocketbase?style=flat-square)](https://github.com/pawcoding/astro-loader-pocketbase/blob/master/LICENSE)
@@ -8,7 +9,7 @@
 
 This package is a simple loader to load data from a PocketBase database into Astro using the [Astro Loader API](https://5-0-0-beta.docs.astro.build/en/reference/loader-reference/) introduced in Astro 5.
 
-## Usage
+## Basic usage
 
 In your content configuration file, you can use the `pocketbaseLoader` function to use your PocketBase database as a data source.
 
@@ -19,10 +20,11 @@ import { defineCollection } from "astro:content";
 const blog = defineCollection({
   loader: pocketbaseLoader({
     url: "https://<your-pocketbase-url>",
-    collectionName: "<collection-in-pocketbase>",
-    content: "<field-in-collection>"
+    collectionName: "<collection-in-pocketbase>"
   })
 });
+
+export const collections = { blog };
 ```
 
 By default, the loader will only fetch entries that have been modified since the last build.
@@ -31,43 +33,107 @@ If you want to update your deployed site with new entries, you need to rebuild i
 
 <sub>When running the dev server, you can trigger a reload by using `s + enter`.</sub>
 
-### Type Generation
+## Entries
+
+After generating the schema (see below), the loader will automatically parse the content of the entries (e.g. transform ISO dates to `Date` objects, coerce numbers, etc.).
+
+### HTML content
+
+You can also specify a field or an array of fields to use as content.
+This content will then be used when calling the `render` function of [Astros content collections](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/#rendering-body-content).
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    content: "<field-in-collection>"
+  })
+});
+```
+
+Since the goal of the `render` function is to render the content as HTML, it's recommended to use a field of type `editor` (rich text) in PocketBase as content.
+
+If you specify an array of fields, the loader will wrap the content of these fields in a `<section>` and concatenate them.
+
+### Images and files
+
+PocketBase can store images and files for each entry in a collection.
+While the API only returns the filenames of these images and files, the loader will out of the box transform these filenames to the actual URLs of the files.
+This doesn't mean that the files are downloaded during the build process.
+But you can directly use these URLs in your Astro components to display images or link to the files.
+
+## Type generation
 
 The loader can automatically generate types for your collection.
 This is useful for type checking and autocompletion in your editor.
 These types can be generated in two ways:
 
-#### Remote Schema
+### Remote schema
 
 To use the lice remote schema, you need to provide the email and password of an admin of the PocketBase instance.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    adminEmail: "<admin-email>",
+    adminPassword: "<admin-password>"
+  })
+});
+```
+
 Under the hood, the loader will use the [PocketBase API](https://pocketbase.io/docs/api-collections/#view-collection) to fetch the schema of your collection and generate types with Zod based on that schema.
 
-#### Local Schema
+### Local schema
 
 If you don't want to provide the admin credentials (e.g. in a public repository), you can also provide the schema manually via a JSON file.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    localSchema: "<path-to-schema-file>"
+  })
+});
+```
+
 In PocketBase you can export the schema of the whole database to a `pb_schema.json` file.
 If you provide the path to this file, the loader will use this schema to generate the types locally.
 
 When admin credentials are provided, the loader will **always use the remote schema** since it's more up-to-date.
 
-#### Manual Schema
+### Manual schema
 
 If you don't want to use the automatic type generation, you can also [provide your own schema manually](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/#defining-the-collection-schema).
 This manual schema will **always override the automatic type generation**.
 
-### Private Collections
-
-If you want to access a private collection, you also need to provide the admin credentials.
-Otherwise, you need to make the collection public in the PocketBase dashboard.
-
-### Options
+## All options
 
 | Option           | Type                      | Required | Description                                                                                                                         |
 | ---------------- | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `url`            | `string`                  | x        | The URL of your PocketBase instance.                                                                                                |
 | `collectionName` | `string`                  | x        | The name of the collection in your PocketBase instance.                                                                             |
-| `content`        | `string \| Array<string>` | x        | The field in the collection to use as content. This can also be an array of fields.                                                 |
+| `content`        | `string \| Array<string>` |          | The field in the collection to use as content. This can also be an array of fields.                                                 |
 | `adminEmail`     | `string`                  |          | The email of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections.    |
 | `adminPassword`  | `string`                  |          | The password of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections. |
 | `localSchema`    | `string`                  |          | The path to a local schema file. This is used for automatic type generation.                                                        |
 | `forceUpdate`    | `boolean`                 |          | If set to `true`, the loader will fetch every entry instead of only the ones modified since the last build.                         |
+
+## Special cases
+
+### Private collections
+
+If you want to access a private collection, you also need to provide the admin credentials.
+Otherwise, you need to make the collection public in the PocketBase dashboard.
+
+Generally, it's not recommended to use private collections, especially when users should be able to see images or other files stored in the collection.
+
+### View collections
+
+Out of the box, the loader also supports collections with the type `view`, though with some limitations.
+To enable incremental builds, the loader needs to know when an entry has been modified.
+Normal `base` collections have a `updated` field that is automatically updated when an entry is modified.
+Thus, `view` collections that don't include this field can't be incrementally built but will be fetched every time.
+
+You can also alias another field as `updated` (as long as it's a date field) in your view.
+While this is possible, it's not recommended since it can lead to outdated data not being fetched.
