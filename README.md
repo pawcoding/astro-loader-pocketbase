@@ -14,7 +14,7 @@ This package is a simple loader to load data from a PocketBase database into Ast
 In your content configuration file, you can use the `pocketbaseLoader` function to use your PocketBase database as a data source.
 
 ```ts
-import { pocketbaseLoader } from "astro-pocketbase-loader";
+import { pocketbaseLoader } from "astro-loader-pocketbase";
 import { defineCollection } from "astro:content";
 
 const blog = defineCollection({
