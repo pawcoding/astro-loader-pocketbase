@@ -52,7 +52,7 @@ export function parseSchema(
         break;
       case "json":
         // Parse the field as an object
-        fieldType = z.object({});
+        fieldType = z.unknown();
         break;
       default:
         // Default to a string
