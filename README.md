@@ -58,7 +58,7 @@ If you specify an array of fields, the loader will wrap the content of these fie
 ### Images and files
 
 PocketBase can store images and files for each entry in a collection.
-While the API only returns the filenames of these images and files, the loader will out of the box transform these filenames to the actual URLs of the files.
+While the API only returns the filenames of these images and files, the loader will out of the box **transform these filenames to the actual URLs** of the files.
 This doesn't mean that the files are downloaded during the build process.
 But you can directly use these URLs in your Astro components to display images or link to the files.
 
@@ -109,15 +109,16 @@ This manual schema will **always override the automatic type generation**.
 
 ## All options
 
-| Option           | Type                      | Required | Description                                                                                                                         |
-| ---------------- | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `url`            | `string`                  | x        | The URL of your PocketBase instance.                                                                                                |
-| `collectionName` | `string`                  | x        | The name of the collection in your PocketBase instance.                                                                             |
-| `content`        | `string \| Array<string>` |          | The field in the collection to use as content. This can also be an array of fields.                                                 |
-| `adminEmail`     | `string`                  |          | The email of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections.    |
-| `adminPassword`  | `string`                  |          | The password of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections. |
-| `localSchema`    | `string`                  |          | The path to a local schema file. This is used for automatic type generation.                                                        |
-| `forceUpdate`    | `boolean`                 |          | If set to `true`, the loader will fetch every entry instead of only the ones modified since the last build.                         |
+| Option           | Type                          | Required | Description                                                                                                                         |
+| ---------------- | ----------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `url`            | `string`                      | x        | The URL of your PocketBase instance.                                                                                                |
+| `collectionName` | `string`                      | x        | The name of the collection in your PocketBase instance.                                                                             |
+| `content`        | `string \| Array<string>`     |          | The field in the collection to use as content. This can also be an array of fields.                                                 |
+| `adminEmail`     | `string`                      |          | The email of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections.    |
+| `adminPassword`  | `string`                      |          | The password of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections. |
+| `localSchema`    | `string`                      |          | The path to a local schema file. This is used for automatic type generation.                                                        |
+| `jsonSchemas`    | `Record<string, z.ZodSchema>` |          | A record of Zod schemas to use for type generation of `json` fields.                                                                |
+| `forceUpdate`    | `boolean`                     |          | If set to `true`, the loader will fetch every entry instead of only the ones modified since the last build.                         |
 
 ## Special cases
 
@@ -137,3 +138,15 @@ Thus, `view` collections that don't include this field can't be incrementally bu
 
 You can also alias another field as `updated` (as long as it's a date field) in your view.
 While this is possible, it's not recommended since it can lead to outdated data not being fetched.
+
+### JSON fields
+
+PocketBase can store arbitrary JSON data in a `json` field.
+While this data is checked to be valid JSON, there's no schema attached or enforced.
+Theoretically, every entry in a collection can have a different structure in such a field.
+This is why by default the loader will treat these fields as `unknown` and will not generate types for them.
+
+If you have your own schema for these fields, you can provide them via the `jsonSchemas` option.
+The keys of this record should be the field names of your json fields, while the values are Zod schemas.
+This way, the loader will also generate types for these fields and **validate the data against these schemas**.
+So be sure that the schema is correct, up-to-date and all entries in the collection adhere to it.
