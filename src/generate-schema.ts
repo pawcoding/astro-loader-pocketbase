@@ -63,7 +63,7 @@ export async function generateSchema(
   }
 
   // Parse the schema
-  const fields = parseSchema(collection);
+  const fields = parseSchema(collection, options.jsonSchemas);
 
   // Check if the content field is present
   if (typeof options.content === "string" && !fields[options.content]) {

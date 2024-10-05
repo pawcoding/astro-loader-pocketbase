@@ -1,3 +1,5 @@
+import type { z } from "astro/zod";
+
 /**
  * Options for the PocketBase loader.
  */
@@ -36,6 +38,14 @@ export interface PocketBaseLoaderOptions {
    * If admin credentials are provided (see `adminEmail` and `adminPassword`), this option will be ignored.
    */
   localSchema?: string;
+  /**
+   * Record of zod schemas for all JSON fields in the collection.
+   * The key must be the name of a field in the collection.
+   * If no schema is provided for a field, the value will be treated as `unknown`.
+   *
+   * Note that this will only be used for fields of type `json`.
+   */
+  jsonSchemas?: Record<string, z.ZodSchema>;
   /**
    * By default, the loader will only fetch entries that have been modified since the last fetch.
    * If you want to fetch all entries, set this to `true`.

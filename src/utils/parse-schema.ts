@@ -5,7 +5,8 @@ import type {
 } from "../types/pocketbase-schema.type";
 
 export function parseSchema(
-  collection: PocketBaseCollection
+  collection: PocketBaseCollection,
+  customSchemas: Record<string, z.ZodType> | undefined
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
@@ -51,8 +52,13 @@ export function parseSchema(
         fieldType = parseSingleOrMultipleValues(field, z.string());
         break;
       case "json":
-        // Parse the field as an object
-        fieldType = z.object({});
+        if (customSchemas && customSchemas[field.name]) {
+          // Use the user defined custom schema for the field
+          fieldType = customSchemas[field.name];
+        } else {
+          // Parse the field as unknown JSON
+          fieldType = z.unknown();
+        }
         break;
       default:
         // Default to a string
