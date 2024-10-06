@@ -11,28 +11,15 @@ import { transformFiles } from "./utils/transform-files";
  * Basic schema for every PocketBase collection.
  */
 const BASIC_SCHEMA = {
-  id: z.string().length(15),
-  collectionId: z.string().length(15),
-  collectionName: z.string(),
-  created: z.coerce.date(),
-  updated: z.coerce.date()
-};
-
-/**
- * Basic schema for a view in PocketBase.
- */
-const VIEW_SCHEMA = {
   id: z.string(),
   collectionId: z.string().length(15),
-  collectionName: z.string(),
-  created: z.preprocess((val) => val || undefined, z.optional(z.coerce.date())),
-  updated: z.preprocess((val) => val || undefined, z.optional(z.coerce.date()))
+  collectionName: z.string()
 };
 
 /**
  * Generate a schema for the collection based on the collection's schema in PocketBase.
  * By default, a basic schema is returned if no other schema is available.
- * If admin credentials are provided, the schema is fetched from the PocketBase API.
+ * If superuser credentials are provided, the schema is fetched from the PocketBase API.
  * If a path to a local schema file is provided, the schema is read from the file.
  *
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
@@ -45,6 +32,8 @@ export async function generateSchema(
   // Try to get the schema directly from the PocketBase instance
   collection = await getRemoteSchema(options);
 
+  const hasSuperuserRights = !!collection || !!options.superuserCredentials;
+
   // If the schema is not available, try to read it from a local schema file
   if (!collection && options.localSchema) {
     collection = await readLocalSchema(
@@ -56,22 +45,29 @@ export async function generateSchema(
   // If the schema is still not available, return the basic schema
   if (!collection) {
     console.error(
-      `No schema available for ${options.collectionName}. Only basic types are available. Please check your configuration and provide a valid schema file or admin credentials.`
+      `No schema available for "${options.collectionName}". Only basic types are available. Please check your configuration and provide a valid schema file or superuser credentials.`
     );
-    // Return the view schema since every collection has at least the view schema
-    return z.object(VIEW_SCHEMA);
+    // Return the basic schema since every collection has at least these fields
+    return z.object(BASIC_SCHEMA);
   }
 
   // Parse the schema
-  const fields = parseSchema(collection, options.jsonSchemas);
+  const fields = parseSchema(
+    collection,
+    options.jsonSchemas,
+    hasSuperuserRights
+  );
 
   // Check if the content field is present
-  if (typeof options.content === "string" && !fields[options.content]) {
+  if (
+    typeof options.contentFields === "string" &&
+    !fields[options.contentFields]
+  ) {
     console.error(
-      `The content field "${options.content}" is not present in the schema of the collection "${options.collectionName}".`
+      `The content field "${options.contentFields}" is not present in the schema of the collection "${options.collectionName}".`
     );
-  } else if (Array.isArray(options.content)) {
-    for (const field of options.content) {
+  } else if (Array.isArray(options.contentFields)) {
+    for (const field of options.contentFields) {
       if (!fields[field]) {
         console.error(
           `The content field "${field}" is not present in the schema of the collection "${options.collectionName}".`
@@ -80,18 +76,39 @@ export async function generateSchema(
     }
   }
 
-  // Use the corresponding base schema for the type of collection
-  // Auth collections are basically a superset of the basic schema.
-  const base = collection.type === "view" ? VIEW_SCHEMA : BASIC_SCHEMA;
+  // Check if the updated field is present
+  if (options.updatedField) {
+    if (!fields[options.updatedField]) {
+      console.error(
+        `The field "${options.updatedField}" is not present in the schema of the collection "${options.collectionName}".\nThis will lead to errors when trying to fetch only updated entries.`
+      );
+    } else {
+      const updatedField = collection.fields.find(
+        (field) => field.name === options.updatedField
+      );
+      if (
+        !updatedField ||
+        updatedField.type !== "autodate" ||
+        !updatedField.onUpdate
+      ) {
+        console.warn(
+          `The field "${options.updatedField}" is not of type "autodate" with the value "Update" or "Create/Update".\nMake sure that the field is automatically updated when the entry is updated!`
+        );
+      }
+    }
+  }
 
   // Combine the basic schema with the parsed fields
   const schema = z.object({
-    ...base,
+    ...BASIC_SCHEMA,
     ...fields
   });
 
   // Get all file fields
-  const fileFields = collection.schema.filter((field) => field.type === "file");
+  const fileFields = collection.fields
+    .filter((field) => field.type === "file")
+    // Only show hidden fields if the user has superuser rights
+    .filter((field) => !field.hidden || hasSuperuserRights);
 
   if (fileFields.length === 0) {
     return schema;
@@ -99,7 +116,6 @@ export async function generateSchema(
 
   // Transform file names to file urls
   return schema.transform((entry) =>
-    // @ts-expect-error - `updated` and `created` are already transformed to dates
     transformFiles(options.url, fileFields, entry)
   );
 }

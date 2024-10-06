@@ -1,27 +1,31 @@
 import type { AstroIntegrationLogger } from "astro";
 
 /**
- * This function will get an admin token from the given PocketBase instance.
+ * This function will get a superuser token from the given PocketBase instance.
  *
  * @param url URL of the PocketBase instance
- * @param email Email of the admin
- * @param password Password of the admin
+ * @param superuserCredentials Credentials of the superuser
  *
- * @returns An admin token to access all resources of the PocketBase instance.
+ * @returns A superuser token to access all resources of the PocketBase instance.
  */
-export async function getAdminToken(
+export async function getSuperuserToken(
   url: string,
-  email: string,
-  password: string,
+  superuserCredentials: {
+    email: string;
+    password: string;
+  },
   logger?: AstroIntegrationLogger
 ): Promise<string | undefined> {
   // Build the URL for the login endpoint
-  const loginUrl = new URL(`api/admins/auth-with-password`, url).href;
+  const loginUrl = new URL(
+    `api/collections/_superusers/auth-with-password`,
+    url
+  ).href;
 
   // Create a new FormData object to send the login data
   const loginData = new FormData();
-  loginData.set("identity", email);
-  loginData.set("password", password);
+  loginData.set("identity", superuserCredentials.email);
+  loginData.set("password", superuserCredentials.password);
 
   // Send the login request to get a token
   const loginRequest = await fetch(loginUrl, {

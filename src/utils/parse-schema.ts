@@ -6,13 +6,19 @@ import type {
 
 export function parseSchema(
   collection: PocketBaseCollection,
-  customSchemas: Record<string, z.ZodType> | undefined
+  customSchemas: Record<string, z.ZodType> | undefined,
+  hasSuperuserRights: boolean
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
 
   // Parse every field in the schema
-  for (const field of collection.schema) {
+  for (const field of collection.fields) {
+    // Skip hidden fields if the user does not have superuser rights
+    if (field.hidden && !hasSuperuserRights) {
+      continue;
+    }
+
     let fieldType;
 
     // Determine the field type and create the corresponding Zod type
@@ -26,11 +32,12 @@ export function parseSchema(
         fieldType = z.coerce.boolean();
         break;
       case "date":
+      case "autodate":
         // Coerce and parse the value as a date
         fieldType = z.coerce.date();
         break;
       case "select":
-        if (!field.options.values) {
+        if (!field.values) {
           throw new Error(
             `Field ${field.name} is of type "select" but has no values defined.`
           );
@@ -38,7 +45,7 @@ export function parseSchema(
 
         // Create an enum for the select values
         // @ts-expect-error - Zod complains because the values are not known at compile time and thus the array is not static.
-        const values = z.enum(field.options.values);
+        const values = z.enum(field.values);
 
         // Parse the field type based on the number of values it can have
         fieldType = parseSingleOrMultipleValues(field, values);
@@ -66,8 +73,12 @@ export function parseSchema(
         break;
     }
 
+    // Check if the field is required (onCreate autodate fields are always set)
+    const isRequired =
+      field.required || (field.type === "autodate" && field.onCreate);
+
     // If the field is not required, mark it as optional
-    if (!field.required) {
+    if (!isRequired) {
       fieldType = z.preprocess(
         (val) => val || undefined,
         z.optional(fieldType)
@@ -94,7 +105,7 @@ function parseSingleOrMultipleValues(
   type: z.ZodType
 ) {
   // If the select allows multiple values, create an array of the enum
-  if (field.options.maxSelect === undefined || field.options.maxSelect === 1) {
+  if (field.maxSelect === undefined || field.maxSelect === 1) {
     return type;
   } else {
     return z.array(type);

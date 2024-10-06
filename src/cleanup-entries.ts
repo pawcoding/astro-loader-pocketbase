@@ -6,12 +6,12 @@ import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.
  *
  * @param options Options for the loader.
  * @param context Context of the loader.
- * @param adminToken Admin token to access all resources.
+ * @param superuserToken Superuser token to access all resources.
  */
 export async function cleanupEntries(
   options: PocketBaseLoaderOptions,
   context: LoaderContext,
-  adminToken: string | undefined
+  superuserToken: string | undefined
 ): Promise<void> {
   // Build the URL for the collections endpoint
   const collectionUrl = new URL(
@@ -19,10 +19,10 @@ export async function cleanupEntries(
     options.url
   ).href;
 
-  // Create the headers for the request to append the admin token (if available)
+  // Create the headers for the request to append the superuser token (if available)
   const collectionHeaders = new Headers();
-  if (adminToken) {
-    collectionHeaders.set("Authorization", adminToken);
+  if (superuserToken) {
+    collectionHeaders.set("Authorization", superuserToken);
   }
 
   // Prepare pagination variables
@@ -42,10 +42,10 @@ export async function cleanupEntries(
 
     // If the request was not successful, print the error message and return
     if (!collectionRequest.ok) {
-      // If the collection is locked, an admin token is required
+      // If the collection is locked, an superuser token is required
       if (collectionRequest.status === 403) {
         context.logger.error(
-          `The collection ${options.collectionName} is not accessible without an admin rights. Please provide an admin email and password in the config.`
+          `(${options.collectionName}) The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
         );
         return;
       }
@@ -53,7 +53,7 @@ export async function cleanupEntries(
       const reason = await collectionRequest
         .json()
         .then((data) => data.message);
-      const errorMessage = `Fetching ids from ${options.collectionName} failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+      const errorMessage = `(${options.collectionName}) Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
       context.logger.error(errorMessage);
       return;
     }
@@ -86,7 +86,7 @@ export async function cleanupEntries(
   if (cleanedUp > 0) {
     // Log the number of cleaned up entries
     context.logger.info(
-      `Cleaned up ${cleanedUp} old entries for ${context.collection}`
+      `(${options.collectionName}) Cleaned up ${cleanedUp} old entries.`
     );
   }
 }
