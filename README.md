@@ -14,6 +14,9 @@ This package is a simple loader to load data from a PocketBase database into Ast
 > It will have a first stable release when Astro 5 is released.
 > Until then, **breaking changes can occur at any time**.
 
+> [!TIP]
+> If you want to see the PocketBase data directly in your Astro toolbar, try the [`astro-integration-pocketbase`](https://github.com/pawcoding/astro-integration-pocketbase).
+
 ## Compatibility
 
 | Loader version                                                               | Astro version | PocketBase version |
