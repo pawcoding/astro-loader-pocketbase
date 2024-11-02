@@ -16,10 +16,13 @@ export async function parseEntry(
   id?: string,
   contentFields?: string | Array<string>
 ): Promise<void> {
+  // Get the custom ID of the entry if it exists
+  const customEntryId = entry[id as keyof PocketBaseEntry] as string | undefined;
+
   // Parse the data to match the schema
   // This will throw an error if the data does not match the schema
   const data = await parseData({
-    id: entry[id as keyof PocketBaseEntry] as string || entry.id,
+    id: customEntryId || entry.id,
     data: entry
   });
 
@@ -32,7 +35,7 @@ export async function parseEntry(
   if (!contentFields) {
     // Store the entry
     store.set({
-      id: entry[id as keyof PocketBaseEntry] as string || entry.id,
+      id: customEntryId || entry.id,
       data,
       digest
     });
@@ -54,7 +57,7 @@ export async function parseEntry(
 
   // Store the entry
   store.set({
-    id: entry[id as keyof PocketBaseEntry] as string || entry.id,
+    id: customEntryId || entry.id,
     data,
     digest,
     rendered: {
