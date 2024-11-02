@@ -6,18 +6,20 @@ import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
  *
  * @param entry Entry to parse.
  * @param context Context of the loader.
+ * @param id ID to use for the entry. If not provided, the ID of the entry will be used.
  * @param contentFields Field(s) to use as content for the entry.
  *                      If multiple fields are used, they will be concatenated and wrapped in `<section>` elements.
  */
 export async function parseEntry(
   entry: PocketBaseEntry,
   { generateDigest, parseData, store }: LoaderContext,
+  id?: string,
   contentFields?: string | Array<string>
 ): Promise<void> {
   // Parse the data to match the schema
   // This will throw an error if the data does not match the schema
   const data = await parseData({
-    id: entry.id,
+    id: entry[id as keyof PocketBaseEntry] as string || entry.id,
     data: entry
   });
 
@@ -30,7 +32,7 @@ export async function parseEntry(
   if (!contentFields) {
     // Store the entry
     store.set({
-      id: entry.id,
+      id: entry[id as keyof PocketBaseEntry] as string || entry.id,
       data,
       digest
     });
@@ -52,7 +54,7 @@ export async function parseEntry(
 
   // Store the entry
   store.set({
-    id: entry.id,
+    id: entry[id as keyof PocketBaseEntry] as string || entry.id,
     data,
     digest,
     rendered: {

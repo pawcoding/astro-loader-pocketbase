@@ -116,6 +116,7 @@ This manual schema will **always override the automatic type generation**.
 | `content`        | `string \| Array<string>`     |          | The field in the collection to use as content. This can also be an array of fields.                                                 |
 | `adminEmail`     | `string`                      |          | The email of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections.    |
 | `adminPassword`  | `string`                      |          | The password of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections. |
+| `id`  | `string`                      |          | The name of entry field to be used as a unique identifier. Defaults to entry ID. |
 | `localSchema`    | `string`                      |          | The path to a local schema file. This is used for automatic type generation.                                                        |
 | `jsonSchemas`    | `Record<string, z.ZodSchema>` |          | A record of Zod schemas to use for type generation of `json` fields.                                                                |
 | `forceUpdate`    | `boolean`                     |          | If set to `true`, the loader will fetch every entry instead of only the ones modified since the last build.                         |

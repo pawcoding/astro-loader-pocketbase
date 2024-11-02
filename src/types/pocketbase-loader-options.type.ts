@@ -13,6 +13,13 @@ export interface PocketBaseLoaderOptions {
    */
   collectionName: string;
   /**
+   * ID of the collection in PocketBase.
+   * This is the name of the field that would be used as the ID for the collection.
+   * If not provided, the ID of the entry will be used.
+   * This will be used in getEntry and getEntries to fetch the entry or entries by ID.
+   */
+  id?: string;
+  /**
    * Content of the collection in PocketBase.
    * This must be the name of a field in the collection that contains the content.
    * The content will be parsed as HTML and rendered to the page.
