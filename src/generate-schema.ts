@@ -11,7 +11,7 @@ import { transformFiles } from "./utils/transform-files";
  * Basic schema for every PocketBase collection.
  */
 const BASIC_SCHEMA = {
-  id: z.string().length(15),
+  id: z.string(),
   collectionId: z.string().length(15),
   collectionName: z.string(),
   created: z.coerce.date(),
@@ -64,6 +64,13 @@ export async function generateSchema(
 
   // Parse the schema
   const fields = parseSchema(collection, options.jsonSchemas);
+
+  // Check if custom id field is present
+  if (options.id && !fields[options.id]) {
+    console.error(
+      `The id field "${options.id}" is not present in the schema of the collection "${options.collectionName}".`
+    );
+  }
 
   // Check if the content field is present
   if (typeof options.content === "string" && !fields[options.content]) {
