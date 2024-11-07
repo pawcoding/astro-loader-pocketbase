@@ -32,6 +32,13 @@ export async function parseEntry(
     }
   }
 
+  const oldEntry = store.get(id);
+  if (oldEntry && oldEntry.data.id !== entry.id) {
+    logger.warn(
+      `The entry "${entry.id}" seems to be a duplicate of "${oldEntry.data.id}". Please make sure to use unique IDs in the column "${idField}".`
+    );
+  }
+
   // Parse the data to match the schema
   // This will throw an error if the data does not match the schema
   const data = await parseData({
