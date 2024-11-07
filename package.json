@@ -1,6 +1,6 @@
 {
   "name": "astro-loader-pocketbase",
-  "version": "0.5.0-custom-id-rc.1",
+  "version": "0.5.0-custom-id-rc.2",
   "description": "A content loader for Astro that uses the PocketBase API",
   "license": "MIT",
   "author": "Luis Wolf <development@pawcode.de> (https://pawcode.de)",
