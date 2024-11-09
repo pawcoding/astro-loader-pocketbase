@@ -11,7 +11,7 @@ import { transformFiles } from "./utils/transform-files";
  * Basic schema for every PocketBase collection.
  */
 const BASIC_SCHEMA = {
-  id: z.string().length(15),
+  id: z.string(),
   collectionId: z.string().length(15),
   collectionName: z.string(),
   created: z.coerce.date(),
@@ -28,6 +28,11 @@ const VIEW_SCHEMA = {
   created: z.preprocess((val) => val || undefined, z.optional(z.coerce.date())),
   updated: z.preprocess((val) => val || undefined, z.optional(z.coerce.date()))
 };
+
+/**
+ * Types of fields that can be used as an ID.
+ */
+const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
 
 /**
  * Generate a schema for the collection based on the collection's schema in PocketBase.
@@ -64,6 +69,31 @@ export async function generateSchema(
 
   // Parse the schema
   const fields = parseSchema(collection, options.jsonSchemas);
+
+  // Check if custom id field is present
+  if (options.id) {
+    // Find the id field in the schema
+    const idField = collection.schema.find(
+      (field) => field.name === options.id
+    );
+
+    // Check if the id field is present and of a valid type
+    if (!idField) {
+      console.error(
+        `The id field "${options.id}" is not present in the schema of the collection "${options.collectionName}".`
+      );
+    } else if (!VALID_ID_TYPES.includes(idField.type)) {
+      console.error(
+        `The id field "${options.id}" for collection "${
+          options.collectionName
+        }" is of type "${
+          idField.type
+        }" which is not recommended. Please use one of the following types: ${VALID_ID_TYPES.join(
+          ", "
+        )}.`
+      );
+    }
+  }
 
   // Check if the content field is present
   if (typeof options.content === "string" && !fields[options.content]) {

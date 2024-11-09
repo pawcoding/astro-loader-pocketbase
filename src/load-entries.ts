@@ -82,7 +82,7 @@ export async function loadEntries(
 
     // Parse and store the entries
     for (const entry of response.items) {
-      await parseEntry(entry, context, options.content);
+      await parseEntry(entry, context, options.id, options.content);
 
       // Check if the entry has an `updated` column
       // This is used to enable the incremental fetching of entries

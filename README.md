@@ -62,6 +62,25 @@ While the API only returns the filenames of these images and files, the loader w
 This doesn't mean that the files are downloaded during the build process.
 But you can directly use these URLs in your Astro components to display images or link to the files.
 
+### Custom ids
+
+By default, the loader will use the `id` field of the collection as the unique identifier.
+If you want to use another field as the id, e.g. a slug of the title, you can specify this field via the `id` option.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    id: "<field-in-collection>"
+  })
+});
+```
+
+Please note that the id should be unique for every entry in the collection.
+The loader will also automatically convert the value into a slug to be easily used in URLs.
+It's recommended to use e.g. the title of the entry to be easily searchable and readable.
+**Do not use e.g. rich text fields as ids.**
+
 ## Type generation
 
 The loader can automatically generate types for your collection.
@@ -116,6 +135,7 @@ This manual schema will **always override the automatic type generation**.
 | `content`        | `string \| Array<string>`     |          | The field in the collection to use as content. This can also be an array of fields.                                                 |
 | `adminEmail`     | `string`                      |          | The email of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections.    |
 | `adminPassword`  | `string`                      |          | The password of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections. |
+| `id`             | `string`                      |          | The field in the collection to use as unique id. Defaults to `id`.                                              |
 | `localSchema`    | `string`                      |          | The path to a local schema file. This is used for automatic type generation.                                                        |
 | `jsonSchemas`    | `Record<string, z.ZodSchema>` |          | A record of Zod schemas to use for type generation of `json` fields.                                                                |
 | `forceUpdate`    | `boolean`                     |          | If set to `true`, the loader will fetch every entry instead of only the ones modified since the last build.                         |
