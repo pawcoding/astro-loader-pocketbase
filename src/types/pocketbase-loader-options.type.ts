@@ -13,6 +13,15 @@ export interface PocketBaseLoaderOptions {
    */
   collectionName: string;
   /**
+   * Field that should be used as the unique identifier for the collection.
+   * This must be the name of a field in the collection that contains unique values.
+   * If not provided, the `id` field will be used.
+   * The value of this field will be used in `getEntry` and `getEntries` to load the entry or entries.
+   *
+   * If the field is a string, it will be slugified to be used in the URL.
+   */
+  idField?: string;
+  /**
    * Name of the field(s) containing the content of an entry.
    * This must be the name of a field in the PocketBase collection that contains the content.
    * The content will be parsed as HTML and rendered to the page.

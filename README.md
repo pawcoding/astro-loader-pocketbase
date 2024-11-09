@@ -21,8 +21,8 @@ This package is a simple loader to load data from a PocketBase database into Ast
 
 | Loader version                                                               | Astro version | PocketBase version |
 | ---------------------------------------------------------------------------- | ------------- | ------------------ |
-| >= 0.5.0                                                                     | >= 5.0.0-beta | >= 0.23.0          |
-| <= [0.4.0](https://github.com/pawcoding/astro-loader-pocketbase/tree/v0.4.0) | >= 5.0.0-beta | < 0.23.0           |
+| >= 0.6.0                                                                     | >= 5.0.0-beta | >= 0.23.0          |
+| <= [0.5.0](https://github.com/pawcoding/astro-loader-pocketbase/tree/v0.5.0) | >= 5.0.0-beta | < 0.23.0           |
 
 ## Basic usage
 
@@ -95,6 +95,25 @@ While the API only returns the filenames of these images and files, the loader w
 This doesn't mean that the files are downloaded during the build process.
 But you can directly use these URLs in your Astro components to display images or link to the files.
 
+### Custom ids
+
+By default, the loader will use the `id` field of the collection as the unique identifier.
+If you want to use another field as the id, e.g. a slug of the title, you can specify this field via the `id` option.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    id: "<field-in-collection>"
+  })
+});
+```
+
+Please note that the id should be unique for every entry in the collection.
+The loader will also automatically convert the value into a slug to be easily used in URLs.
+It's recommended to use e.g. the title of the entry to be easily searchable and readable.
+**Do not use e.g. rich text fields as ids.**
+
 ## Type generation
 
 The loader can automatically generate types for your collection.
@@ -148,6 +167,7 @@ This manual schema will **always override the automatic type generation**.
 | ---------------------- | ------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
 | `url`                  | `string`                              | x        | The URL of your PocketBase instance.                                                                            |
 | `collectionName`       | `string`                              | x        | The name of the collection in your PocketBase instance.                                                         |
+| `idField`              | `string`                              |          | The field in the collection to use as unique id. Defaults to `id`.                                              |
 | `contentFields`        | `string \| Array<string>`             |          | The field in the collection to use as content. This can also be an array of fields.                             |
 | `updatedField`         | `string`                              |          | The field in the collection that stores the last update date of an entry. This is used for incremental builds.  |
 | `superuserCredentials` | `{ email: string, password: string }` |          | The email and password of the superuser of the PocketBase instance. This is used for automatic type generation. |

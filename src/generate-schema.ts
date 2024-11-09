@@ -17,6 +17,11 @@ const BASIC_SCHEMA = {
 };
 
 /**
+ * Types of fields that can be used as an ID.
+ */
+const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
+
+/**
  * Generate a schema for the collection based on the collection's schema in PocketBase.
  * By default, a basic schema is returned if no other schema is available.
  * If superuser credentials are provided, the schema is fetched from the PocketBase API.
@@ -57,6 +62,31 @@ export async function generateSchema(
     options.jsonSchemas,
     hasSuperuserRights
   );
+
+  // Check if custom id field is present
+  if (options.idField) {
+    // Find the id field in the schema
+    const idField = collection.fields.find(
+      (field) => field.name === options.idField
+    );
+
+    // Check if the id field is present and of a valid type
+    if (!idField) {
+      console.error(
+        `The id field "${options.idField}" is not present in the schema of the collection "${options.collectionName}".`
+      );
+    } else if (!VALID_ID_TYPES.includes(idField.type)) {
+      console.error(
+        `The id field "${options.idField}" for collection "${
+          options.collectionName
+        }" is of type "${
+          idField.type
+        }" which is not recommended. Please use one of the following types: ${VALID_ID_TYPES.join(
+          ", "
+        )}.`
+      );
+    }
+  }
 
   // Check if the content field is present
   if (

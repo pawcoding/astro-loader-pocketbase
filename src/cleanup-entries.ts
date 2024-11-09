@@ -74,7 +74,7 @@ export async function cleanupEntries(
   let cleanedUp = 0;
 
   // Get all ids of the entries in the store
-  const storedIds = context.store.keys();
+  const storedIds = context.store.values().map((entry) => entry.data.id) as Array<string>;
   for (const id of storedIds) {
     // If the id is not in the entries set, remove the entry from the store
     if (!entries.has(id)) {

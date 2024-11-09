@@ -81,12 +81,7 @@ export async function loadEntries(
 
     // Parse and store the entries
     for (const entry of response.items) {
-      await parseEntry(
-        entry,
-        context,
-        options.contentFields,
-        options.updatedField
-      );
+      await parseEntry(entry, context, options);
     }
 
     // Update the page and total pages
