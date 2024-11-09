@@ -1,5 +1,5 @@
 /**
- * Convert a string to a slog.
+ * Convert a string to a slug.
  *
  * Example:
  * ```ts
