@@ -1,6 +1,6 @@
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
-import { getAdminToken } from "./get-admin-token";
+import { getSuperuserToken } from "./get-superuser-token";
 
 /**
  * Fetches the schema for the specified collection from the PocketBase instance.
@@ -10,18 +10,17 @@ import { getAdminToken } from "./get-admin-token";
 export async function getRemoteSchema(
   options: PocketBaseLoaderOptions
 ): Promise<PocketBaseCollection | undefined> {
-  if (!options.adminEmail || !options.adminPassword) {
+  if (!options.superuserCredentials) {
     return undefined;
   }
 
-  // Get the admin token
-  const token = await getAdminToken(
+  // Get a superuser token
+  const token = await getSuperuserToken(
     options.url,
-    options.adminEmail,
-    options.adminPassword
+    options.superuserCredentials
   );
 
-  // If the token is invalid, return the basic schema
+  // If the token is invalid try another method
   if (!token) {
     return undefined;
   }
@@ -39,7 +38,7 @@ export async function getRemoteSchema(
     headers: schemaHeaders
   });
 
-  // If the request was not successful, return the basic schema
+  // If the request was not successful, try another method
   if (!schemaRequest.ok) {
     const reason = await schemaRequest.json().then((data) => data.message);
     const errorMessage = `Fetching schema from ${options.collectionName} failed with status code ${schemaRequest.status}.\nReason: ${reason}`;
