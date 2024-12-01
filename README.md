@@ -122,7 +122,7 @@ These types can be generated in two ways:
 
 ### Remote schema
 
-To use the lice remote schema, you need to provide superuser credentials for the PocketBase instance.
+To use the live remote schema, you need to provide superuser credentials for the PocketBase instance.
 
 ```ts
 const blog = defineCollection({
@@ -178,7 +178,7 @@ This manual schema will **always override the automatic type generation**.
 
 ### Private collections and hidden fields
 
-If you want to access a private collection or want to access hidden fields, you also need to provide superuser credentials.
+If you want to access a private collection or hidden fields, you also need to provide superuser credentials.
 Otherwise, you need to make the collection public in the PocketBase dashboard.
 
 Generally, it's not recommended to use private collections, especially when users should be able to see images or other files stored in the collection.

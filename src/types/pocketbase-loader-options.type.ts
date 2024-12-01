@@ -39,7 +39,7 @@ export interface PocketBaseLoaderOptions {
   updatedField?: string;
   /**
    * Credentials of a superuser to get full access to the PocketBase instance.
-   * This is required to get automatic type generation, to access all resources even if they are not public and fetch content of hidden fields.
+   * This is required to get automatic type generation without a local schema, to access all resources even if they are not public and to fetch content of hidden fields.
    */
   superuserCredentials?: {
     /**
