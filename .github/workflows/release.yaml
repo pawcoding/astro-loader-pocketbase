@@ -1,0 +1,49 @@
+name: 🚀 Publish new version
+# Run this on every push to master and next
+on:
+  push:
+    branches:
+      - master
+      - next
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    # Use the latest version of Ubuntu
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      # Checkout repository
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Setup Node
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+
+      # Install dependencies
+      - name: 📦 Install dependencies
+        run: |
+          npm ci
+
+      # Lint code
+      - name: 🧹 Lint code
+        run: npm run lint
+
+      # Create release
+      - name: 🚀 Create release
+        id: release
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
