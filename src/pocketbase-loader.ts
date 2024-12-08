@@ -4,7 +4,7 @@ import { cleanupEntries } from "./cleanup-entries";
 import { generateSchema } from "./generate-schema";
 import { loadEntries } from "./load-entries";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
-import { getAdminToken } from "./utils/get-admin-token";
+import { getSuperuserToken } from "./utils/get-superuser-token";
 
 /**
  * Loader for collections stored in PocketBase.
@@ -15,37 +15,37 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
   return {
     name: "pocketbase-loader",
     load: async (context: LoaderContext): Promise<void> => {
+      // Get the date of the last fetch to only update changed entries.
+      let lastModified = context.meta.get("last-modified");
+
       // Check if the version has changed to force an update
       const lastVersion = context.meta.get("version");
       if (lastVersion !== packageJson.version) {
-        context.logger.info(
-          `PocketBase loader was updated from ${lastVersion} to ${packageJson.version}. All entries will be loaded again.`
-        );
+        if (lastVersion) {
+          context.logger.info(
+            `PocketBase loader was updated from ${lastVersion} to ${packageJson.version}. All entries will be loaded again.`
+          );
+        }
 
-        options.forceUpdate = true;
-      }
-
-      // Get the date of the last fetch to only update changed entries.
-      // If `forceUpdate` is set to `true`, this will be `undefined` to fetch all entries again.
-      const lastModified = options.forceUpdate
-        ? undefined
-        : context.meta.get("last-modified");
-
-      // Get the `has-updated-column` meta to check if the collection has an updated column
-      let hasUpdatedColumn = context.meta.get("has-updated-column") === "true";
-
-      // Clear the store if we want to fetch all entries again
-      if (options.forceUpdate) {
+        // Disable incremental builds and clear the store
+        lastModified = undefined;
         context.store.clear();
       }
 
-      // Try to get an admin token to access all resources.
+      // Disable incremental builds if no updated field is provided
+      if (!options.updatedField) {
+        context.logger.info(
+          `(${options.collectionName}) No "updatedField" was provided. Incremental builds are disabled.`
+        );
+        lastModified = undefined;
+      }
+
+      // Try to get a superuser token to access all resources.
       let token: string | undefined;
-      if (options.adminEmail && options.adminPassword) {
-        token = await getAdminToken(
+      if (options.superuserCredentials) {
+        token = await getSuperuserToken(
           options.url,
-          options.adminEmail,
-          options.adminPassword,
+          options.superuserCredentials,
           context.logger
         );
       }
@@ -56,25 +56,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       }
 
       // Load the (modified) entries
-      try {
-        hasUpdatedColumn = await loadEntries(
-          options,
-          context,
-          token,
-          // Only fetch entries that have been modified since the last fetch
-          // If the collection does not have an updated column, all entries will be fetched
-          hasUpdatedColumn ? lastModified : undefined
-        );
-      } catch (error) {
-        // Set the `has-updated-column` meta to `false` if an error occurred
-        // This will force the loader to fetch all entries again in the next run
-        context.meta.set("has-updated-column", `${false}`);
-
-        throw error;
-      }
-
-      // Set the `has-updated-column` meta to `true` if the collection has an updated column
-      context.meta.set("has-updated-column", `${hasUpdatedColumn}`);
+      await loadEntries(options, context, token, lastModified);
 
       // Set the last modified date to the current date
       context.meta.set("last-modified", new Date().toISOString());

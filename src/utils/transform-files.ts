@@ -17,7 +17,7 @@ export function transformFiles(
   for (const field of fileFields) {
     const fieldName = field.name;
 
-    if (field.options.maxSelect === 1) {
+    if (field.maxSelect === 1) {
       const fileName = entry[fieldName] as string | undefined;
       // Check if a file name is present
       if (!fileName) {
