@@ -15,6 +15,7 @@ This package is a simple loader to load data from a PocketBase database into Ast
 
 | Loader | Astro | PocketBase |
 | ------ | ----- | ---------- |
+| 2.0.0  | 5.0.0 | >= 0.23.0  |
 | 1.0.0  | 5.0.0 | <= 0.22.0  |
 
 ## Basic usage
@@ -35,11 +36,29 @@ const blog = defineCollection({
 export const collections = { blog };
 ```
 
-By default, the loader will only fetch entries that have been modified since the last build.
 Remember that due to the nature [Astros Content Layer lifecycle](https://astro.build/blog/content-layer-deep-dive#content-layer-lifecycle), the loader will **only fetch entries at build time**, even when using on-demand rendering.
 If you want to update your deployed site with new entries, you need to rebuild it.
 
 <sub>When running the dev server, you can trigger a reload by using `s + enter`.</sub>
+
+## Incremental builds
+
+Since PocketBase 0.23.0, the `updated` field is not mandatory anymore.
+This means that the loader can't automatically detect when an entry has been modified.
+To enable incremental builds, you need to provide the name of a field in your collection that stores the last update date of an entry.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    updatedField: "<field-in-collection>"
+  })
+});
+```
+
+When this field is provided, the loader will only fetch entries that have been modified since the last build.
+Ideally, this field should be of type `autodate` and have the value "Update" or "Create/Update" in the PocketBase dashboard.
+This ensures that the field is automatically updated when an entry is modified.
 
 ## Entries
 
@@ -54,7 +73,7 @@ This content will then be used when calling the `render` function of [Astros con
 const blog = defineCollection({
   loader: pocketbaseLoader({
     ...options,
-    content: "<field-in-collection>"
+    contentFields: "<field-in-collection>"
   })
 });
 ```
@@ -97,14 +116,16 @@ These types can be generated in two ways:
 
 ### Remote schema
 
-To use the lice remote schema, you need to provide the email and password of an admin of the PocketBase instance.
+To use the live remote schema, you need to provide superuser credentials for the PocketBase instance.
 
 ```ts
 const blog = defineCollection({
   loader: pocketbaseLoader({
     ...options,
-    adminEmail: "<admin-email>",
-    adminPassword: "<admin-password>"
+    superuserCredentials: {
+      email: "<superuser-email>",
+      password: "<superuser-password>"
+    }
   })
 });
 ```
@@ -113,7 +134,7 @@ Under the hood, the loader will use the [PocketBase API](https://pocketbase.io/d
 
 ### Local schema
 
-If you don't want to provide the admin credentials (e.g. in a public repository), you can also provide the schema manually via a JSON file.
+If you don't want to provide superuser credentials (e.g. in a public repository), you can also provide the schema manually via a JSON file.
 
 ```ts
 const blog = defineCollection({
@@ -127,7 +148,7 @@ const blog = defineCollection({
 In PocketBase you can export the schema of the whole database to a `pb_schema.json` file.
 If you provide the path to this file, the loader will use this schema to generate the types locally.
 
-When admin credentials are provided, the loader will **always use the remote schema** since it's more up-to-date.
+When superuser credentials are provided, the loader will **always use the remote schema** since it's more up-to-date.
 
 ### Manual schema
 
@@ -136,36 +157,25 @@ This manual schema will **always override the automatic type generation**.
 
 ## All options
 
-| Option           | Type                          | Required | Description                                                                                                                         |
-| ---------------- | ----------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `url`            | `string`                      | x        | The URL of your PocketBase instance.                                                                                                |
-| `collectionName` | `string`                      | x        | The name of the collection in your PocketBase instance.                                                                             |
-| `content`        | `string \| Array<string>`     |          | The field in the collection to use as content. This can also be an array of fields.                                                 |
-| `adminEmail`     | `string`                      |          | The email of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections.    |
-| `adminPassword`  | `string`                      |          | The password of the admin of the PocketBase instance. This is used for automatic type generation and access to private collections. |
-| `id`             | `string`                      |          | The field in the collection to use as unique id. Defaults to `id`.                                                                  |
-| `localSchema`    | `string`                      |          | The path to a local schema file. This is used for automatic type generation.                                                        |
-| `jsonSchemas`    | `Record<string, z.ZodSchema>` |          | A record of Zod schemas to use for type generation of `json` fields.                                                                |
-| `forceUpdate`    | `boolean`                     |          | If set to `true`, the loader will fetch every entry instead of only the ones modified since the last build.                         |
+| Option                 | Type                                  | Required | Description                                                                                                     |
+| ---------------------- | ------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `url`                  | `string`                              | x        | The URL of your PocketBase instance.                                                                            |
+| `collectionName`       | `string`                              | x        | The name of the collection in your PocketBase instance.                                                         |
+| `idField`              | `string`                              |          | The field in the collection to use as unique id. Defaults to `id`.                                              |
+| `contentFields`        | `string \| Array<string>`             |          | The field in the collection to use as content. This can also be an array of fields.                             |
+| `updatedField`         | `string`                              |          | The field in the collection that stores the last update date of an entry. This is used for incremental builds.  |
+| `superuserCredentials` | `{ email: string, password: string }` |          | The email and password of the superuser of the PocketBase instance. This is used for automatic type generation. |
+| `localSchema`          | `string`                              |          | The path to a local schema file. This is used for automatic type generation.                                    |
+| `jsonSchemas`          | `Record<string, z.ZodSchema>`         |          | A record of Zod schemas to use for type generation of `json` fields.                                            |
 
 ## Special cases
 
-### Private collections
+### Private collections and hidden fields
 
-If you want to access a private collection, you also need to provide the admin credentials.
+If you want to access a private collection or hidden fields, you also need to provide superuser credentials.
 Otherwise, you need to make the collection public in the PocketBase dashboard.
 
 Generally, it's not recommended to use private collections, especially when users should be able to see images or other files stored in the collection.
-
-### View collections
-
-Out of the box, the loader also supports collections with the type `view`, though with some limitations.
-To enable incremental builds, the loader needs to know when an entry has been modified.
-Normal `base` collections have a `updated` field that is automatically updated when an entry is modified.
-Thus, `view` collections that don't include this field can't be incrementally built but will be fetched every time.
-
-You can also alias another field as `updated` (as long as it's a date field) in your view.
-While this is possible, it's not recommended since it can lead to outdated data not being fetched.
 
 ### JSON fields
 
