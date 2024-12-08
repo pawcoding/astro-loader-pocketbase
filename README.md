@@ -1,7 +1,6 @@
 # astro-loader-pocketbase
 
-<!-- ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pawcoding/astro-loader-pocketbase/release.yaml?style=flat-square) -->
-
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pawcoding/astro-loader-pocketbase/release.yaml?style=flat-square)
 [![NPM Version](https://img.shields.io/npm/v/astro-loader-pocketbase?style=flat-square)](https://www.npmjs.com/package/astro-loader-pocketbase)
 [![NPM Downloads](https://img.shields.io/npm/dw/astro-loader-pocketbase?style=flat-square)](https://www.npmjs.com/package/astro-loader-pocketbase)
 [![GitHub License](https://img.shields.io/github/license/pawcoding/astro-loader-pocketbase?style=flat-square)](https://github.com/pawcoding/astro-loader-pocketbase/blob/master/LICENSE)
@@ -9,20 +8,15 @@
 
 This package is a simple loader to load data from a PocketBase database into Astro using the [Astro Loader API](https://5-0-0-beta.docs.astro.build/en/reference/loader-reference/) introduced in Astro 5.
 
-> [!WARNING]
-> This package is still under development.
-> It will have a first stable release when Astro 5 is released.
-> Until then, **breaking changes can occur at any time**.
-
 > [!TIP]
 > If you want to see the PocketBase data directly in your Astro toolbar, try the [`astro-integration-pocketbase`](https://github.com/pawcoding/astro-integration-pocketbase).
 
 ## Compatibility
 
-| Loader version                                                               | Astro version | PocketBase version |
-| ---------------------------------------------------------------------------- | ------------- | ------------------ |
-| >= 0.6.0                                                                     | >= 5.0.0-beta | >= 0.23.0          |
-| <= [0.5.0](https://github.com/pawcoding/astro-loader-pocketbase/tree/v0.5.0) | >= 5.0.0-beta | < 0.23.0           |
+| Loader | Astro | PocketBase |
+| ------ | ----- | ---------- |
+| 2.0.0  | 5.0.0 | >= 0.23.0  |
+| 1.0.0  | 5.0.0 | <= 0.22.0  |
 
 ## Basic usage
 
