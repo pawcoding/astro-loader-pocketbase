@@ -1,6 +1,7 @@
 import type { LoaderContext } from "astro/loaders";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
 import { parseEntry } from "./utils/parse-entry";
+import { EventSource } from 'eventsource';
 
 /**
  * Load (modified) entries from a PocketBase collection.
@@ -32,10 +33,8 @@ export async function loadEntries(
 
   // Log the fetching of the entries
   context.logger.info(
-    `Fetching${lastModified ? " modified" : ""} data for ${
-      context.collection
-    } from ${collectionUrl}${
-      lastModified ? ` starting at ${lastModified}` : ""
+    `Fetching${lastModified ? " modified" : ""} data for ${context.collection
+    } from ${collectionUrl}${lastModified ? ` starting at ${lastModified}` : ""
     }${adminToken ? " with admin token" : ""}`
   );
 
@@ -45,15 +44,17 @@ export async function loadEntries(
   let entries = 0;
   let hasUpdatedColumn = !!lastModified;
 
+  // @ts-expect-error import.meta not being recognized
+  const isDev = import.meta.env.DEV;
+
   // Fetch all (modified) entries
   do {
     // Fetch entries from the collection
     // If `lastModified` is set, only fetch entries that have been modified since the last fetch
     const collectionRequest = await fetch(
-      `${collectionUrl}?page=${++page}&perPage=100${
-        lastModified
-          ? `&sort=-updated,id&filter=(updated>"${lastModified}")`
-          : ""
+      `${collectionUrl}?page=${++page}&perPage=100${lastModified
+        ? `&sort=-updated,id&filter=(updated>"${lastModified}")`
+        : ""
       }`,
       {
         headers: collectionHeaders
@@ -97,10 +98,67 @@ export async function loadEntries(
     entries += response.items.length;
   } while (page < totalPages);
 
+  if (isDev) {
+
+    const evtSource = new EventSource(`${options.url}/api/realtime/`);
+
+    evtSource.addEventListener("PB_CONNECT", (e) => {
+      const data = JSON.parse(e.data);
+      const client_id = data.clientId;
+      console.log('Connected to server with client_id: ' + client_id + 'and collection: ' + options.collectionName);
+      fetch(`${options.url}/api/realtime/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': adminToken || ""
+        },
+        body: JSON.stringify({
+          "clientId": client_id,
+          "subscriptions": ['apps']
+        })
+      })
+        .then(response => {
+          console.log('Status:', response.status);
+          if (response.status === 204) {
+            console.log('No content');
+            return null;
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (!data) return;
+
+          switch (data.action) {
+            case 'create':
+              console.log('Subscriptions:', data.subscriptions);
+              break;
+            case 'update':
+              console.error('Error:', data.error);
+              break;
+            case 'delete':
+              console.error('Error:', data.error);
+              break;
+            default:
+              console.log('DATA:', data);
+          }
+
+          console.log("DATA =>", data);
+        })
+        .catch(error => console.error('Error:', error.message));
+    });
+
+    // Do the data parsing here
+    evtSource.addEventListener('apps', (e) => {
+      console.log(`${options.collectionName} updated (manual): `, e.data);
+      const data = e.data;
+      console.log(data);
+    });
+  }
+
+
   // Log the number of fetched entries
   context.logger.info(
-    `Fetched ${entries}${lastModified ? " changed" : ""} entries for ${
-      context.collection
+    `Fetched ${entries}${lastModified ? " changed" : ""} entries for ${context.collection
     }`
   );
 
