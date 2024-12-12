@@ -2,6 +2,8 @@ import type { LoaderContext } from "astro/loaders";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
 import { parseEntry } from "./utils/parse-entry";
 import { EventSource } from 'eventsource';
+import { realtimeLoadEntries } from "./realtime-load-entries";
+import { cleanupEntries } from "./cleanup-entries";
 
 /**
  * Load (modified) entries from a PocketBase collection.
@@ -101,6 +103,7 @@ export async function loadEntries(
   if (isDev) {
 
     const evtSource = new EventSource(`${options.url}/api/realtime/`);
+    const watchCollections = options.watchCollections ? options.watchCollections : [options.collectionName];
 
     evtSource.addEventListener("PB_CONNECT", (e) => {
       const data = JSON.parse(e.data);
@@ -114,47 +117,41 @@ export async function loadEntries(
         },
         body: JSON.stringify({
           "clientId": client_id,
-          "subscriptions": ['apps']
+          "subscriptions": watchCollections
         })
       })
         .then(response => {
-          console.log('Status:', response.status);
           if (response.status === 204) {
-            console.log('No content');
             return null;
           }
           return response.json();
         })
-        .then(data => {
-          if (!data) return;
-
-          switch (data.action) {
-            case 'create':
-              console.log('Subscriptions:', data.subscriptions);
-              break;
-            case 'update':
-              console.error('Error:', data.error);
-              break;
-            case 'delete':
-              console.error('Error:', data.error);
-              break;
-            default:
-              console.log('DATA:', data);
-          }
-
-          console.log("DATA =>", data);
-        })
         .catch(error => console.error('Error:', error.message));
     });
 
-    // Do the data parsing here
-    evtSource.addEventListener('apps', (e) => {
-      console.log(`${options.collectionName} updated (manual): `, e.data);
-      const data = e.data;
-      console.log(data);
-    });
-  }
+    watchCollections.forEach((collection: string) => {
+      evtSource.addEventListener(collection, (e) => {
+        try {
+          const eventData = JSON.parse(e.data);
 
+          if (eventData.action === 'delete') {
+            if (context.store.keys().length > 0) {
+              cleanupEntries(options, context, adminToken).catch((error) => {
+                context.logger.error(`Cleanup failed: ${error.message}`);
+              });
+            }
+          } else {
+            realtimeLoadEntries(options, context, eventData.action, hasUpdatedColumn, adminToken).catch((error) => {
+              context.logger.error(`Realtime loading failed: ${error.message}`);
+            });
+          }
+        } catch (error) {
+          console.error('Error handling event:', (error as Error).message);
+        }
+      });
+    });
+
+  }
 
   // Log the number of fetched entries
   context.logger.info(

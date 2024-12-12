@@ -75,9 +75,10 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
 
       // Set the `has-updated-column` meta to `true` if the collection has an updated column
       context.meta.set("has-updated-column", `${hasUpdatedColumn}`);
-
       // Set the last modified date to the current date
-      context.meta.set("last-modified", new Date().toISOString());
+      context.meta.set("last-modified", new Date().toISOString().replace('T', ' '));
+      context.meta.set("realtime-last-modified", new Date().toISOString().replace('T', ' '));
+
 
       context.meta.set("version", packageJson.version);
     },
