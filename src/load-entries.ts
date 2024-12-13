@@ -108,7 +108,7 @@ export async function loadEntries(
     evtSource.addEventListener("PB_CONNECT", (e) => {
       const data = JSON.parse(e.data);
       const client_id = data.clientId;
-      console.log('Connected to server with client_id: ' + client_id + 'and collection: ' + options.collectionName);
+
       fetch(`${options.url}/api/realtime/`, {
         method: 'POST',
         headers: {
