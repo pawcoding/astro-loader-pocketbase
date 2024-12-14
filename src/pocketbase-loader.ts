@@ -18,9 +18,11 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       // Check if the version has changed to force an update
       const lastVersion = context.meta.get("version");
       if (lastVersion !== packageJson.version) {
-        context.logger.info(
-          `PocketBase loader was updated from ${lastVersion} to ${packageJson.version}. All entries will be loaded again.`
-        );
+        if (lastVersion) {
+          context.logger.info(
+            `PocketBase loader was updated from ${lastVersion} to ${packageJson.version}. All entries will be loaded again.`
+          );
+        }
 
         options.forceUpdate = true;
       }
