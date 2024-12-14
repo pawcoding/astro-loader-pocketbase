@@ -77,7 +77,10 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       context.meta.set("has-updated-column", `${hasUpdatedColumn}`);
 
       // Set the last modified date to the current date
-      context.meta.set("last-modified", new Date().toISOString());
+      context.meta.set(
+        "last-modified",
+        new Date().toISOString().replace("T", " ")
+      );
 
       context.meta.set("version", packageJson.version);
     },
