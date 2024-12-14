@@ -59,7 +59,10 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       await loadEntries(options, context, token, lastModified);
 
       // Set the last modified date to the current date
-      context.meta.set("last-modified", new Date().toISOString());
+      context.meta.set(
+        "last-modified",
+        new Date().toISOString().replace("T", " ")
+      );
 
       context.meta.set("version", packageJson.version);
     },
