@@ -12,7 +12,7 @@ import { transformFiles } from "./utils/transform-files";
  */
 const BASIC_SCHEMA = {
   id: z.string(),
-  collectionId: z.string().length(15),
+  collectionId: z.string(),
   collectionName: z.string()
 };
 
