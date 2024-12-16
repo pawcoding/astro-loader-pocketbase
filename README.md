@@ -6,7 +6,7 @@
 [![GitHub License](https://img.shields.io/github/license/pawcoding/astro-loader-pocketbase?style=flat-square)](https://github.com/pawcoding/astro-loader-pocketbase/blob/master/LICENSE)
 [![Discord](https://img.shields.io/discord/484669557747875862?style=flat-square&label=Discord)](https://discord.gg/GzgTh4hxrx)
 
-This package is a simple loader to load data from a PocketBase database into Astro using the [Astro Loader API](https://5-0-0-beta.docs.astro.build/en/reference/loader-reference/) introduced in Astro 5.
+This package is a simple loader to load data from a PocketBase database into Astro using the [Astro Loader API](https://docs.astro.build/en/reference/content-loader-reference/) introduced in Astro 5.
 
 > [!TIP]
 > If you want to see the PocketBase data directly in your Astro toolbar, try the [`astro-integration-pocketbase`](https://github.com/pawcoding/astro-integration-pocketbase).
@@ -67,7 +67,7 @@ After generating the schema (see below), the loader will automatically parse the
 ### HTML content
 
 You can also specify a field or an array of fields to use as content.
-This content will then be used when calling the `render` function of [Astros content collections](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/#rendering-body-content).
+This content will then be used when calling the `render` function of [Astros content collections](https://docs.astro.build/en/guides/content-collections/#rendering-body-content).
 
 ```ts
 const blog = defineCollection({
@@ -152,7 +152,7 @@ When superuser credentials are provided, the loader will **always use the remote
 
 ### Manual schema
 
-If you don't want to use the automatic type generation, you can also [provide your own schema manually](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/#defining-the-collection-schema).
+If you don't want to use the automatic type generation, you can also [provide your own schema manually](https://docs.astro.build/en/guides/content-collections/#defining-the-collection-schema).
 This manual schema will **always override the automatic type generation**.
 
 ## All options
