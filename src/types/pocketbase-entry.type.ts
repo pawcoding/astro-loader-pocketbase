@@ -14,14 +14,6 @@ interface PocketBaseBaseEntry {
    * Name of the collection the entry belongs to.
    */
   collectionName: string;
-  /**
-   * Date the entry was created.
-   */
-  created?: string | undefined;
-  /**
-   * Date the entry was last updated.
-   */
-  updated?: string | undefined;
 }
 
 /**
