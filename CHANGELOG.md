@@ -1,3 +1,21 @@
+# [2.0.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v1.0.2...v2.0.0) (2024-12-24)
+
+
+### Features
+
+* add support for PocketBase 0.23.0 ([a98f1b4](https://github.com/pawcoding/astro-loader-pocketbase/commit/a98f1b41d07bd66aca244f1ed2f473027d011be2))
+
+
+### BREAKING CHANGES
+
+* This also removes support for PocketBase 0.22.
+There are a lot of breaking changes in this new version of PocketBase,
+e.g. new endpoint for login, new collection schema format, etc.
+
+Since this version already brings a lot of changes, I used this chance
+to refactor some of the internals and configuration options. Please
+refer to the new README for more details.
+
 ## [1.0.2](https://github.com/pawcoding/astro-loader-pocketbase/compare/v1.0.1...v1.0.2) (2024-12-16)
 
 ## [1.0.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v1.0.0...v1.0.1) (2024-12-14)
