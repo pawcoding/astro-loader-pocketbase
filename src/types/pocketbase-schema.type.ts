@@ -3,6 +3,11 @@
  */
 export interface PocketBaseSchemaEntry {
   /**
+   * Flag to indicate if the field is hidden.
+   * Hidden fields are not returned in the API response.
+   */
+  hidden: boolean;
+  /**
    * Name of the field.
    */
   name: string;
@@ -15,20 +20,25 @@ export interface PocketBaseSchemaEntry {
    */
   required: boolean;
   /**
-   * Options for the field.
+   * Values for a select field.
+   * This is only present if the field type is "select".
    */
-  options: {
-    /**
-     * Values for a select field.
-     * This is only present if the field type is "select".
-     */
-    values?: Array<string>;
-    /**
-     * Maximum number of values for a select field.
-     * This is only present on "select", "relation", and "file" fields.
-     */
-    maxSelect?: number;
-  };
+  values?: Array<string>;
+  /**
+   * Maximum number of values for a select field.
+   * This is only present on "select", "relation", and "file" fields.
+   */
+  maxSelect?: number;
+  /**
+   * Whether the field is filled when the entry is created.
+   * This is only present on "autodate" fields.
+   */
+  onCreate?: boolean;
+  /**
+   * Whether the field is updated when the entry is updated.
+   * This is only present on "autodate" fields.
+   */
+  onUpdate?: boolean;
 }
 
 /**
@@ -42,9 +52,9 @@ export interface PocketBaseCollection {
   /**
    * Type of the collection.
    */
-  type: 'base' | 'view' | 'auth';
+  type: "base" | "view" | "auth";
   /**
    * Schema of the collection.
    */
-  schema: Array<PocketBaseSchemaEntry>;
+  fields: Array<PocketBaseSchemaEntry>;
 }

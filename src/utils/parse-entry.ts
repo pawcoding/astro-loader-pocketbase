@@ -1,5 +1,6 @@
 import type { LoaderContext } from "astro/loaders";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
+import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { slugify } from "./slugify";
 
 /**
@@ -15,8 +16,7 @@ import { slugify } from "./slugify";
 export async function parseEntry(
   entry: PocketBaseEntry,
   { generateDigest, parseData, store, logger }: LoaderContext,
-  idField?: string,
-  contentFields?: string | Array<string>
+  { idField, contentFields, updatedField }: PocketBaseLoaderOptions
 ): Promise<void> {
   let id = entry.id;
   if (idField) {
@@ -46,11 +46,15 @@ export async function parseEntry(
     data: entry
   });
 
+  // Get the updated date of the entry
+  let updated: string | undefined;
+  if (updatedField) {
+    updated = `${entry[updatedField]}`;
+  }
+
   // Generate a digest for the entry
-  // Normal collections use the updated date that is always updated when the entry is updated.
-  // If the entry was never updated, the created date can be used as a fallback.
-  // View collections don't necessarily publish the updated date, so the whole entry is used for the digest.
-  const digest = generateDigest(entry.updated ?? entry.created ?? entry);
+  // If no updated date is available, the digest will be generated from the whole entry
+  const digest = generateDigest(updated ?? entry);
 
   if (!contentFields) {
     // Store the entry
