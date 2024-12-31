@@ -92,13 +92,13 @@ But you can directly use these URLs in your Astro components to display images o
 ### Custom ids
 
 By default, the loader will use the `id` field of the collection as the unique identifier.
-If you want to use another field as the id, e.g. a slug of the title, you can specify this field via the `id` option.
+If you want to use another field as the id, e.g. a slug of the title, you can specify this field via the `idField` option.
 
 ```ts
 const blog = defineCollection({
   loader: pocketbaseLoader({
     ...options,
-    id: "<field-in-collection>"
+    idField: "<field-in-collection>"
   })
 });
 ```
