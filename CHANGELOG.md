@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.0.2...v2.1.0) (2025-01-11)
+
+
+### Features
+
+* **refresh:** check refresh context for mentioned collection ([3bff3e5](https://github.com/pawcoding/astro-loader-pocketbase/commit/3bff3e509b00e0ade1f4389bf33ceae2adf45f43)), closes [#23](https://github.com/pawcoding/astro-loader-pocketbase/issues/23)
+
 ## [2.0.2](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.0.1...v2.0.2) (2025-01-11)
 
 ## [2.0.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.0.0...v2.0.1) (2024-12-31)
