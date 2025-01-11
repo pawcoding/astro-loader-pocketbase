@@ -15,6 +15,16 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
   return {
     name: "pocketbase-loader",
     load: async (context: LoaderContext): Promise<void> => {
+      if (
+        context.refreshContextData?.source === "astro-integration-pocketbase" &&
+        context.refreshContextData.collection &&
+        context.refreshContextData.collection !== options.collectionName
+      ) {
+        // Skip the refresh if the reload was triggered by the `astro-integration-pocketbase`
+        // and the collection name does not match the current collection.
+        return;
+      }
+
       // Get the date of the last fetch to only update changed entries.
       let lastModified = context.meta.get("last-modified");
 
