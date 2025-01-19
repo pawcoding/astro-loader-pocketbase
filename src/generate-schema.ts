@@ -60,7 +60,8 @@ export async function generateSchema(
   const fields = parseSchema(
     collection,
     options.jsonSchemas,
-    hasSuperuserRights
+    hasSuperuserRights,
+    options.improveTypes ?? false
   );
 
   // Check if custom id field is present
