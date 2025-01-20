@@ -22,14 +22,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
-    "@stylistic/eslint-plugin": "^2.12.1",
-    "@types/node": "^22.10.5",
-    "astro": "^5.1.5",
+    "@stylistic/eslint-plugin": "^2.13.0",
+    "@types/node": "^22.10.7",
+    "astro": "^5.1.8",
     "eslint": "^9.18.0",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.19.1"
+    "typescript-eslint": "^8.21.0"
   },
   "keywords": [
     "astro",
