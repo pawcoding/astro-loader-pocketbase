@@ -26,11 +26,11 @@ export function parseSchema(
     switch (field.type) {
       case "number":
         // Coerce the value to a number
-        fieldType = z.coerce.number();
+        fieldType = z.number();
         break;
       case "bool":
         // Coerce the value to a boolean
-        fieldType = z.coerce.boolean();
+        fieldType = z.boolean();
         break;
       case "date":
       case "autodate":
@@ -81,19 +81,6 @@ export function parseSchema(
       (field.type === "autodate" && field.onCreate) ||
       // Improve number and boolean types by providing default values
       (improveTypes && (field.type === "number" || field.type === "bool"));
-
-    if (improveTypes) {
-      switch (field.type) {
-        case "number":
-          // If the field is a number, provide a default value of 0
-          fieldType = fieldType.default(0);
-          break;
-        case "bool":
-          // If the field is a boolean, provide a default value of false
-          fieldType = fieldType.default(false);
-          break;
-      }
-    }
 
     // If the field is not required, mark it as optional
     if (!isRequired) {

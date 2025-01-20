@@ -108,9 +108,9 @@ The loader will also automatically convert the value into a slug to be easily us
 It's recommended to use e.g. the title of the entry to be easily searchable and readable.
 **Do not use e.g. rich text fields as ids.**
 
-### Improved type safety
+### Improved types
 
-By default PocketBase reports `number` and `boolean` fields as not required.
+By default PocketBase reports `number` and `boolean` fields as not required, even though the API will always return at least `0` and `false` respectively.
 This means that the loader will add `undefined` to the type of these fields.
 If you want to enforce that these fields are always present, you can set the `improveTypes` option to `true`.
 
@@ -123,8 +123,7 @@ const blog = defineCollection({
 });
 ```
 
-This will remove `undefined` from the type of these fields and provide default values with `0` and `false` respectively.
-PocketBase will also use these default values when creating new entries in the dashboard.
+This will remove `undefined` from the type of these fields and mark them as required.
 
 ## Type generation
 

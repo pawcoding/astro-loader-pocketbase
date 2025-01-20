@@ -67,11 +67,10 @@ export interface PocketBaseLoaderOptions {
   jsonSchemas?: Record<string, z.ZodSchema>;
   /**
    * Whether to improve the types of the generated schema.
-   * This includes providing `0` or `false` as default values for number and boolean fields, respectively.
-   * With this option enabled, the schema will not generate `undefined` as possible value for number and boolean fields.
+   * With this option enabled, the schema will not include `undefined` as possible value for number and boolean fields and mark them as required.
    *
    * Why do we need this option?
-   * PocketBase does use these values as the default values, even though it's not specified in the schema.
+   * The PocketBase API does always return at least `0` or `false` as the default values, even though the fields are not marked as required in the schema.
    */
   improveTypes?: boolean;
 }
