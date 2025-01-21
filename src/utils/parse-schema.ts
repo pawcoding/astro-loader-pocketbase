@@ -7,7 +7,8 @@ import type {
 export function parseSchema(
   collection: PocketBaseCollection,
   customSchemas: Record<string, z.ZodType> | undefined,
-  hasSuperuserRights: boolean
+  hasSuperuserRights: boolean,
+  improveTypes: boolean
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
@@ -24,12 +25,10 @@ export function parseSchema(
     // Determine the field type and create the corresponding Zod type
     switch (field.type) {
       case "number":
-        // Coerce the value to a number
-        fieldType = z.coerce.number();
+        fieldType = z.number();
         break;
       case "bool":
-        // Coerce the value to a boolean
-        fieldType = z.coerce.boolean();
+        fieldType = z.boolean();
         break;
       case "date":
       case "autodate":
@@ -73,9 +72,13 @@ export function parseSchema(
         break;
     }
 
-    // Check if the field is required (onCreate autodate fields are always set)
     const isRequired =
-      field.required || (field.type === "autodate" && field.onCreate);
+      // Check if the field is required
+      field.required ||
+      // `onCreate autodate` fields are always set
+      (field.type === "autodate" && field.onCreate) ||
+      // Improve number and boolean types by providing default values
+      (improveTypes && (field.type === "number" || field.type === "bool"));
 
     // If the field is not required, mark it as optional
     if (!isRequired) {

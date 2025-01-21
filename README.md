@@ -108,6 +108,23 @@ The loader will also automatically convert the value into a slug to be easily us
 It's recommended to use e.g. the title of the entry to be easily searchable and readable.
 **Do not use e.g. rich text fields as ids.**
 
+### Improved types
+
+By default PocketBase reports `number` and `boolean` fields as not required, even though the API will always return `0` and `false` respectively if no value is set.
+This means that the loader will add `undefined` to the type of these fields.
+If you want to enforce that these fields are always present, you can set the `improveTypes` option to `true`.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    improveTypes: true
+  })
+});
+```
+
+This will remove `undefined` from the type of these fields and mark them as required.
+
 ## Type generation
 
 The loader can automatically generate types for your collection.
@@ -167,6 +184,7 @@ This manual schema will **always override the automatic type generation**.
 | `superuserCredentials` | `{ email: string, password: string }` |          | The email and password of the superuser of the PocketBase instance. This is used for automatic type generation. |
 | `localSchema`          | `string`                              |          | The path to a local schema file. This is used for automatic type generation.                                    |
 | `jsonSchemas`          | `Record<string, z.ZodSchema>`         |          | A record of Zod schemas to use for type generation of `json` fields.                                            |
+| `improveTypes`         | `boolean`                             |          | Whether to improve the types of `number` and `boolean` fields, removing `undefined` from them.                  |
 
 ## Special cases
 

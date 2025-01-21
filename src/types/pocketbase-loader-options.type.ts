@@ -65,4 +65,12 @@ export interface PocketBaseLoaderOptions {
    * Note that this will only be used for fields of type `json`.
    */
   jsonSchemas?: Record<string, z.ZodSchema>;
+  /**
+   * Whether to improve the types of the generated schema.
+   * With this option enabled, the schema will not include `undefined` as possible value for number and boolean fields and mark them as required.
+   *
+   * Why do we need this option?
+   * The PocketBase API does always return at least `0` or `false` as the default values, even though the fields are not marked as required in the schema.
+   */
+  improveTypes?: boolean;
 }
