@@ -1,3 +1,15 @@
+# [2.2.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.1.0...v2.2.0) (2025-01-21)
+
+
+### Bug Fixes
+
+* **schema:** remove default values from improved types ([82b6b70](https://github.com/pawcoding/astro-loader-pocketbase/commit/82b6b70273169bf74f37bcbdd3377c63486f971e))
+
+
+### Features
+
+* **schema:** add option to improve types ([d8c9780](https://github.com/pawcoding/astro-loader-pocketbase/commit/d8c9780b202cc2a55e651fb90f26a379be5bb7b5))
+
 # [2.1.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.0.2...v2.1.0) (2025-01-11)
 
 
