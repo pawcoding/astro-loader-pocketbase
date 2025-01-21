@@ -25,11 +25,9 @@ export function parseSchema(
     // Determine the field type and create the corresponding Zod type
     switch (field.type) {
       case "number":
-        // Coerce the value to a number
         fieldType = z.number();
         break;
       case "bool":
-        // Coerce the value to a boolean
         fieldType = z.boolean();
         break;
       case "date":

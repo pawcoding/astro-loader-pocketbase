@@ -110,7 +110,7 @@ It's recommended to use e.g. the title of the entry to be easily searchable and 
 
 ### Improved types
 
-By default PocketBase reports `number` and `boolean` fields as not required, even though the API will always return at least `0` and `false` respectively.
+By default PocketBase reports `number` and `boolean` fields as not required, even though the API will always return `0` and `false` respectively if no value is set.
 This means that the loader will add `undefined` to the type of these fields.
 If you want to enforce that these fields are always present, you can set the `improveTypes` option to `true`.
 
