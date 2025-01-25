@@ -45,7 +45,7 @@ export async function cleanupEntries(
       // If the collection is locked, an superuser token is required
       if (collectionRequest.status === 403) {
         context.logger.error(
-          `(${options.collectionName}) The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
+          `The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
         );
         return;
       }
@@ -53,7 +53,7 @@ export async function cleanupEntries(
       const reason = await collectionRequest
         .json()
         .then((data) => data.message);
-      const errorMessage = `(${options.collectionName}) Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+      const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
       context.logger.error(errorMessage);
       return;
     }
@@ -74,7 +74,9 @@ export async function cleanupEntries(
   let cleanedUp = 0;
 
   // Get all ids of the entries in the store
-  const storedIds = context.store.values().map((entry) => entry.data.id) as Array<string>;
+  const storedIds = context.store
+    .values()
+    .map((entry) => entry.data.id) as Array<string>;
   for (const id of storedIds) {
     // If the id is not in the entries set, remove the entry from the store
     if (!entries.has(id)) {
@@ -85,8 +87,6 @@ export async function cleanupEntries(
 
   if (cleanedUp > 0) {
     // Log the number of cleaned up entries
-    context.logger.info(
-      `(${options.collectionName}) Cleaned up ${cleanedUp} old entries.`
-    );
+    context.logger.info(`Cleaned up ${cleanedUp} old entries.`);
   }
 }

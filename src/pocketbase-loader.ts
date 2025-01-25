@@ -16,6 +16,8 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
   return {
     name: "pocketbase-loader",
     load: async (context: LoaderContext): Promise<void> => {
+      context.logger.label = `pocketbase-loader:${options.collectionName}`;
+
       // Check if the collection should be refreshed.
       const refresh = shouldRefresh(
         context.refreshContextData,
@@ -45,7 +47,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       // Disable incremental builds if no updated field is provided
       if (!options.updatedField) {
         context.logger.info(
-          `(${options.collectionName}) No "updatedField" was provided. Incremental builds are disabled.`
+          `No "updatedField" was provided. Incremental builds are disabled.`
         );
         lastModified = undefined;
       }
