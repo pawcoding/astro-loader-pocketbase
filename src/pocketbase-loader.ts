@@ -2,6 +2,7 @@ import type { Loader, LoaderContext } from "astro/loaders";
 import packageJson from "./../package.json";
 import { cleanupEntries } from "./cleanup-entries";
 import { generateSchema } from "./generate-schema";
+import { handleRealtimeUpdates } from "./handle-realtime-updates";
 import { loadEntries } from "./load-entries";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
 import { getSuperuserToken } from "./utils/get-superuser-token";
@@ -24,6 +25,12 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
         options.collectionName
       );
       if (!refresh) {
+        return;
+      }
+
+      // Handle realtime updates
+      const handled = await handleRealtimeUpdates(context, options);
+      if (handled) {
         return;
       }
 
