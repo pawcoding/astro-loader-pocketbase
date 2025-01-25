@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.2.0...v2.2.1) (2025-01-25)
+
+
+### Bug Fixes
+
+* **refresh:** handle array in refresh context data ([5a51b97](https://github.com/pawcoding/astro-loader-pocketbase/commit/5a51b97a9fbf1d46b62ec5a41a9a8418a3d04a13)), closes [pawcoding/astro-integration-pocketbase#10](https://github.com/pawcoding/astro-integration-pocketbase/issues/10)
+
 # [2.2.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.1.0...v2.2.0) (2025-01-21)
 
 
