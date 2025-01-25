@@ -5,6 +5,7 @@ import { generateSchema } from "./generate-schema";
 import { loadEntries } from "./load-entries";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
 import { getSuperuserToken } from "./utils/get-superuser-token";
+import { shouldRefresh } from "./utils/should-refresh";
 
 /**
  * Loader for collections stored in PocketBase.
@@ -15,13 +16,12 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
   return {
     name: "pocketbase-loader",
     load: async (context: LoaderContext): Promise<void> => {
-      if (
-        context.refreshContextData?.source === "astro-integration-pocketbase" &&
-        context.refreshContextData.collection &&
-        context.refreshContextData.collection !== options.collectionName
-      ) {
-        // Skip the refresh if the reload was triggered by the `astro-integration-pocketbase`
-        // and the collection name does not match the current collection.
+      // Check if the collection should be refreshed.
+      const refresh = shouldRefresh(
+        context.refreshContextData,
+        options.collectionName
+      );
+      if (!refresh) {
         return;
       }
 
