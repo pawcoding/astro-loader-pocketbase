@@ -4,8 +4,12 @@ export function createLoaderOptions(
   options?: Partial<PocketBaseLoaderOptions>
 ): PocketBaseLoaderOptions {
   return {
-    url: "https://example.com",
+    url: "http://127.0.0.1:8090",
     collectionName: "test",
+    superuserCredentials: {
+      email: "test@pawcode.de",
+      password: "test1234"
+    },
     ...options
   };
 }

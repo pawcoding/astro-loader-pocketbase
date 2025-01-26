@@ -6,6 +6,7 @@ import tseslint from "typescript-eslint";
 
 const config = tseslint.config({
   files: ["**/*.{js,mjs,cjs,ts}"],
+  ignores: [".pocketbase/**/*"],
   languageOptions: {
     globals: { ...globals.browser, ...globals.node }
   },

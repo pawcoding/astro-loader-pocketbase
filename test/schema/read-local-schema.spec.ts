@@ -34,7 +34,6 @@ describe("readLocalSchema", () => {
   test("should return undefined if the collection is not found", async () => {
     vi.spyOn(path, "join").mockReturnValue(localSchemaPath);
     vi.spyOn(fs, "readFile").mockResolvedValue(JSON.stringify(mockSchema));
-    vi.spyOn(console, "error").mockImplementation(() => {});
 
     const result = await readLocalSchema(localSchemaPath, "nonexistent");
     expect(result).toBeUndefined();
@@ -43,7 +42,6 @@ describe("readLocalSchema", () => {
   test("should return undefined if the schema file is invalid", async () => {
     vi.spyOn(path, "join").mockReturnValue(localSchemaPath);
     vi.spyOn(fs, "readFile").mockResolvedValue("invalid json");
-    vi.spyOn(console, "error").mockImplementation(() => {});
 
     const result = await readLocalSchema(localSchemaPath, collectionName);
     expect(result).toBeUndefined();
@@ -53,8 +51,6 @@ describe("readLocalSchema", () => {
     vi.spyOn(path, "join").mockReturnValue(localSchemaPath);
     vi.spyOn(fs, "readFile").mockResolvedValue(JSON.stringify({}));
 
-    vi.spyOn(console, "error").mockImplementation(() => {});
-
     const result = await readLocalSchema(localSchemaPath, collectionName);
     expect(result).toBeUndefined();
   });
@@ -62,7 +58,6 @@ describe("readLocalSchema", () => {
   test("should handle file read errors gracefully", async () => {
     vi.spyOn(path, "join").mockReturnValue(localSchemaPath);
     vi.spyOn(fs, "readFile").mockRejectedValue(new Error("File read error"));
-    vi.spyOn(console, "error").mockImplementation(() => {});
 
     const result = await readLocalSchema(localSchemaPath, collectionName);
     expect(result).toBeUndefined();
