@@ -56,7 +56,7 @@ export function transformFiles(
  * @param entryId ID of the entry.
  * @param file Name of the file.
  */
-function transformFileUrl(
+export function transformFileUrl(
   base: string,
   collectionName: string,
   entryId: string,

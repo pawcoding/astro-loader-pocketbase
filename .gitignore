@@ -1,6 +1,7 @@
 # build output
 dist/
 .eslintcache
+coverage/
 # generated types
 .astro/
 
