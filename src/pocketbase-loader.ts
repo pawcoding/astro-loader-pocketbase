@@ -1,4 +1,5 @@
 import type { Loader, LoaderContext } from "astro/loaders";
+import type { ZodSchema } from "astro/zod";
 import packageJson from "./../package.json";
 import { cleanupEntries } from "./cleanup-entries";
 import { generateSchema } from "./generate-schema";
@@ -85,7 +86,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
 
       context.meta.set("version", packageJson.version);
     },
-    schema: async () => {
+    schema: async (): Promise<ZodSchema> => {
       // Generate the schema for the collection according to the API
       return await generateSchema(options);
     }

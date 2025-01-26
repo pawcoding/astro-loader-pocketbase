@@ -106,7 +106,7 @@ export function parseSchema(
 function parseSingleOrMultipleValues(
   field: PocketBaseSchemaEntry,
   type: z.ZodType
-) {
+): z.ZodType {
   // If the select allows multiple values, create an array of the enum
   if (field.maxSelect === undefined || field.maxSelect === 1) {
     return type;
