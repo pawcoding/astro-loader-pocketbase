@@ -1,11 +1,11 @@
 import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
-import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
-import type { PocketBaseCollection } from "./types/pocketbase-schema.type";
-import { getRemoteSchema } from "./utils/get-remote-schema";
-import { parseSchema } from "./utils/parse-schema";
-import { readLocalSchema } from "./utils/read-local-schema";
-import { transformFiles } from "./utils/transform-files";
+import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import { getRemoteSchema } from "./get-remote-schema";
+import { parseSchema } from "./parse-schema";
+import { readLocalSchema } from "./read-local-schema";
+import { transformFiles } from "./transform-files";
 
 /**
  * Basic schema for every PocketBase collection.
