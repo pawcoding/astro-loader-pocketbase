@@ -40,6 +40,10 @@ jobs:
       - name: 🧹 Lint code
         run: npm run lint
 
+      # Check format
+      - name: 🧹 Check format
+        run: npm run format:check
+
       # Create release
       - name: 🚀 Create release
         id: release
