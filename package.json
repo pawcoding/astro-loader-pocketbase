@@ -2,9 +2,16 @@
   "name": "astro-loader-pocketbase",
   "version": "2.3.1-next.1",
   "description": "A content loader for Astro that uses the PocketBase API",
+  "keywords": [
+    "astro",
+    "astro-content-loader",
+    "astro-loader",
+    "pocketbase",
+    "withastro"
+  ],
+  "homepage": "https://github.com/pawcoding/astro-loader-pocketbase",
   "license": "MIT",
   "author": "Luis Wolf <development@pawcode.de> (https://pawcode.de)",
-  "homepage": "https://github.com/pawcoding/astro-loader-pocketbase",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
@@ -13,22 +20,19 @@
     "src"
   ],
   "scripts": {
-    "lint": "npx eslint --cache",
-    "lint:fix": "npx eslint --fix --cache",
     "format": "npx prettier . --write --cache",
     "format:check": "npx prettier . --check --cache",
+    "lint": "npx eslint --cache",
+    "lint:fix": "npx eslint --fix --cache",
     "prepare": "husky",
     "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test:e2e": "vitest run $(find test -name '*.e2e-spec.ts')",
+    "test:e2e:pocketbase": "npm run test:e2e:setup && ./.pocketbase/pocketbase serve",
+    "test:e2e:setup": "./scripts/setup-pocketbase.sh",
+    "test:e2e:watch": "vitest watch $(find test -name '*.e2e-spec.ts')",
     "test:unit": "vitest run $(find test -name '*.spec.ts')",
     "test:unit:watch": "vitest watch $(find test -name '*.spec.ts')",
-    "test:e2e": "vitest run $(find test -name '*.e2e-spec.ts')",
-    "test:e2e:watch": "vitest watch $(find test -name '*.e2e-spec.ts')",
-    "test:e2e:setup": "./scripts/setup-pocketbase.sh",
-    "test:e2e:pocketbase": "npm run test:e2e:setup && ./.pocketbase/pocketbase serve"
-  },
-  "peerDependencies": {
-    "astro": "^5.0.0"
+    "test:watch": "vitest watch"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
@@ -42,16 +46,14 @@
     "eslint-config-prettier": "^10.0.1",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
-    "prettier": "3.4.2",
+    "prettier": "^3.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "prettier-plugin-packagejson": "^2.5.8",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.22.0",
     "vitest": "^3.0.4"
   },
-  "keywords": [
-    "astro",
-    "astro-content-loader",
-    "astro-loader",
-    "pocketbase",
-    "withastro"
-  ]
+  "peerDependencies": {
+    "astro": "^5.0.0"
+  }
 }
