@@ -1,6 +1,7 @@
 # build output
 dist/
 .eslintcache
+CHANGELOG.md
 # generated types
 .astro/
 

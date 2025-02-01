@@ -1,5 +1,6 @@
 import eslint from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
+import prettier from "eslint-config-prettier";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -10,6 +11,7 @@ const config = tseslint.config({
   },
   extends: [
     eslint.configs.recommended,
+    prettier,
     ...tseslint.configs.recommended,
     ...tseslint.configs.stylistic
   ],

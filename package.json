@@ -13,7 +13,10 @@
     "src"
   ],
   "scripts": {
-    "lint": "npx eslint",
+    "lint": "npx eslint --cache",
+    "lint:fix": "npx eslint --fix --cache",
+    "format": "npx prettier . --write --cache",
+    "format:check": "npx prettier . --check --cache",
     "prepare": "husky"
   },
   "peerDependencies": {
@@ -27,8 +30,10 @@
     "@types/node": "^22.13.0",
     "astro": "^5.2.3",
     "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
+    "prettier": "3.4.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.22.0"
   },
