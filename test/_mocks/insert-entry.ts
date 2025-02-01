@@ -1,16 +1,33 @@
 import { assert } from "vitest";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
 import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import { sendBatchRequest } from "./batch-requests";
 
 export async function insertEntries(
   data: Array<Record<string, unknown>>,
   options: PocketBaseLoaderOptions,
   superuserToken: string
 ): Promise<Array<PocketBaseEntry>> {
+  const requests = data.map((entry) => ({
+    method: "POST" as const,
+    url: `/api/collections/${options.collectionName}/records`,
+    body: entry
+  }));
+
+  const batchResponse = await sendBatchRequest(
+    requests,
+    options,
+    superuserToken
+  );
+
+  assert(
+    batchResponse.length === data.length,
+    "Failed to insert all entries in batch request."
+  );
+
   const dbEntries: Array<PocketBaseEntry> = [];
-  for (const entry of data) {
-    const dbEntry = await insertEntry(entry, options, superuserToken);
-    dbEntries.push(dbEntry);
+  for (const entry of batchResponse) {
+    dbEntries.push(entry.body.id);
   }
   return dbEntries;
 }
