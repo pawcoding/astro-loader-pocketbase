@@ -45,8 +45,8 @@ jobs:
         run: npm run format:check
 
       # Run tests
-      - name: 🧪 Run tests
-        run: npm test
+      - name: 🧪 Run unit tests
+        run: npm run test:unit
 
       # Setup PocketBase
       - name: 🗄️ Download and setup PocketBase

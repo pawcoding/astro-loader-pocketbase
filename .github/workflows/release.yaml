@@ -33,8 +33,7 @@ jobs:
 
       # Install dependencies
       - name: 📦 Install dependencies
-        run: |
-          npm ci
+        run: npm ci
 
       # Lint code
       - name: 🧹 Lint code
@@ -45,8 +44,28 @@ jobs:
         run: npm run format:check
 
       # Run tests
-      - name: 🧪 Run tests
-        run: npm test
+      - name: 🧪 Run unit tests
+        run: npm run test:unit
+
+      # Setup PocketBase
+      - name: 🗄️ Download and setup PocketBase
+        run: npm run test:e2e:setup
+
+      # Start PocketBase
+      - name: 🚀 Start PocketBase
+        run: ./.pocketbase/pocketbase serve &
+
+      # Wait for PocketBase to be ready
+      - name: ⏳ Wait for PocketBase
+        run: |
+          until curl -s --fail http://localhost:8090/api/health; do
+            echo 'Waiting for PocketBase...'
+            sleep 5
+          done
+
+      # Run tests
+      - name: 🧪 Run e2e tests
+        run: npm run test:e2e
 
       # Create release
       - name: 🚀 Create release

@@ -20,12 +20,12 @@
     "prepare": "husky",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:ui": "vitest --ui",
-    "test:e2e": "vitest run --config vitest.config-e2e.ts",
-    "test:e2e:watch": "vitest watch --config vitest.config-e2e.ts",
-    "test:e2e:ui": "vitest --ui --config vitest.config-e2e.ts",
+    "test:unit": "vitest run $(find test -name '*.spec.ts')",
+    "test:unit:watch": "vitest watch $(find test -name '*.spec.ts')",
+    "test:e2e": "vitest run $(find test -name '*.e2e-spec.ts')",
+    "test:e2e:watch": "vitest watch $(find test -name '*.e2e-spec.ts')",
     "test:e2e:setup": "./scripts/setup-pocketbase.sh",
-    "test:e2e:pocketbase": "./.pocketbase/pocketbase serve"
+    "test:e2e:pocketbase": "npm run test:e2e:setup && ./.pocketbase/pocketbase serve"
   },
   "peerDependencies": {
     "astro": "^5.0.0"
