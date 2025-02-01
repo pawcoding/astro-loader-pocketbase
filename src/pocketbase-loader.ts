@@ -1,7 +1,9 @@
 import type { Loader, LoaderContext } from "astro/loaders";
+import type { ZodSchema } from "astro/zod";
 import packageJson from "./../package.json";
 import { cleanupEntries } from "./cleanup-entries";
 import { generateSchema } from "./generate-schema";
+import { handleRealtimeUpdates } from "./handle-realtime-updates";
 import { loadEntries } from "./load-entries";
 import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
 import { getSuperuserToken } from "./utils/get-superuser-token";
@@ -16,12 +18,20 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
   return {
     name: "pocketbase-loader",
     load: async (context: LoaderContext): Promise<void> => {
+      context.logger.label = `pocketbase-loader:${options.collectionName}`;
+
       // Check if the collection should be refreshed.
       const refresh = shouldRefresh(
         context.refreshContextData,
         options.collectionName
       );
       if (!refresh) {
+        return;
+      }
+
+      // Handle realtime updates
+      const handled = await handleRealtimeUpdates(context, options);
+      if (handled) {
         return;
       }
 
@@ -45,7 +55,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       // Disable incremental builds if no updated field is provided
       if (!options.updatedField) {
         context.logger.info(
-          `(${options.collectionName}) No "updatedField" was provided. Incremental builds are disabled.`
+          `No "updatedField" was provided. Incremental builds are disabled.`
         );
         lastModified = undefined;
       }
@@ -76,7 +86,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
 
       context.meta.set("version", packageJson.version);
     },
-    schema: async () => {
+    schema: async (): Promise<ZodSchema> => {
       // Generate the schema for the collection according to the API
       return await generateSchema(options);
     }

@@ -32,11 +32,9 @@ export async function loadEntries(
 
   // Log the fetching of the entries
   context.logger.info(
-    `(${options.collectionName}) Fetching${
-      lastModified ? " modified" : ""
-    } data${lastModified ? ` starting at ${lastModified}` : ""}${
-      superuserToken ? " as superuser" : ""
-    }`
+    `Fetching${lastModified ? " modified" : ""} data${
+      lastModified ? ` starting at ${lastModified}` : ""
+    }${superuserToken ? " as superuser" : ""}`
   );
 
   // Prepare pagination variables
@@ -64,7 +62,7 @@ export async function loadEntries(
       // If the collection is locked, an superuser token is required
       if (collectionRequest.status === 403) {
         throw new Error(
-          `(${options.collectionName}) The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
+          `The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
         );
       }
 
@@ -72,7 +70,7 @@ export async function loadEntries(
       const reason = await collectionRequest
         .json()
         .then((data) => data.message);
-      const errorMessage = `(${options.collectionName}) Fetching data failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+      const errorMessage = `Fetching data failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
       throw new Error(errorMessage);
     }
 
@@ -92,8 +90,6 @@ export async function loadEntries(
 
   // Log the number of fetched entries
   context.logger.info(
-    `(${options.collectionName}) Fetched ${entries}${
-      lastModified ? " changed" : ""
-    } entries.`
+    `Fetched ${entries}${lastModified ? " changed" : ""} entries.`
   );
 }

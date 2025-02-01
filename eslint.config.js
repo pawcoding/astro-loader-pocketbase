@@ -27,7 +27,7 @@ const config = tseslint.config({
     ],
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-function-return-type": "warn",
     "@typescript-eslint/array-type": [
       "error",
       {
