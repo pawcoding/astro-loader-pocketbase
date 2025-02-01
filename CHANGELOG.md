@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.2.1...v2.3.0) (2025-02-01)
+
+
+### Features
+
+* **refresh:** re-use realtime event data to refresh collection ([efae282](https://github.com/pawcoding/astro-loader-pocketbase/commit/efae2826ad93da4d4fa918a6614dcffe1135934a)), closes [#26](https://github.com/pawcoding/astro-loader-pocketbase/issues/26)
+
 ## [2.2.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.2.0...v2.2.1) (2025-01-25)
 
 
