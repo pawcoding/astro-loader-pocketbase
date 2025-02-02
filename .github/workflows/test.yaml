@@ -1,15 +1,16 @@
-name: 🚀 Publish new version
-# Run this on every push to master and next
+name: 🧪 Test code
+# Run this on every push except master and next
 on:
   push:
     branches:
-      - master
-      - next
+      - "**"
+      - "!master"
+      - "!next"
 permissions:
   contents: read
 
 jobs:
-  publish:
+  test:
     # Use the latest version of Ubuntu
     runs-on: ubuntu-latest
     permissions:
@@ -66,11 +67,3 @@ jobs:
       # Run tests
       - name: 🧪 Run e2e tests
         run: npm run test:e2e
-
-      # Create release
-      - name: 🚀 Create release
-        id: release
-        uses: cycjimmy/semantic-release-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

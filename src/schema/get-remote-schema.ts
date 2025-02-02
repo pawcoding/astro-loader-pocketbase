@@ -1,6 +1,6 @@
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
-import { getSuperuserToken } from "./get-superuser-token";
+import { getSuperuserToken } from "../utils/get-superuser-token";
 
 /**
  * Fetches the schema for the specified collection from the PocketBase instance.

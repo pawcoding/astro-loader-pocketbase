@@ -1,7 +1,7 @@
 import type { LoaderContext } from "astro/loaders";
-import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
-import { isRealtimeData } from "./utils/is-realtime-data";
-import { parseEntry } from "./utils/parse-entry";
+import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { isRealtimeData } from "../utils/is-realtime-data";
+import { parseEntry } from "./parse-entry";
 
 /**
  * Handles realtime updates for the loader without making any new network requests.

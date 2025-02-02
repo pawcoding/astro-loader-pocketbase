@@ -1,5 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
-import type { PocketBaseLoaderOptions } from "./types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 
 /**
  * Cleanup entries that are no longer in the collection.

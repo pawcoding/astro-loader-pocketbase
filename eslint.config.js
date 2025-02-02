@@ -1,15 +1,18 @@
 import eslint from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
+import prettier from "eslint-config-prettier";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
 const config = tseslint.config({
   files: ["**/*.{js,mjs,cjs,ts}"],
+  ignores: [".pocketbase/**/*"],
   languageOptions: {
     globals: { ...globals.browser, ...globals.node }
   },
   extends: [
     eslint.configs.recommended,
+    prettier,
     ...tseslint.configs.recommended,
     ...tseslint.configs.stylistic
   ],

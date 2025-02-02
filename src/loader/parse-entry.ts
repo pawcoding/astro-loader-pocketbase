@@ -1,7 +1,7 @@
 import type { LoaderContext } from "astro/loaders";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
-import { slugify } from "./slugify";
+import { slugify } from "../utils/slugify";
 
 /**
  * Parse an entry from PocketBase to match the schema and store it in the store.
