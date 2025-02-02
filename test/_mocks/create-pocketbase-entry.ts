@@ -9,6 +9,7 @@ export function createPocketbaseEntry(
     collectionId: Math.random().toString(36).substring(2, 17),
     collectionName: "test",
     customId: randomUUID(),
+    updated: new Date().toISOString().replace("T", " "),
     ...entry
   };
 }

@@ -51,6 +51,7 @@ describe("generateSchema", () => {
     it("should return schema from local file if path is provided", async () => {
       const result = (await generateSchema({
         ...options,
+        superuserCredentials: undefined,
         localSchema: "test/_mocks/superuser_schema.json"
       })) as ZodObject<Record<string, ZodSchema<unknown>>>;
 
@@ -58,8 +59,6 @@ describe("generateSchema", () => {
         "id",
         "collectionId",
         "collectionName",
-        "password",
-        "tokenKey",
         "email",
         "emailVisibility",
         "verified",

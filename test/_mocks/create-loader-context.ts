@@ -12,6 +12,7 @@ export function createLoaderContext(
     logger: new LoggerMock(),
     parseData: vi.fn().mockResolvedValue({}),
     store: new StoreMock(),
+    meta: new Map<string, string>(),
     ...context
   } satisfies Partial<LoaderContext> as unknown as LoaderContext;
 }

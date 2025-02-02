@@ -75,6 +75,14 @@ describe("parseEntry", () => {
     expect(context.logger.warn).toHaveBeenCalledOnce();
   });
 
+  test("should use updated field as digest if provided", async () => {
+    const options = createLoaderOptions({ updatedField: "updated" });
+
+    await parseEntry(entry, context, options);
+
+    expect(context.generateDigest).toHaveBeenCalledWith(entry.updated);
+  });
+
   test("should concatenate multiple content fields", async () => {
     const options = createLoaderOptions({
       contentFields: ["collectionName", "customId"]

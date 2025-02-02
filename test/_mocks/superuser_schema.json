@@ -37,6 +37,26 @@
         "type": "password"
       },
       {
+        "hidden": true,
+        "id": "file376926767",
+        "maxSelect": 1,
+        "maxSize": 0,
+        "mimeTypes": [
+          "image/jpeg",
+          "image/png",
+          "image/svg+xml",
+          "image/gif",
+          "image/webp"
+        ],
+        "name": "avatar",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": null,
+        "type": "file"
+      },
+      {
         "autogeneratePattern": "[a-zA-Z0-9]{50}",
         "hidden": true,
         "id": "text2504183744",
