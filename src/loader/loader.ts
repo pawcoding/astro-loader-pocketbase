@@ -18,7 +18,7 @@ export async function loader(
     context.refreshContextData,
     options.collectionName
   );
-  if (!refresh) {
+  if (refresh === "skip") {
     return;
   }
 
@@ -30,6 +30,12 @@ export async function loader(
 
   // Get the date of the last fetch to only update changed entries.
   let lastModified = context.meta.get("last-modified");
+
+  // Force a full update if the refresh is forced
+  if (refresh === "force") {
+    lastModified = undefined;
+    context.store.clear();
+  }
 
   // Check if the version has changed to force an update
   const lastVersion = context.meta.get("version");
