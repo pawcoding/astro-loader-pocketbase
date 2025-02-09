@@ -89,7 +89,11 @@ export async function loadEntries(
   } while (page < totalPages);
 
   // Log the number of fetched entries
-  context.logger.info(
-    `Fetched ${entries}${lastModified ? " changed" : ""} entries.`
-  );
+  if (lastModified) {
+    context.logger.info(
+      `Updated ${entries}/${context.store.keys().length} entries.`
+    );
+  } else {
+    context.logger.info(`Fetched ${entries} entries.`);
+  }
 }
