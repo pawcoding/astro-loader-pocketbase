@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  HUSKY: 0
+
 jobs:
   test:
     # Use the latest version of Ubuntu
