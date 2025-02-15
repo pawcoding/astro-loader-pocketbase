@@ -8,6 +8,9 @@ on:
 permissions:
   contents: read
 
+env:
+  HUSKY: 0
+
 jobs:
   publish:
     # Use the latest version of Ubuntu
