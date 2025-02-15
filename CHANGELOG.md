@@ -1,3 +1,15 @@
+# [2.4.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.3.1...v2.4.0) (2025-02-15)
+
+
+### Bug Fixes
+
+* **loader:** print total numer of entries to simplify debugging ([1c8cdfd](https://github.com/pawcoding/astro-loader-pocketbase/commit/1c8cdfdecf27ef5ce73e77fe17d3e43cdbc846a0))
+
+
+### Features
+
+* **loader:** support force refresh to update all entries ([e22cc46](https://github.com/pawcoding/astro-loader-pocketbase/commit/e22cc4692d6bde95ffecb341d260899410a3bbe4))
+
 ## [2.3.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.3.0...v2.3.1) (2025-02-02)
 
 # [2.3.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.2.1...v2.3.0) (2025-02-01)
