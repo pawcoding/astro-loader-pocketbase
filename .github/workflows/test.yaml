@@ -6,8 +6,6 @@ on:
       - "**"
       - "!master"
       - "!next"
-permissions:
-  contents: read
 
 env:
   HUSKY: 0
