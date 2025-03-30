@@ -73,4 +73,8 @@ export interface PocketBaseLoaderOptions {
    * The PocketBase API does always return at least `0` or `false` as the default values, even though the fields are not marked as required in the schema.
    */
   improveTypes?: boolean;
+  /**
+   *
+   */
+  filter?: string;
 }
