@@ -74,7 +74,10 @@ export interface PocketBaseLoaderOptions {
    */
   improveTypes?: boolean;
   /**
+   * Pass custom filters as string when fetching a collection
+   * Valid syntax can be found on official pocketbase docs https://pocketbase.io/docs/api-collections/#list-collections
    *
+   * Can be used in conjunction with updatedField
    */
   filter?: string;
 }
