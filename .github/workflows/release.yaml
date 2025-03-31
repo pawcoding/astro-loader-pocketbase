@@ -70,6 +70,7 @@ jobs:
 
       # Create release
       - name: 🚀 Create release
+        if: github.repository == 'pawcoding/astro-loader-pocketbase'
         id: release
         uses: cycjimmy/semantic-release-action@v4
         env:
