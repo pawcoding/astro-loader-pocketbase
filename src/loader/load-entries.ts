@@ -50,9 +50,11 @@ export async function loadEntries(
       perPage: "100"
     });
 
-    if (options.filter) {
-      searchQuery.set("filter", options.filter);
-    }
+    // add filter if key exists
+    if (options.filter) searchQuery.set("filter", options.filter);
+
+    // If `lastModified` is set, only fetch entries that have been modified since the last fetch
+    // combine updatedField and custom filter
     if (lastModified && options.updatedField) {
       const customFilter = options.filter ? `&&(${options.filter})` : "";
       searchQuery.set(
@@ -61,9 +63,8 @@ export async function loadEntries(
       );
       searchQuery.set("sort", `-${options.updatedField}`);
     }
-    console.log(`${searchQuery.toString()}`);
+
     // Fetch entries from the collection
-    // If `lastModified` is set, only fetch entries that have been modified since the last fetch
     const collectionRequest = await fetch(
       `${collectionUrl}?${searchQuery.toString()}`,
       {
