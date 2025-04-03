@@ -74,10 +74,20 @@ export interface PocketBaseLoaderOptions {
    */
   improveTypes?: boolean;
   /**
-   * Pass custom filters as string when fetching a collection
-   * Valid syntax can be found on official pocketbase docs https://pocketbase.io/docs/api-collections/#list-collections
+   * Custom filter that is applied when loading data from PocketBase.
+   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
    *
-   * Can be used in conjunction with updatedField
+   * The loader will also add it's own filters for incremental builds.
+   * These will be added to your custom filter query.
+   *
+   * Example:
+   * ```ts
+   * // config:
+   * filter: 'release >= @now && deleted = false'
+   *
+   * // request
+   * `?filter=${loaderFilter}&&(release >= @now && deleted = false)`
+   * ```
    */
   filter?: string;
 }
