@@ -44,14 +44,31 @@ export async function loadEntries(
 
   // Fetch all (modified) entries
   do {
+    // Build search parameters
+    const searchParams = new URLSearchParams({
+      page: `${++page}`,
+      perPage: "100"
+    });
+
+    const filters = [];
+    if (lastModified && options.updatedField) {
+      // If `lastModified` is set, only fetch entries that have been modified since the last fetch
+      filters.push(`(${options.updatedField}>"${lastModified}")`);
+      // Sort by the updated field and id
+      searchParams.set("sort", `-${options.updatedField},id`);
+    }
+    if (options.filter) {
+      filters.push(`(${options.filter})`);
+    }
+
+    // Add filters to search parameters
+    if (filters.length > 0) {
+      searchParams.set("filter", filters.join("&&"));
+    }
+
     // Fetch entries from the collection
-    // If `lastModified` is set, only fetch entries that have been modified since the last fetch
     const collectionRequest = await fetch(
-      `${collectionUrl}?page=${++page}&perPage=100${
-        lastModified && options.updatedField
-          ? `&sort=-${options.updatedField},id&filter=(${options.updatedField}>"${lastModified}")`
-          : ""
-      }`,
+      `${collectionUrl}?${searchParams.toString()}`,
       {
         headers: collectionHeaders
       }

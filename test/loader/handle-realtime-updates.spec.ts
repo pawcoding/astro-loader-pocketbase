@@ -15,6 +15,17 @@ describe("handleRealtimeUpdates", () => {
     assert(!result);
   });
 
+  test("should return false if custom filter is set", async () => {
+    const context = createLoaderContext({
+      refreshContextData: { data: { record, action: "create" } }
+    });
+    const options = createLoaderOptions({
+      filter: "filter"
+    });
+    const result = await handleRealtimeUpdates(context, options);
+    assert(!result);
+  });
+
   test("should return false if data is not PocketBase realtime data", async () => {
     const context = createLoaderContext({
       refreshContextData: { data: { invalid: "data" } }

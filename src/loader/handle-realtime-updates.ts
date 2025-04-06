@@ -12,6 +12,14 @@ export async function handleRealtimeUpdates(
   context: LoaderContext,
   options: PocketBaseLoaderOptions
 ): Promise<boolean> {
+  // Check if a custom filter is set
+  if (options.filter) {
+    // Updating an entry directly via realtime updates is not supported when using a custom filter.
+    // This is because the filter can only be applied via the get request and is not considered in the realtime updates.
+    // Updating the entry directly would bypass the filter and could lead to inconsistent data.
+    return false;
+  }
+
   // Check if data was provided via the refresh context
   if (!context.refreshContextData?.data) {
     return false;
