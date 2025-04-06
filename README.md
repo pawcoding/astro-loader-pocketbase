@@ -108,22 +108,24 @@ The loader will also automatically convert the value into a slug to be easily us
 It's recommended to use e.g. the title of the entry to be easily searchable and readable.
 **Do not use e.g. rich text fields as ids.**
 
-### Improved types
+### Filtering entries
 
-By default PocketBase reports `number` and `boolean` fields as not required, even though the API will always return `0` and `false` respectively if no value is set.
-This means that the loader will add `undefined` to the type of these fields.
-If you want to enforce that these fields are always present, you can set the `improveTypes` option to `true`.
+By default the loader will fetch all entries in the specified collection.
+If you want to restrict the entries to a specific subset, you can use the `filter` option.
 
 ```ts
 const blog = defineCollection({
   loader: pocketbaseLoader({
     ...options,
-    improveTypes: true
+    filter: "<filter>"
   })
 });
 ```
 
-This will remove `undefined` from the type of these fields and mark them as required.
+For example, if you want to only fetch entries that are released but not deleted, you can use `"release >= @now && deleted = false"`.
+This filter will be added to the PocketBase API request and will only fetch entries that match the filter.
+This is in addition to the built-in filtering of the loader, which handles the incremental builds using the `updated` field.
+For more information on how to use filters, check out the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records).
 
 ## Type generation
 
@@ -172,6 +174,23 @@ When superuser credentials are provided, the loader will **always use the remote
 If you don't want to use the automatic type generation, you can also [provide your own schema manually](https://docs.astro.build/en/guides/content-collections/#defining-the-collection-schema).
 This manual schema will **always override the automatic type generation**.
 
+### Improved types
+
+By default PocketBase reports `number` and `boolean` fields as not required, even though the API will always return `0` and `false` respectively if no value is set.
+This means that the loader will add `undefined` to the type of these fields.
+If you want to enforce that these fields are always present, you can set the `improveTypes` option to `true`.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    improveTypes: true
+  })
+});
+```
+
+This will remove `undefined` from the type of these fields and mark them as required.
+
 ## All options
 
 | Option                 | Type                                  | Required | Description                                                                                                     |
@@ -181,6 +200,7 @@ This manual schema will **always override the automatic type generation**.
 | `idField`              | `string`                              |          | The field in the collection to use as unique id. Defaults to `id`.                                              |
 | `contentFields`        | `string \| Array<string>`             |          | The field in the collection to use as content. This can also be an array of fields.                             |
 | `updatedField`         | `string`                              |          | The field in the collection that stores the last update date of an entry. This is used for incremental builds.  |
+| `filter`               | `string`                              |          | Custom filter to use when fetching entries. Used to filter the entries by specific conditions.                  |
 | `superuserCredentials` | `{ email: string, password: string }` |          | The email and password of the superuser of the PocketBase instance. This is used for automatic type generation. |
 | `localSchema`          | `string`                              |          | The path to a local schema file. This is used for automatic type generation.                                    |
 | `jsonSchemas`          | `Record<string, z.ZodSchema>`         |          | A record of Zod schemas to use for type generation of `json` fields.                                            |
