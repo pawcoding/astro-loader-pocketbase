@@ -44,29 +44,31 @@ export async function loadEntries(
 
   // Fetch all (modified) entries
   do {
-    // build search query
-    const searchQuery = new URLSearchParams({
+    // Build search parameters
+    const searchParams = new URLSearchParams({
       page: `${++page}`,
       perPage: "100"
     });
 
-    // add filter if key exists
-    if (options.filter) searchQuery.set("filter", options.filter);
-
-    // If `lastModified` is set, only fetch entries that have been modified since the last fetch
-    // combine updatedField and custom filter
+    const filters = [];
     if (lastModified && options.updatedField) {
-      const customFilter = options.filter ? `&&(${options.filter})` : "";
-      searchQuery.set(
-        "filter",
-        `(${options.updatedField}>"${lastModified}"${customFilter})`
-      );
-      searchQuery.set("sort", `-${options.updatedField}`);
+      // If `lastModified` is set, only fetch entries that have been modified since the last fetch
+      filters.push(`(${options.updatedField}>"${lastModified}")`);
+      // Sort by the updated field and id
+      searchParams.set("sort", `-${options.updatedField},id`);
+    }
+    if (options.filter) {
+      filters.push(`(${options.filter})`);
+    }
+
+    // Add filters to search parameters
+    if (filters.length > 0) {
+      searchParams.set("filter", filters.join("&&"));
     }
 
     // Fetch entries from the collection
     const collectionRequest = await fetch(
-      `${collectionUrl}?${searchQuery.toString()}`,
+      `${collectionUrl}?${searchParams.toString()}`,
       {
         headers: collectionHeaders
       }

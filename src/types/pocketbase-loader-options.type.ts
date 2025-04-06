@@ -86,7 +86,7 @@ export interface PocketBaseLoaderOptions {
    * filter: 'release >= @now && deleted = false'
    *
    * // request
-   * `?filter=${loaderFilter}&&(release >= @now && deleted = false)`
+   * `?filter=(${loaderFilter})&&(release >= @now && deleted = false)`
    * ```
    */
   filter?: string;

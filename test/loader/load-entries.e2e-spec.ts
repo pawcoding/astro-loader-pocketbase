@@ -84,6 +84,41 @@ describe("loadEntries", () => {
     await deleteCollection(testOptions, superuserToken);
   });
 
+  test("should load filtered pages", async () => {
+    const testOptions = {
+      ...options,
+      collectionName: randomUUID().replace(/-/g, ""),
+      filter: "value=true"
+    };
+    const numberOfEntries = 101;
+
+    await insertCollection(
+      [
+        {
+          name: "value",
+          type: "bool"
+        }
+      ],
+      testOptions,
+      superuserToken
+    );
+    await insertEntries(
+      new Array(numberOfEntries).fill({ value: true }),
+      testOptions,
+      superuserToken
+    );
+    await insertEntries(
+      new Array(numberOfEntries).fill({ value: false }),
+      testOptions,
+      superuserToken
+    );
+    await loadEntries(testOptions, context, superuserToken, undefined);
+
+    expect(parseEntry).toHaveBeenCalledTimes(numberOfEntries);
+
+    await deleteCollection(testOptions, superuserToken);
+  });
+
   describe("incremental updates", () => {
     test("should fetch all entries when updatedField is missing", async () => {
       const lastModified = new Date(Date.now() - DAY).toISOString();
@@ -122,41 +157,6 @@ describe("loadEntries", () => {
 
       expect(parseEntry).not.toHaveBeenCalled();
     });
-  });
-
-  test("should load filtered pages", async () => {
-    const testOptions = {
-      ...options,
-      collectionName: randomUUID().replace(/-/g, ""),
-      filter: "value=true"
-    };
-    const numberOfEntries = 101;
-
-    await insertCollection(
-      [
-        {
-          name: "value",
-          type: "bool"
-        }
-      ],
-      testOptions,
-      superuserToken
-    );
-    await insertEntries(
-      new Array(numberOfEntries).fill({ value: true }),
-      testOptions,
-      superuserToken
-    );
-    await insertEntries(
-      new Array(numberOfEntries).fill({ value: false }),
-      testOptions,
-      superuserToken
-    );
-    await loadEntries(testOptions, context, superuserToken, undefined);
-
-    expect(parseEntry).toHaveBeenCalledTimes(numberOfEntries);
-
-    await deleteCollection(testOptions, superuserToken);
   });
 
   describe("error handling", () => {
