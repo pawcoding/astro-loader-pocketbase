@@ -48,7 +48,13 @@ const config = {
         assets: assetsToUpdate
       }
     ],
-    "@semantic-release/github"
+    [
+      "@semantic-release/github",
+      {
+        successCommentCondition:
+          '<% return issue.pull_request || !nextRelease.channel || !issue.labels.some(label => label.name === "released on @next"); %>'
+      }
+    ]
   ]
 };
 
