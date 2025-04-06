@@ -73,4 +73,21 @@ export interface PocketBaseLoaderOptions {
    * The PocketBase API does always return at least `0` or `false` as the default values, even though the fields are not marked as required in the schema.
    */
   improveTypes?: boolean;
+  /**
+   * Custom filter that is applied when loading data from PocketBase.
+   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
+   *
+   * The loader will also add it's own filters for incremental builds.
+   * These will be added to your custom filter query.
+   *
+   * Example:
+   * ```ts
+   * // config:
+   * filter: 'release >= @now && deleted = false'
+   *
+   * // request
+   * `?filter=${loaderFilter}&&(release >= @now && deleted = false)`
+   * ```
+   */
+  filter?: string;
 }

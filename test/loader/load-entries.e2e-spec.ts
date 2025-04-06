@@ -109,6 +109,54 @@ describe("loadEntries", () => {
 
       expect(parseEntry).not.toHaveBeenCalled();
     });
+
+    test("should not fetch updated entries excluded from filter", async () => {
+      const testOptions = {
+        ...options,
+        updatedField: "updated",
+        filter: "verified=false"
+      };
+      const lastModified = new Date(Date.now() - DAY).toISOString();
+
+      await loadEntries(testOptions, context, superuserToken, lastModified);
+
+      expect(parseEntry).not.toHaveBeenCalled();
+    });
+  });
+
+  test("should load filtered pages", async () => {
+    const testOptions = {
+      ...options,
+      collectionName: randomUUID().replace(/-/g, ""),
+      filter: "value=true"
+    };
+    const numberOfEntries = 101;
+
+    await insertCollection(
+      [
+        {
+          name: "value",
+          type: "bool"
+        }
+      ],
+      testOptions,
+      superuserToken
+    );
+    await insertEntries(
+      new Array(numberOfEntries).fill({ value: true }),
+      testOptions,
+      superuserToken
+    );
+    await insertEntries(
+      new Array(numberOfEntries).fill({ value: false }),
+      testOptions,
+      superuserToken
+    );
+    await loadEntries(testOptions, context, superuserToken, undefined);
+
+    expect(parseEntry).toHaveBeenCalledTimes(numberOfEntries);
+
+    await deleteCollection(testOptions, superuserToken);
   });
 
   describe("error handling", () => {
@@ -122,6 +170,22 @@ describe("loadEntries", () => {
       const invalidOptions = {
         ...options,
         collectionName: "invalidCollection"
+      };
+
+      const promise = loadEntries(
+        invalidOptions,
+        context,
+        superuserToken,
+        undefined
+      );
+
+      await expect(promise).rejects.toThrow();
+    });
+
+    test("should throw error invalid filter", async () => {
+      const invalidOptions = {
+        ...options,
+        filter: "invalidFilter>0"
       };
 
       const promise = loadEntries(
