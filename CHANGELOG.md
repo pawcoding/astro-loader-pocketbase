@@ -1,3 +1,15 @@
+# [2.5.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.4.1...v2.5.0) (2025-04-09)
+
+
+### Bug Fixes
+
+* **refresh:** do not re-use realtime data when custom filter is set ([16b0ec9](https://github.com/pawcoding/astro-loader-pocketbase/commit/16b0ec9033150ce9c10aa1d0baf68a54afa92e93))
+
+
+### Features
+
+* **loader:** add support for custom pocketbase filter ([#35](https://github.com/pawcoding/astro-loader-pocketbase/issues/35)) ([367af9a](https://github.com/pawcoding/astro-loader-pocketbase/commit/367af9a15ce18cf3b6c815e3fd88cdd324924a14))
+
 ## [2.4.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.4.0...v2.4.1) (2025-02-16)
 
 # [2.4.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.3.1...v2.4.0) (2025-02-15)
