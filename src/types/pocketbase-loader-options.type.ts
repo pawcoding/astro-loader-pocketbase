@@ -38,6 +38,23 @@ export interface PocketBaseLoaderOptions {
    */
   updatedField?: string;
   /**
+   * Custom filter that is applied when loading data from PocketBase.
+   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
+   *
+   * The loader will also add it's own filters for incremental builds.
+   * These will be added to your custom filter query.
+   *
+   * Example:
+   * ```ts
+   * // config:
+   * filter: 'release >= @now && deleted = false'
+   *
+   * // request
+   * `?filter=(${loaderFilter})&&(release >= @now && deleted = false)`
+   * ```
+   */
+  filter?: string;
+  /**
    * Credentials of a superuser to get full access to the PocketBase instance.
    * This is required to get automatic type generation without a local schema, to access all resources even if they are not public and to fetch content of hidden fields.
    */
