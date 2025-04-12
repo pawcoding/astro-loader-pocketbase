@@ -32,9 +32,21 @@ export async function cleanupEntries(
 
   // Fetch all ids of the collection
   do {
+    // Build search parameters
+    const searchParams = new URLSearchParams({
+      page: `${++page}`,
+      perPage: "1000",
+      fields: "id"
+    });
+
+    if (options.filter) {
+      // If a filter is set, add it to the search parameters
+      searchParams.set("filter", `(${options.filter})`);
+    }
+
     // Fetch ids from the collection
     const collectionRequest = await fetch(
-      `${collectionUrl}?page=${++page}&perPage=1000&fields=id`,
+      `${collectionUrl}?${searchParams.toString()}`,
       {
         headers: collectionHeaders
       }
