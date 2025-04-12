@@ -47,14 +47,17 @@ export async function cleanupEntries(
         context.logger.error(
           `The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
         );
-        return;
+      } else {
+        const reason = await collectionRequest
+          .json()
+          .then((data) => data.message);
+        const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+        context.logger.error(errorMessage);
       }
 
-      const reason = await collectionRequest
-        .json()
-        .then((data) => data.message);
-      const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
-      context.logger.error(errorMessage);
+      // Remove all entries from the store
+      context.logger.info(`Removing all entries from the store.`);
+      context.store.clear();
       return;
     }
 
