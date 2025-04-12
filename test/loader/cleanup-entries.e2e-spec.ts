@@ -39,6 +39,8 @@ describe("cleanupEntries", () => {
   });
 
   test("should log error if collection is not accessible without superuser rights", async () => {
+    const storeClearSpy = vi.spyOn(context.store, "clear");
+
     await cleanupEntries(
       { ...options, collectionName: "_superusers" },
       context,
@@ -46,9 +48,11 @@ describe("cleanupEntries", () => {
     );
 
     expect(context.logger.error).toHaveBeenCalledOnce();
+    expect(storeClearSpy).toHaveBeenCalledOnce();
   });
 
   test("should log error if collection doesn't exist", async () => {
+    const storeClearSpy = vi.spyOn(context.store, "clear");
     const storeDeleteSpy = vi.spyOn(context.store, "delete");
     const storeValuesSpy = vi.spyOn(context.store, "values");
 
@@ -59,6 +63,7 @@ describe("cleanupEntries", () => {
     );
 
     expect(context.logger.error).toHaveBeenCalledOnce();
+    expect(storeClearSpy).toHaveBeenCalledOnce();
     expect(storeDeleteSpy).not.toHaveBeenCalled();
     expect(storeValuesSpy).not.toHaveBeenCalled();
   });
