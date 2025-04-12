@@ -27,7 +27,7 @@ export async function insertEntries(
 
   const dbEntries: Array<PocketBaseEntry> = [];
   for (const entry of batchResponse) {
-    dbEntries.push(entry.body.id);
+    dbEntries.push(entry.body);
   }
   return dbEntries;
 }
