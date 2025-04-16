@@ -35,6 +35,12 @@ export function parseSchema(
         // Coerce and parse the value as a date
         fieldType = z.coerce.date();
         break;
+      case "geoPoint":
+        fieldType = z.object({
+          lon: z.number(),
+          lat: z.number()
+        });
+        break;
       case "select":
         if (!field.values) {
           throw new Error(
