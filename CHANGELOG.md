@@ -1,3 +1,16 @@
+# [2.6.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.5.0...v2.6.0) (2025-04-18)
+
+
+### Bug Fixes
+
+* **cleanup:** apply filter when looking for outdated entries ([205aaa3](https://github.com/pawcoding/astro-loader-pocketbase/commit/205aaa3af8a568600df8c1c03a31df00bbc3dc7a))
+* **cleanup:** clear whole store on error ([161741e](https://github.com/pawcoding/astro-loader-pocketbase/commit/161741e952b2a754932364c392b155f4040619a8))
+
+
+### Features
+
+* **schema:** parse `geoPoint` fields ([6067a4f](https://github.com/pawcoding/astro-loader-pocketbase/commit/6067a4ff4ff331177e2688477355a4649526cc17))
+
 # [2.5.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.4.1...v2.5.0) (2025-04-09)
 
 
