@@ -243,6 +243,60 @@ describe("parseSchema", () => {
     });
   });
 
+  describe("geoPoint", () => {
+    test("should parse geoPoint fields correctly", () => {
+      const collection: PocketBaseCollection = {
+        name: "geoPointCollection",
+        type: "base",
+        fields: [
+          {
+            name: "coordinates",
+            type: "geoPoint",
+            required: true,
+            hidden: false
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false);
+
+      const valid = {
+        coordinates: { lon: 12.34, lat: 56.78 }
+      };
+
+      expect(z.object(schema).parse(valid)).toEqual(valid);
+      expect(() =>
+        z.object(schema).parse({ coordinates: { lon: true, lat: false } })
+      ).toThrow();
+      expect(() => z.object(schema).parse({ coordinates: {} })).toThrow();
+      expect(() => z.object(schema).parse({})).toThrow();
+    });
+
+    test("should parse optional geoPoint fields correctly", () => {
+      const collection: PocketBaseCollection = {
+        name: "geoPointCollection",
+        type: "base",
+        fields: [
+          {
+            name: "coordinates",
+            type: "geoPoint",
+            required: false,
+            hidden: false
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false);
+
+      const valid = {
+        coordinates: { lon: 12.34, lat: 56.78 }
+      };
+
+      expect(z.object(schema).parse(valid)).toEqual(valid);
+      expect(z.object(schema).parse({})).toEqual({});
+    });
+  });
+
   describe("select", () => {
     test("should parse select fields correctly", () => {
       const collection: PocketBaseCollection = {
