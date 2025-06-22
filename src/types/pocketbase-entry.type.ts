@@ -14,6 +14,10 @@ interface PocketBaseBaseEntry {
    * Name of the collection the entry belongs to.
    */
   collectionName: string;
+  /**
+   * Optional property that contains all relational fields that have been expanded to contain their linked entry(s)
+   */
+  expand?: Record<string, PocketBaseBaseEntry & Record<string, unknown>>;
 }
 
 /**

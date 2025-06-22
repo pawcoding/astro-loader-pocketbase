@@ -8,17 +8,19 @@ import {
   describe,
   expect,
   test,
-  vi
+  vi,
+  type Mock
 } from "vitest";
 import { loadEntries } from "../../src/loader/load-entries";
 import { parseEntry } from "../../src/loader/parse-entry";
+import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
 import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderContext } from "../_mocks/create-loader-context";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
-import { insertEntries } from "../_mocks/insert-entry";
+import { insertEntries, insertEntry } from "../_mocks/insert-entry";
 
 vi.mock("../../src/loader/parse-entry");
 
@@ -117,6 +119,78 @@ describe("loadEntries", () => {
     expect(parseEntry).toHaveBeenCalledTimes(numberOfEntries);
 
     await deleteCollection(testOptions, superuserToken);
+  });
+
+  test("should expand related fields in pages", async () => {
+    const RELATION_FIELD_NAME = "related";
+    const BLUE_ENTRY_NAME_FIELD_VALUE = "blue entry";
+
+    const redCollectionOptions = {
+      ...options,
+      collectionName: `red_${randomUUID().replace(/-/g, "")}`
+    };
+
+    const blueCollectionOptions = {
+      ...options,
+      collectionName: `blue_${randomUUID().replace(/-/g, "")}`
+    };
+
+    const testOptions = {
+      ...options,
+      collectionName: redCollectionOptions.collectionName,
+      expand: [RELATION_FIELD_NAME]
+    };
+
+    const blueCollection = await insertCollection(
+      [
+        {
+          name: "name",
+          type: "text"
+        }
+      ],
+      blueCollectionOptions,
+      superuserToken
+    );
+
+    await insertCollection(
+      [
+        {
+          name: RELATION_FIELD_NAME,
+          type: "relation",
+          collectionId: blueCollection.id
+        }
+      ],
+      redCollectionOptions,
+      superuserToken
+    );
+
+    const parsedEntries: Array<PocketBaseEntry> = [];
+
+    const blueEntry = await insertEntry(
+      { name: BLUE_ENTRY_NAME_FIELD_VALUE },
+      blueCollectionOptions,
+      superuserToken
+    );
+
+    await insertEntry(
+      { [RELATION_FIELD_NAME]: blueEntry.id },
+      redCollectionOptions,
+      superuserToken
+    );
+
+    (parseEntry as Mock).mockImplementation((entry: PocketBaseEntry) => {
+      parsedEntries.push(entry);
+      return entry; // or whatever parseEntry should return
+    });
+
+    await loadEntries(testOptions, context, superuserToken, undefined);
+
+    expect(parsedEntries[0]?.expand?.related?.name).toBe(
+      BLUE_ENTRY_NAME_FIELD_VALUE
+    );
+
+    await deleteCollection(redCollectionOptions, superuserToken);
+    await deleteCollection(blueCollectionOptions, superuserToken);
   });
 
   describe("incremental updates", () => {

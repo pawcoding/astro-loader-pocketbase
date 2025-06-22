@@ -1,8 +1,6 @@
 import { z } from "astro/zod";
-import type {
-  PocketBaseCollection,
-  PocketBaseSchemaEntry
-} from "../types/pocketbase-schema.type";
+import type { PocketBaseCollection } from "../types/pocketbase-collection.type";
+import type { PocketBaseSchemaEntry } from "../types/pocketbase-schema.type";
 
 export function parseSchema(
   collection: PocketBaseCollection,
