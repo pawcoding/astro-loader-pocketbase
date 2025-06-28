@@ -44,6 +44,10 @@ jobs:
       - name: 🧹 Check format
         run: npm run format:check
 
+      # Type check
+      - name: 🧪 Type check
+        run: npm run typecheck
+
       # Run tests
       - name: 🧪 Run unit tests
         run: npm run test:unit

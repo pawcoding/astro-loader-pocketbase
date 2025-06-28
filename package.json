@@ -39,7 +39,8 @@
     "test:e2e:watch": "vitest watch $(find test -name '*.e2e-spec.ts')",
     "test:unit": "vitest run $(find test -name '*.spec.ts')",
     "test:unit:watch": "vitest watch $(find test -name '*.spec.ts')",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "typecheck": "npx tsc --noEmit"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
