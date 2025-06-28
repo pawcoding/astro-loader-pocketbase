@@ -45,7 +45,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.30.0",
-    "@stylistic/eslint-plugin": "^4.4.1",
+    "@stylistic/eslint-plugin": "^5.0.0",
     "@types/node": "^22.14.1",
     "@vitest/coverage-v8": "^3.2.4",
     "astro": "^5.10.1",
