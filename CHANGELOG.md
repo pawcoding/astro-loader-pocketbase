@@ -1,3 +1,5 @@
+## [2.6.2](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.6.1...v2.6.2) (2025-06-28)
+
 ## [2.6.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.6.0...v2.6.1) (2025-06-18)
 
 # [2.6.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.5.0...v2.6.0) (2025-04-18)
