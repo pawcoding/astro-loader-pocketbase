@@ -1,30 +1,16 @@
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
-import { getSuperuserToken } from "../utils/get-superuser-token";
 
 /**
  * Fetches the schema for the specified collection from the PocketBase instance.
  *
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
+ * @param token The superuser token to authenticate the request.
  */
 export async function getRemoteSchema(
-  options: PocketBaseLoaderOptions
+  options: PocketBaseLoaderOptions,
+  token: string
 ): Promise<PocketBaseCollection | undefined> {
-  if (!options.superuserCredentials) {
-    return undefined;
-  }
-
-  // Get a superuser token
-  const token = await getSuperuserToken(
-    options.url,
-    options.superuserCredentials
-  );
-
-  // If the token is invalid try another method
-  if (!token) {
-    return undefined;
-  }
-
   // Build URL and headers for the schema request
   const schemaUrl = new URL(
     `api/collections/${options.collectionName}`,

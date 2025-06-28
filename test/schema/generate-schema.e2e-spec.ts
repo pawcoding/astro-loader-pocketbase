@@ -1,15 +1,25 @@
 import type { ZodObject, ZodSchema } from "astro/zod";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, assert, beforeAll, describe, expect, it, vi } from "vitest";
 import { generateSchema } from "../../src/schema/generate-schema";
 import { transformFileUrl } from "../../src/schema/transform-files";
+import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 
 describe("generateSchema", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
+  let token: string;
 
   beforeAll(async () => {
     await checkE2eConnection();
+
+    const superuserToken = await getSuperuserToken(
+      options.url,
+      options.superuserCredentials!
+    );
+    assert(superuserToken, "Superuser token should not be undefined");
+
+    token = superuserToken;
   });
 
   afterEach(() => {
@@ -18,19 +28,22 @@ describe("generateSchema", () => {
 
   describe("load and parse schema", () => {
     it("should return basic schema if no schema is available", async () => {
-      const result = (await generateSchema({
-        ...options,
-        superuserCredentials: undefined,
-        localSchema: undefined
-      })) as ZodObject<Record<string, ZodSchema<unknown>>>;
+      const result = (await generateSchema(
+        {
+          ...options,
+          superuserCredentials: undefined,
+          localSchema: undefined
+        },
+        undefined
+      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
 
       expect(result.shape).toHaveProperty("id");
       expect(result.shape).toHaveProperty("collectionId");
       expect(result.shape).toHaveProperty("collectionName");
     });
 
-    it("should return schema from remote if superuser credentials are provided", async () => {
-      const result = (await generateSchema(options)) as ZodObject<
+    it("should return schema from remote if superuser token is provided", async () => {
+      const result = (await generateSchema(options, token)) as ZodObject<
         Record<string, ZodSchema<unknown>>
       >;
 
@@ -49,11 +62,14 @@ describe("generateSchema", () => {
     });
 
     it("should return schema from local file if path is provided", async () => {
-      const result = (await generateSchema({
-        ...options,
-        superuserCredentials: undefined,
-        localSchema: "test/_mocks/superuser_schema.json"
-      })) as ZodObject<Record<string, ZodSchema<unknown>>>;
+      const result = (await generateSchema(
+        {
+          ...options,
+          superuserCredentials: undefined,
+          localSchema: "test/_mocks/superuser_schema.json"
+        },
+        undefined
+      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
 
       expect(Object.keys(result.shape)).toEqual([
         "id",
@@ -72,10 +88,13 @@ describe("generateSchema", () => {
     it("should not log error if id field is present in schema", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error");
 
-      await generateSchema({
-        ...options,
-        idField: "email"
-      });
+      await generateSchema(
+        {
+          ...options,
+          idField: "email"
+        },
+        token
+      );
 
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
@@ -83,10 +102,13 @@ describe("generateSchema", () => {
     it("should log error if id field is not present in schema", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error");
 
-      await generateSchema({
-        ...options,
-        idField: "nonexistent"
-      });
+      await generateSchema(
+        {
+          ...options,
+          idField: "nonexistent"
+        },
+        token
+      );
 
       expect(consoleErrorSpy).toHaveBeenCalledOnce();
     });
@@ -94,10 +116,13 @@ describe("generateSchema", () => {
     it("should log error if id field is not of a valid type", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error");
 
-      await generateSchema({
-        ...options,
-        idField: "verified"
-      });
+      await generateSchema(
+        {
+          ...options,
+          idField: "verified"
+        },
+        token
+      );
 
       expect(consoleErrorSpy).toHaveBeenCalledOnce();
     });
@@ -107,10 +132,13 @@ describe("generateSchema", () => {
     it("should not log error if content field is present in schema", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error");
 
-      await generateSchema({
-        ...options,
-        contentFields: "email"
-      });
+      await generateSchema(
+        {
+          ...options,
+          contentFields: "email"
+        },
+        token
+      );
 
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
@@ -118,10 +146,13 @@ describe("generateSchema", () => {
     it("should log error if content field is not present in schema", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error");
 
-      await generateSchema({
-        ...options,
-        contentFields: "nonexistent"
-      });
+      await generateSchema(
+        {
+          ...options,
+          contentFields: "nonexistent"
+        },
+        token
+      );
 
       expect(consoleErrorSpy).toHaveBeenCalledOnce();
     });
@@ -129,10 +160,13 @@ describe("generateSchema", () => {
     it("should log error if one content field is not present in schema", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error");
 
-      await generateSchema({
-        ...options,
-        contentFields: ["email", "nonexistent"]
-      });
+      await generateSchema(
+        {
+          ...options,
+          contentFields: ["email", "nonexistent"]
+        },
+        token
+      );
 
       expect(consoleErrorSpy).toHaveBeenCalledOnce();
     });
@@ -142,10 +176,13 @@ describe("generateSchema", () => {
     it("should log error if updated field is not present in schema", async () => {
       const consoleErrorSpy = vi.spyOn(console, "error");
 
-      await generateSchema({
-        ...options,
-        updatedField: "nonexistent"
-      });
+      await generateSchema(
+        {
+          ...options,
+          updatedField: "nonexistent"
+        },
+        token
+      );
 
       expect(consoleErrorSpy).toHaveBeenCalledOnce();
     });
@@ -153,10 +190,13 @@ describe("generateSchema", () => {
     it("should log warning if updated field is not of type autodate", async () => {
       const consoleWarnSpy = vi.spyOn(console, "warn");
 
-      await generateSchema({
-        ...options,
-        updatedField: "email"
-      });
+      await generateSchema(
+        {
+          ...options,
+          updatedField: "email"
+        },
+        token
+      );
 
       expect(consoleWarnSpy).toHaveBeenCalledOnce();
     });
@@ -164,10 +204,13 @@ describe("generateSchema", () => {
     it("should log warning if updated field does not have onUpdate set", async () => {
       const consoleWarnSpy = vi.spyOn(console, "warn");
 
-      await generateSchema({
-        ...options,
-        updatedField: "created"
-      });
+      await generateSchema(
+        {
+          ...options,
+          updatedField: "created"
+        },
+        token
+      );
 
       expect(consoleWarnSpy).toHaveBeenCalledOnce();
     });
@@ -175,7 +218,7 @@ describe("generateSchema", () => {
 
   it("should return entry with transformed file fields", async () => {
     const testOptions = { ...options, collectionName: "users" };
-    const schema = await generateSchema(testOptions);
+    const schema = await generateSchema(testOptions, token);
 
     const entry = {
       id: "123",

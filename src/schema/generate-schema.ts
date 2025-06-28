@@ -28,14 +28,18 @@ const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
  * If a path to a local schema file is provided, the schema is read from the file.
  *
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
+ * @param token The superuser token to authenticate the request.
  */
 export async function generateSchema(
-  options: PocketBaseLoaderOptions
+  options: PocketBaseLoaderOptions,
+  token: string | undefined
 ): Promise<ZodSchema> {
   let collection: PocketBaseCollection | undefined;
 
-  // Try to get the schema directly from the PocketBase instance
-  collection = await getRemoteSchema(options);
+  if (token) {
+    // Try to get the schema directly from the PocketBase instance
+    collection = await getRemoteSchema(options, token);
+  }
 
   const hasSuperuserRights = !!collection || !!options.superuserCredentials;
 
