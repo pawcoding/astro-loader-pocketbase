@@ -133,7 +133,7 @@ export async function generateSchema(
     }
   }
 
-  if (options.expand) {
+  if (options.expand && options.expand.length > 0) {
     for (const expandedFieldName of options.expand) {
       const [currentLevelFieldName, deeperExpandFields] =
         getCurrentLevelExpandedFieldName(expandedFieldName);
