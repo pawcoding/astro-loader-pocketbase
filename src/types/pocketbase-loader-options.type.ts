@@ -58,16 +58,24 @@ export interface PocketBaseLoaderOptions {
    * Credentials of a superuser to get full access to the PocketBase instance.
    * This is required to get automatic type generation without a local schema, to access all resources even if they are not public and to fetch content of hidden fields.
    */
-  superuserCredentials?: {
-    /**
-     * Email of the superuser.
-     */
-    email: string;
-    /**
-     * Password of the superuser.
-     */
-    password: string;
-  };
+  superuserCredentials?:
+    | {
+        /**
+         * Email of the superuser.
+         */
+        email: string;
+        /**
+         * Password of the superuser.
+         */
+        password: string;
+      }
+    | {
+        /**
+         * Impersonate auth token of the superuser.
+         * This token will take precedence over the email and password.
+         */
+        impersonateToken: string;
+      };
   /**
    * File path to the local schema file.
    * This file will be used to generate the schema for the collection.
