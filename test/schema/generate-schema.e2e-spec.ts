@@ -13,9 +13,15 @@ describe("generateSchema", () => {
   beforeAll(async () => {
     await checkE2eConnection();
 
+    assert(options.superuserCredentials, "Superuser credentials are not set.");
+    assert(
+      !("impersonateToken" in options.superuserCredentials),
+      "Impersonate token should not be used in tests."
+    );
+
     const superuserToken = await getSuperuserToken(
       options.url,
-      options.superuserCredentials!
+      options.superuserCredentials
     );
     assert(superuserToken, "Superuser token should not be undefined");
 
