@@ -42,7 +42,7 @@ export interface PocketBaseSchemaEntry {
 
   /**
    * The associated collection id that the relation field is referencing
-   * This is only present on "relation"fields.
+   * This is only present on "relation" fields.
    */
   collectionId?: string;
 }

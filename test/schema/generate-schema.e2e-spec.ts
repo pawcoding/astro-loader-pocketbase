@@ -312,8 +312,8 @@ describe("generateSchema", () => {
         console.log(error);
       }
 
-      deleteCollection(redCollectionOptions, superuserToken);
-      deleteCollection(blueCollectionOptions, superuserToken);
+      await deleteCollection(redCollectionOptions, superuserToken);
+      await deleteCollection(blueCollectionOptions, superuserToken);
     });
   });
 });

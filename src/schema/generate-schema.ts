@@ -149,7 +149,7 @@ export async function generateSchema(
             `The provided field in the expand property "${expandedFieldName}" does not have an associated collection linked to it, we need this in order to know the shape of the related schema.`
           );
         } else {
-          const expandedchema = await generateSchema({
+          const expandedSchema = await generateSchema({
             collectionName: expandedFieldDefinition.collectionId,
             superuserCredentials: options.superuserCredentials,
             localSchema: options.localSchema,
@@ -201,7 +201,7 @@ export async function generateSchema(
  * Builds a Zod object schema from expandedFields, where each property is either a ZodSchema or an array of ZodSchema.
  */
 export function buildExpandSchema(
-  expandedFields: Record<string, ZodSchema | Array<ZodSchema>>
+  expandedFields: ExpandedFields
 ): ZodObject<Record<string, ZodSchema | z.ZodArray<ZodSchema>>> {
   const shape: Record<string, ZodSchema | z.ZodArray<ZodSchema>> = {};
 
