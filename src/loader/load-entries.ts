@@ -9,8 +9,6 @@ import { parseEntry } from "./parse-entry";
  * @param context Context of the loader.
  * @param superuserToken Superuser token to access all resources.
  * @param lastModified Date of the last fetch to only update changed entries.
- *
- * @returns `true` if the collection has an updated column, `false` otherwise.
  */
 export async function loadEntries(
   options: PocketBaseLoaderOptions,
