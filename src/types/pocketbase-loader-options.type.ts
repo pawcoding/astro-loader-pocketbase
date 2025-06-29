@@ -55,6 +55,19 @@ export interface PocketBaseLoaderOptions {
    */
   filter?: string;
   /**
+   * array of relational field names to auto expand when loading data from PocketBase.
+   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
+   * Example:
+   * ```ts
+   * // config:
+   * expand: ['relatedField1', 'relatedField2']
+   *
+   * // request
+   * `?expand=relatedField1,relatedField2`
+   * ```
+   */
+  expand?: Array<string>;
+  /**
    * Credentials of a superuser to get full access to the PocketBase instance.
    * This is required to get automatic type generation without a local schema, to access all resources even if they are not public and to fetch content of hidden fields.
    */
