@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { assert, beforeAll, describe, expect, it } from "vitest";
 import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderContext } from "../_mocks/create-loader-context";
@@ -32,9 +32,15 @@ describe("getSuperuserToken", () => {
   });
 
   it("should return token if fetch request is successful", async () => {
+    assert(options.superuserCredentials, "Superuser credentials are not set.");
+    assert(
+      !("impersonateToken" in options.superuserCredentials),
+      "Impersonate token should not be used in tests."
+    );
+
     const result = await getSuperuserToken(
       options.url,
-      options.superuserCredentials!
+      options.superuserCredentials
     );
     expect(result).toBeDefined();
   });

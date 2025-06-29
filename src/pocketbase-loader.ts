@@ -11,11 +11,22 @@ import { getSuperuserToken } from "./utils/get-superuser-token";
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
  */
 export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
-  // Get a superuser token if credentials are provided
   let tokenPromise: Promise<string | undefined>;
   if (options.superuserCredentials) {
-    tokenPromise = getSuperuserToken(options.url, options.superuserCredentials);
+    if ("impersonateToken" in options.superuserCredentials) {
+      // Impersonate token provided, so use it directly.
+      tokenPromise = Promise.resolve(
+        options.superuserCredentials.impersonateToken
+      );
+    } else {
+      // Email and password provided, so get a temporary superuser token.
+      tokenPromise = getSuperuserToken(
+        options.url,
+        options.superuserCredentials
+      );
+    }
   } else {
+    // No credentials provided, so no token can be used.
     tokenPromise = Promise.resolve(undefined);
   }
 

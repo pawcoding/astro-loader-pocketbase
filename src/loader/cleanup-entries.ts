@@ -56,9 +56,16 @@ export async function cleanupEntries(
     if (!collectionRequest.ok) {
       // If the collection is locked, an superuser token is required
       if (collectionRequest.status === 403) {
-        context.logger.error(
-          `The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
-        );
+        if (
+          options.superuserCredentials &&
+          "impersonateToken" in options.superuserCredentials
+        ) {
+          context.logger.error("The given impersonate token is not valid.");
+        } else {
+          context.logger.error(
+            "The collection is not accessible without superuser rights. Please provide superuser credentials in the config."
+          );
+        }
       } else {
         const reason = await collectionRequest
           .json()
