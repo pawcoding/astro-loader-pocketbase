@@ -135,7 +135,7 @@ export async function generateSchema(
 
   if (options.expand && options.expand.length > 0) {
     for (const expandedFieldName of options.expand) {
-      const [currentLevelFieldName, deeperExpandFields] =
+      const [currentLevelFieldName, ...deeperExpandFields] =
         getCurrentLevelExpandedFieldName(expandedFieldName);
 
       const expandedFieldDefinition = collection.fields.find(
@@ -157,7 +157,7 @@ export async function generateSchema(
       const expandedSchema = await generateSchema({
         collectionName: expandedFieldDefinition.collectionId,
         superuserCredentials: options.superuserCredentials,
-        expand: [deeperExpandFields],
+        expand: deeperExpandFields.length ? deeperExpandFields : undefined,
         localSchema: options.localSchema,
         jsonSchemas: options.jsonSchemas,
         improveTypes: options.improveTypes,
@@ -222,10 +222,10 @@ export function buildExpandSchema(
   return z.object(shape);
 }
 
-function getCurrentLevelExpandedFieldName(s: string) {
+function getCurrentLevelExpandedFieldName(s: string): Array<string> {
   const fields = s.split(".");
 
-  if (fields.length <= 7) {
+  if (fields.length >= 7) {
     throw new Error(
       `Expand value ${s} exceeds 6 levels of depth that Pocketbase allows`
     );

@@ -185,7 +185,7 @@ describe("loadEntries", () => {
 
     await loadEntries(testOptions, context, superuserToken, undefined);
 
-    expect(parsedEntries[0]?.expand?.related?.name).toBe(
+    expect(parsedEntries[0]?.expand?.related.name).toBe(
       BLUE_ENTRY_NAME_FIELD_VALUE
     );
 
