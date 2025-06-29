@@ -135,35 +135,39 @@ export async function generateSchema(
 
   if (options.expand) {
     for (const expandedFieldName of options.expand) {
+      const [currentLevelFieldName, deeperExpandFields] =
+        getCurrentLevelExpandedFieldName(expandedFieldName);
+
       const expandedFieldDefinition = collection.fields.find(
-        (field) => field.name === expandedFieldName
+        (field) => field.name === currentLevelFieldName
       );
 
       if (!expandedFieldDefinition) {
-        console.error(
+        throw new Error(
           `The provided field in the expand property "${expandedFieldName}" is not present in the schema of the collection "${options.collectionName}".\nThis will lead to use unable to provide a definition for this field.`
         );
-      } else {
-        if (!expandedFieldDefinition.collectionId) {
-          console.error(
-            `The provided field in the expand property "${expandedFieldName}" does not have an associated collection linked to it, we need this in order to know the shape of the related schema.`
-          );
-        } else {
-          const expandedSchema = await generateSchema({
-            collectionName: expandedFieldDefinition.collectionId,
-            superuserCredentials: options.superuserCredentials,
-            localSchema: options.localSchema,
-            jsonSchemas: options.jsonSchemas,
-            improveTypes: options.improveTypes,
-            url: options.url
-          });
-
-          expandedFields[expandedFieldName] = z.union([
-            expandedchema,
-            z.array(expandedchema)
-          ]);
-        }
       }
+
+      if (!expandedFieldDefinition.collectionId) {
+        throw new Error(
+          `The provided field in the expand property "${expandedFieldName}" does not have an associated collection linked to it, we need this in order to know the shape of the related schema.`
+        );
+      }
+
+      const expandedSchema = await generateSchema({
+        collectionName: expandedFieldDefinition.collectionId,
+        superuserCredentials: options.superuserCredentials,
+        expand: [deeperExpandFields],
+        localSchema: options.localSchema,
+        jsonSchemas: options.jsonSchemas,
+        improveTypes: options.improveTypes,
+        url: options.url
+      });
+
+      expandedFields[expandedFieldName] = z.union([
+        expandedSchema,
+        z.array(expandedSchema)
+      ]);
     }
   }
 
@@ -216,4 +220,16 @@ export function buildExpandSchema(
   }
 
   return z.object(shape);
+}
+
+function getCurrentLevelExpandedFieldName(s: string) {
+  const fields = s.split(".");
+
+  if (fields.length <= 7) {
+    throw new Error(
+      `Expand value ${s} exceeds 6 levels of depth that Pocketbase allows`
+    );
+  }
+
+  return fields;
 }

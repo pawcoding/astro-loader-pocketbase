@@ -268,49 +268,45 @@ describe("generateSchema", () => {
         superuserToken
       );
 
-      try {
-        const testOptions = {
-          ...options,
-          collectionName: redCollectionOptions.collectionName,
-          expand: [RELATION_FIELD_NAME]
-        };
-        const schema = (await generateSchema(testOptions)) as ZodObject<
-          Record<string, ZodSchema<unknown>>
-        >;
+      const testOptions = {
+        ...options,
+        collectionName: redCollectionOptions.collectionName,
+        expand: [RELATION_FIELD_NAME]
+      };
+      const schema = (await generateSchema(testOptions)) as ZodObject<
+        Record<string, ZodSchema<unknown>>
+      >;
 
-        const expandSchema = schema.shape.expand;
-        const validExpand = {
-          related: {
+      const expandSchema = schema.shape.expand;
+      const validExpand = {
+        related: {
+          collectionId: blueCollection.id,
+          collectionName: blueCollection.name,
+          id: "test",
+          name: "Blue Entry"
+        }
+      };
+
+      expect(() => expandSchema.parse(validExpand)).not.toThrow();
+
+      const validArrayExpand = {
+        related: [
+          {
+            collectionId: blueCollection.id,
+            collectionName: blueCollection.name,
+            id: "test",
+            name: "Blue Entry"
+          },
+          {
             collectionId: blueCollection.id,
             collectionName: blueCollection.name,
             id: "test",
             name: "Blue Entry"
           }
-        };
+        ]
+      };
 
-        expect(() => expandSchema.parse(validExpand)).not.toThrow();
-
-        const validArrayExpand = {
-          related: [
-            {
-              collectionId: blueCollection.id,
-              collectionName: blueCollection.name,
-              id: "test",
-              name: "Blue Entry"
-            },
-            {
-              collectionId: blueCollection.id,
-              collectionName: blueCollection.name,
-              id: "test",
-              name: "Blue Entry"
-            }
-          ]
-        };
-
-        expect(() => expandSchema.parse(validArrayExpand)).not.toThrow();
-      } catch (error) {
-        console.log(error);
-      }
+      expect(() => expandSchema.parse(validArrayExpand)).not.toThrow();
 
       await deleteCollection(redCollectionOptions, superuserToken);
       await deleteCollection(blueCollectionOptions, superuserToken);
