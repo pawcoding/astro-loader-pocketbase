@@ -143,11 +143,15 @@ const blog = defineCollection({
     ...options,
     superuserCredentials: {
       email: "<superuser-email>",
-      password: "<superuser-password>"
+      password: "<superuser-password>",
+      // or
+      impersonateToken: "<superuser-impersonate-token>"
     }
   })
 });
 ```
+
+_It's recommended to use an [impersonate token (API token)](https://pocketbase.io/docs/authentication/#api-keys) instead of the email and password, as this is more secure and can be easily revoked._
 
 Under the hood, the loader will use the [PocketBase API](https://pocketbase.io/docs/api-collections/#view-collection) to fetch the schema of your collection and generate types with Zod based on that schema.
 
@@ -193,18 +197,18 @@ This will remove `undefined` from the type of these fields and mark them as requ
 
 ## All options
 
-| Option                 | Type                                  | Required | Description                                                                                                     |
-| ---------------------- | ------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `url`                  | `string`                              | x        | The URL of your PocketBase instance.                                                                            |
-| `collectionName`       | `string`                              | x        | The name of the collection in your PocketBase instance.                                                         |
-| `idField`              | `string`                              |          | The field in the collection to use as unique id. Defaults to `id`.                                              |
-| `contentFields`        | `string \| Array<string>`             |          | The field in the collection to use as content. This can also be an array of fields.                             |
-| `updatedField`         | `string`                              |          | The field in the collection that stores the last update date of an entry. This is used for incremental builds.  |
-| `filter`               | `string`                              |          | Custom filter to use when fetching entries. Used to filter the entries by specific conditions.                  |
-| `superuserCredentials` | `{ email: string, password: string }` |          | The email and password of the superuser of the PocketBase instance. This is used for automatic type generation. |
-| `localSchema`          | `string`                              |          | The path to a local schema file. This is used for automatic type generation.                                    |
-| `jsonSchemas`          | `Record<string, z.ZodSchema>`         |          | A record of Zod schemas to use for type generation of `json` fields.                                            |
-| `improveTypes`         | `boolean`                             |          | Whether to improve the types of `number` and `boolean` fields, removing `undefined` from them.                  |
+| Option                 | Type                                                                  | Required | Description                                                                                                                        |
+| ---------------------- | --------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `url`                  | `string`                                                              | x        | The URL of your PocketBase instance.                                                                                               |
+| `collectionName`       | `string`                                                              | x        | The name of the collection in your PocketBase instance.                                                                            |
+| `idField`              | `string`                                                              |          | The field in the collection to use as unique id. Defaults to `id`.                                                                 |
+| `contentFields`        | `string \| Array<string>`                                             |          | The field in the collection to use as content. This can also be an array of fields.                                                |
+| `updatedField`         | `string`                                                              |          | The field in the collection that stores the last update date of an entry. This is used for incremental builds.                     |
+| `filter`               | `string`                                                              |          | Custom filter to use when fetching entries. Used to filter the entries by specific conditions.                                     |
+| `superuserCredentials` | `{ email: string, password: string } \| { impersonateToken: string }` |          | The email and password or impersonate token of a superuser of the PocketBase instance. This is used for automatic type generation. |
+| `localSchema`          | `string`                                                              |          | The path to a local schema file. This is used for automatic type generation.                                                       |
+| `jsonSchemas`          | `Record<string, z.ZodSchema>`                                         |          | A record of Zod schemas to use for type generation of `json` fields.                                                               |
+| `improveTypes`         | `boolean`                                                             |          | Whether to improve the types of `number` and `boolean` fields, removing `undefined` from them.                                     |
 
 ## Special cases
 

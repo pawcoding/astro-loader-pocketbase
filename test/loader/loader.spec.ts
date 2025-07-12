@@ -5,12 +5,10 @@ import { cleanupEntries } from "../../src/loader/cleanup-entries";
 import { handleRealtimeUpdates } from "../../src/loader/handle-realtime-updates";
 import { loadEntries } from "../../src/loader/load-entries";
 import { loader } from "../../src/loader/loader";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { createLoaderContext } from "../_mocks/create-loader-context";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 
-vi.mock("../../src/utils/get-superuser-token");
 vi.mock("../../src/utils/should-refresh");
 vi.mock("../../src/loader/cleanup-entries");
 vi.mock("../../src/loader/handle-realtime-updates");
@@ -21,7 +19,6 @@ describe("loader", async () => {
   const options = createLoaderOptions({ updatedField: "updated" });
   const srm = await import("../../src/utils/should-refresh");
   const hrum = await import("../../src/loader/handle-realtime-updates");
-  const gstm = await import("../../src/utils/get-superuser-token");
 
   beforeEach(() => {
     context = createLoaderContext();
@@ -39,7 +36,7 @@ describe("loader", async () => {
   test('should not refresh if shouldRefresh returns "skip"', async () => {
     srm.shouldRefresh = vi.fn().mockReturnValue("skip");
 
-    await loader(context, options);
+    await loader(context, options, undefined);
 
     expect(srm.shouldRefresh).toHaveBeenCalledOnce();
     expect(handleRealtimeUpdates).not.toHaveBeenCalled();
@@ -50,7 +47,7 @@ describe("loader", async () => {
     srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
     hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(true);
 
-    await loader(context, options);
+    await loader(context, options, undefined);
 
     expect(handleRealtimeUpdates).toHaveBeenCalledOnce();
     expect(loadEntries).not.toHaveBeenCalled();
@@ -59,10 +56,9 @@ describe("loader", async () => {
   test('should clear store and disable incremental builds if shouldRefresh returns "force"', async () => {
     srm.shouldRefresh = vi.fn().mockReturnValue("force");
     hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
-    gstm.getSuperuserToken = vi.fn().mockResolvedValue(undefined);
     const storeClearSpy = vi.spyOn(context.store, "clear");
 
-    await loader(context, options);
+    await loader(context, options, undefined);
 
     expect(storeClearSpy).toHaveBeenCalledOnce();
     expect(loadEntries).toHaveBeenCalledWith(
@@ -76,11 +72,10 @@ describe("loader", async () => {
   test("should clear store and disable incremental builds if version changes", async () => {
     srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
     hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
-    gstm.getSuperuserToken = vi.fn().mockResolvedValue(undefined);
     const storeClearSpy = vi.spyOn(context.store, "clear");
     context.meta.set("version", "invalidVersion");
 
-    await loader(context, options);
+    await loader(context, options, undefined);
 
     expect(storeClearSpy).toHaveBeenCalledOnce();
     expect(loadEntries).toHaveBeenCalledWith(
@@ -94,10 +89,9 @@ describe("loader", async () => {
   test("should disable incremental builds if no updatedField is provided", async () => {
     srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
     hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
-    gstm.getSuperuserToken = vi.fn().mockResolvedValue(undefined);
     options.updatedField = undefined;
 
-    await loader(context, options);
+    await loader(context, options, undefined);
 
     expect(loadEntries).toHaveBeenCalledWith(
       options,
@@ -107,17 +101,15 @@ describe("loader", async () => {
     );
   });
 
-  test("should get superuser token if superuserCredentials are provided", async () => {
+  test("should use superuser token if provided", async () => {
     const token = "token";
     srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
     hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
-    gstm.getSuperuserToken = vi.fn().mockResolvedValue(token);
     const entry = createPocketbaseEntry();
     context.store.set({ id: entry.id, data: entry });
 
-    await loader(context, options);
+    await loader(context, options, token);
 
-    expect(getSuperuserToken).toHaveBeenCalledOnce();
     expect(cleanupEntries).toHaveBeenCalledWith(options, context, token);
     expect(loadEntries).toHaveBeenCalledWith(
       options,
@@ -130,11 +122,10 @@ describe("loader", async () => {
   test("should cleanup old entries if store has keys", async () => {
     srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
     hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
-    gstm.getSuperuserToken = vi.fn().mockResolvedValue(undefined);
     const entry = createPocketbaseEntry();
     context.store.set({ id: entry.id, data: entry });
 
-    await loader(context, options);
+    await loader(context, options, undefined);
 
     expect(cleanupEntries).toHaveBeenCalledWith(options, context, undefined);
   });
@@ -142,11 +133,10 @@ describe("loader", async () => {
   test("should set last-modified and version in meta after loading entries", async () => {
     srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
     hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
-    gstm.getSuperuserToken = vi.fn().mockResolvedValue(undefined);
     context.meta.delete("last-modified");
     context.meta.delete("version");
 
-    await loader(context, options);
+    await loader(context, options, undefined);
 
     expect(context.meta.get("last-modified")).toBeDefined();
     expect(context.meta.get("version")).toBe(packageJson.version);

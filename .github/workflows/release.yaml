@@ -44,6 +44,10 @@ jobs:
       - name: 🧹 Check format
         run: npm run format:check
 
+      # Type check
+      - name: 🧪 Type check
+        run: npm run typecheck
+
       # Run tests
       - name: 🧪 Run unit tests
         run: npm run test:unit
@@ -76,3 +80,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Update project on website
+      - name: 🖥️ Update website
+        if: github.repository == 'pawcoding/astro-loader-pocketbase' && steps.release.outputs.new_release_published == 'true' && !steps.release.outputs.new_release_channel  && steps.release.outputs.new_release_patch_version == '0'
+        uses: pawcoding/update-project-action@v0.0.2
+        with:
+          pocketbase-url: ${{ vars.PB_URL }}
+          collection-id: ${{ vars.PB_COLLECTION }}
+          record-id: ${{ vars.PB_RECORD }}
+        env:
+          PB_EMAIL: ${{ secrets.PB_EMAIL }}
+          PB_PASSWORD: ${{ secrets.PB_PASSWORD }}

@@ -9,8 +9,6 @@ import { parseEntry } from "./parse-entry";
  * @param context Context of the loader.
  * @param superuserToken Superuser token to access all resources.
  * @param lastModified Date of the last fetch to only update changed entries.
- *
- * @returns `true` if the collection has an updated column, `false` otherwise.
  */
 export async function loadEntries(
   options: PocketBaseLoaderOptions,
@@ -83,9 +81,16 @@ export async function loadEntries(
     if (!collectionRequest.ok) {
       // If the collection is locked, an superuser token is required
       if (collectionRequest.status === 403) {
-        throw new Error(
-          `The collection is not accessible without superuser rights. Please provide superuser credentials in the config.`
-        );
+        if (
+          options.superuserCredentials &&
+          "impersonateToken" in options.superuserCredentials
+        ) {
+          throw new Error("The given impersonate token is not valid.");
+        } else {
+          throw new Error(
+            "The collection is not accessible without superuser rights. Please provide superuser credentials in the config."
+          );
+        }
       }
 
       // Get the reason for the error

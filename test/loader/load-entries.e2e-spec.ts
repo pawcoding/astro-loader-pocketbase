@@ -40,9 +40,15 @@ describe("loadEntries", () => {
     context = createLoaderContext();
     parsedEntrySpy = vi.spyOn(parseEntry, "parseEntry") as Mock;
 
+    assert(options.superuserCredentials, "Superuser credentials are not set.");
+    assert(
+      !("impersonateToken" in options.superuserCredentials),
+      "Impersonate token should not be used in tests."
+    );
+
     const token = await getSuperuserToken(
       options.url,
-      options.superuserCredentials!
+      options.superuserCredentials
     );
 
     assert(token, "Superuser token is not available.");

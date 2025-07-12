@@ -1,6 +1,6 @@
 {
   "name": "astro-loader-pocketbase",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "A content loader for Astro that uses the PocketBase API",
   "keywords": [
     "astro",
@@ -39,31 +39,33 @@
     "test:e2e:watch": "vitest watch $(find test -name '*.e2e-spec.ts')",
     "test:unit": "vitest run $(find test -name '*.spec.ts')",
     "test:unit:watch": "vitest watch $(find test -name '*.spec.ts')",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "typecheck": "npx tsc --noEmit"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.0",
-    "@commitlint/config-conventional": "^19.8.0",
-    "@eslint/js": "^9.24.0",
-    "@stylistic/eslint-plugin": "^4.2.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.30.1",
+    "@stylistic/eslint-plugin": "^5.1.0",
     "@types/node": "^22.14.1",
-    "@vitest/coverage-v8": "^3.1.1",
-    "astro": "^5.7.3",
-    "eslint": "^9.24.0",
-    "eslint-config-prettier": "^10.1.2",
-    "globals": "^16.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "astro": "^5.11.0",
+    "eslint": "^9.30.1",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.3.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.1",
-    "prettier": "^3.5.3",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.1.0",
-    "prettier-plugin-packagejson": "^2.5.10",
+    "prettier-plugin-packagejson": "^2.5.18",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.30.1",
-    "vitest": "^3.1.1"
+    "typescript-eslint": "^8.35.1",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "astro": "^5.0.0"
   },
+  "packageManager": "npm@11.4.2",
   "publishConfig": {
     "access": "public",
     "provenance": true
