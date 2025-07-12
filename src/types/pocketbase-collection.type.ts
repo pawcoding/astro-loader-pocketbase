@@ -1,10 +1,9 @@
-import type { ZodSchema } from "astro/zod";
 import type { PocketBaseSchemaEntry } from "./pocketbase-schema.type";
 
 /**
- * Base interface for all PocketBase entries.
+ * Base interface for all PocketBase collections.
  */
-interface PocketBaseBaseCollection {
+export interface PocketBaseCollection {
   /**
    * ID of the collection.
    */
@@ -22,11 +21,3 @@ interface PocketBaseBaseCollection {
    */
   fields: Array<PocketBaseSchemaEntry>;
 }
-
-/**
- * Type for a PocketBase entry.
- */
-export type PocketBaseCollection = PocketBaseBaseCollection &
-  Record<string, unknown>;
-
-export type ExpandedFields = Record<string, ZodSchema | Array<ZodSchema>>;

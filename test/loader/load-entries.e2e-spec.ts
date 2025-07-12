@@ -12,7 +12,7 @@ import {
   type Mock
 } from "vitest";
 import { loadEntries } from "../../src/loader/load-entries";
-import { parseEntry } from "../../src/loader/parse-entry";
+import * as parseEntry from "../../src/loader/parse-entry";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
 import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { checkE2eConnection } from "../_mocks/check-e2e-connection";
@@ -30,6 +30,7 @@ describe("loadEntries", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
   let context: LoaderContext;
   let superuserToken: string;
+  let parsedEntrySpy: Mock;
 
   beforeAll(async () => {
     await checkE2eConnection();
@@ -37,6 +38,7 @@ describe("loadEntries", () => {
 
   beforeEach(async () => {
     context = createLoaderContext();
+    parsedEntrySpy = vi.spyOn(parseEntry, "parseEntry") as Mock;
 
     const token = await getSuperuserToken(
       options.url,
@@ -54,7 +56,7 @@ describe("loadEntries", () => {
   test("should fetch entries without errors", async () => {
     await loadEntries(options, context, superuserToken, undefined);
 
-    expect(parseEntry).toHaveBeenCalledOnce();
+    expect(parsedEntrySpy).toHaveBeenCalledOnce();
   });
 
   test("should handle empty response gracefully", async () => {
@@ -62,7 +64,7 @@ describe("loadEntries", () => {
 
     await loadEntries(testOptions, context, superuserToken, undefined);
 
-    expect(parseEntry).not.toHaveBeenCalled();
+    expect(parsedEntrySpy).not.toHaveBeenCalled();
   });
 
   test("should load all pages", async () => {
@@ -81,7 +83,7 @@ describe("loadEntries", () => {
 
     await loadEntries(testOptions, context, superuserToken, undefined);
 
-    expect(parseEntry).toHaveBeenCalledTimes(numberOfEntries);
+    expect(parsedEntrySpy).toHaveBeenCalledTimes(numberOfEntries);
 
     await deleteCollection(testOptions, superuserToken);
   });
@@ -116,7 +118,7 @@ describe("loadEntries", () => {
     );
     await loadEntries(testOptions, context, superuserToken, undefined);
 
-    expect(parseEntry).toHaveBeenCalledTimes(numberOfEntries);
+    expect(parsedEntrySpy).toHaveBeenCalledTimes(numberOfEntries);
 
     await deleteCollection(testOptions, superuserToken);
   });
@@ -178,16 +180,14 @@ describe("loadEntries", () => {
       superuserToken
     );
 
-    (parseEntry as Mock).mockImplementation((entry: PocketBaseEntry) => {
-      parsedEntries.push(entry);
-      return entry; // or whatever parseEntry should return
-    });
-
     await loadEntries(testOptions, context, superuserToken, undefined);
 
-    expect(parsedEntries[0]?.expand?.related.name).toBe(
-      BLUE_ENTRY_NAME_FIELD_VALUE
-    );
+    const entryFromCall = parsedEntrySpy!.mock.calls[0][0];
+
+    const relatedEntry = entryFromCall.expand?.related as PocketBaseEntry;
+
+    // Ensure expand and related exist and are of expected type
+    expect(relatedEntry?.name).toBe(BLUE_ENTRY_NAME_FIELD_VALUE);
 
     await deleteCollection(redCollectionOptions, superuserToken);
     await deleteCollection(blueCollectionOptions, superuserToken);
@@ -198,7 +198,7 @@ describe("loadEntries", () => {
       const lastModified = new Date(Date.now() - DAY).toISOString();
       await loadEntries(options, context, superuserToken, lastModified);
 
-      expect(parseEntry).toHaveBeenCalledOnce();
+      expect(parsedEntrySpy).toHaveBeenCalledOnce();
     });
 
     test("should fetch updated entries", async () => {
@@ -207,7 +207,7 @@ describe("loadEntries", () => {
 
       await loadEntries(testOptions, context, superuserToken, lastModified);
 
-      expect(parseEntry).toHaveBeenCalledOnce();
+      expect(parsedEntrySpy).toHaveBeenCalledOnce();
     });
 
     test("should do nothing without updated entries", async () => {
@@ -216,7 +216,7 @@ describe("loadEntries", () => {
 
       await loadEntries(testOptions, context, superuserToken, lastModified);
 
-      expect(parseEntry).not.toHaveBeenCalled();
+      expect(parsedEntrySpy).not.toHaveBeenCalled();
     });
 
     test("should not fetch updated entries excluded from filter", async () => {
@@ -229,7 +229,7 @@ describe("loadEntries", () => {
 
       await loadEntries(testOptions, context, superuserToken, lastModified);
 
-      expect(parseEntry).not.toHaveBeenCalled();
+      expect(parsedEntrySpy).not.toHaveBeenCalled();
     });
   });
 

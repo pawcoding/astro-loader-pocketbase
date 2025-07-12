@@ -1,9 +1,6 @@
-import type { ZodObject, ZodSchema } from "astro/zod";
+import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
-import type {
-  ExpandedFields,
-  PocketBaseCollection
-} from "../types/pocketbase-collection.type";
+import type { PocketBaseCollection } from "../types/pocketbase-collection.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { getRemoteSchema } from "./get-remote-schema";
 import { parseExpandedSchemaField, parseSchema } from "./parse-schema";
@@ -36,7 +33,7 @@ export async function generateSchema(
   options: PocketBaseLoaderOptions
 ): Promise<ZodSchema> {
   let collection: PocketBaseCollection | undefined;
-  const expandedFields: ExpandedFields = {};
+  const expandedFields: Record<string, z.ZodType> = {};
 
   // Try to get the schema directly from the PocketBase instance
   collection = await getRemoteSchema(options);
@@ -154,8 +151,6 @@ export async function generateSchema(
         );
       }
 
-      const isRequired = expandedFieldDefinition.required;
-
       const expandedSchema = await generateSchema({
         collectionName: expandedFieldDefinition.collectionId,
         superuserCredentials: options.superuserCredentials,
@@ -173,14 +168,10 @@ export async function generateSchema(
     }
   }
 
-  const expandSchema = {
-    expand: buildExpandSchema(expandedFields).optional()
-  };
-
   const schema = z.object({
     ...BASIC_SCHEMA,
     ...fields,
-    ...expandSchema
+    expand: z.optional(z.object(expandedFields))
   });
 
   // Get all file fields
@@ -194,34 +185,9 @@ export async function generateSchema(
   }
 
   // Transform file names to file urls
-  return schema.transform((entry) => {
-    if (Array.isArray(entry)) {
-      return entry.map((e) => transformFiles(options.url, fileFields, e));
-    }
-
-    return transformFiles(options.url, fileFields, entry);
-  });
-}
-
-/**
- * Builds a Zod object schema from expandedFields, where each property is either a ZodSchema or an array of ZodSchema.
- */
-export function buildExpandSchema(
-  expandedFields: ExpandedFields
-): ZodObject<Record<string, ZodSchema | z.ZodArray<ZodSchema>>> {
-  const shape: Record<string, ZodSchema | z.ZodArray<ZodSchema>> = {};
-
-  for (const key in expandedFields) {
-    const value = expandedFields[key];
-    if (Array.isArray(value)) {
-      // If it's an array, wrap the first element as a ZodArray (assuming all elements are the same schema)
-      shape[key] = z.array(value[0]);
-    } else {
-      shape[key] = value;
-    }
-  }
-
-  return z.object(shape);
+  return schema.transform((entry) =>
+    transformFiles(options.url, fileFields, entry)
+  );
 }
 
 function getCurrentLevelExpandedFieldName(s: string): Array<string> {

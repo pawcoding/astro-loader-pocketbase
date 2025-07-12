@@ -66,7 +66,7 @@ export async function loadEntries(
       searchParams.set("filter", filters.join("&&"));
     }
 
-    // Add filters to search parameters
+    // Add expand to search parameters
     if (options.expand) {
       searchParams.set("expand", options.expand.join(","));
     }

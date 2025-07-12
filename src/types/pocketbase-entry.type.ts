@@ -17,7 +17,7 @@ interface PocketBaseBaseEntry {
   /**
    * Optional property that contains all relational fields that have been expanded to contain their linked entry(s)
    */
-  expand?: Record<string, PocketBaseEntry>;
+  expand?: Record<string, PocketBaseEntry | Array<PocketBaseEntry | null>>;
 }
 
 /**
