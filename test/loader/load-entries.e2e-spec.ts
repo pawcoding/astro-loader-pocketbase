@@ -166,8 +166,6 @@ describe("loadEntries", () => {
       superuserToken
     );
 
-    const parsedEntries: Array<PocketBaseEntry> = [];
-
     const blueEntry = await insertEntry(
       { name: BLUE_ENTRY_NAME_FIELD_VALUE },
       blueCollectionOptions,
@@ -183,7 +181,6 @@ describe("loadEntries", () => {
     await loadEntries(testOptions, context, superuserToken, undefined);
 
     const entryFromCall = parsedEntrySpy!.mock.calls[0][0];
-
     const relatedEntry = entryFromCall.expand?.related as PocketBaseEntry;
 
     // Ensure expand and related exist and are of expected type
