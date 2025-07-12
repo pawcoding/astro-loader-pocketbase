@@ -1,12 +1,13 @@
 import { z } from "astro/zod";
 import { describe, expect, test } from "vitest";
 import { parseSchema } from "../../src/schema/parse-schema";
-import type { PocketBaseCollection } from "../../src/types/pocketbase-schema.type";
+import type { PocketBaseCollection } from "../../src/types/pocketbase-collection.type";
 
 describe("parseSchema", () => {
   describe("number", () => {
     test("should parse number fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "numberCollection",
         type: "base",
         fields: [{ name: "age", type: "number", required: true, hidden: false }]
@@ -25,6 +26,7 @@ describe("parseSchema", () => {
 
     test("should parse optional number fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "numberCollection",
         type: "base",
         fields: [
@@ -44,6 +46,7 @@ describe("parseSchema", () => {
 
     test("should parse optional number fields correctly with improved types", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "numberCollection",
         type: "base",
         fields: [
@@ -65,6 +68,7 @@ describe("parseSchema", () => {
   describe("boolean", () => {
     test("should parse boolean fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "booleanCollection",
         type: "base",
         fields: [
@@ -85,6 +89,7 @@ describe("parseSchema", () => {
 
     test("should parse optional boolean fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "booleanCollection",
         type: "base",
         fields: [
@@ -104,6 +109,7 @@ describe("parseSchema", () => {
 
     test("should parse optional boolean fields correctly with improved types", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "booleanCollection",
         type: "base",
         fields: [
@@ -125,6 +131,7 @@ describe("parseSchema", () => {
   describe("date", () => {
     test("should parse date fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "dateCollection",
         type: "base",
         fields: [
@@ -147,6 +154,7 @@ describe("parseSchema", () => {
 
     test("should parse optional date fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "dateCollection",
         type: "base",
         fields: [
@@ -168,6 +176,7 @@ describe("parseSchema", () => {
   describe("autodate", () => {
     test("should parse autodate fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "dateCollection",
         type: "base",
         fields: [
@@ -195,6 +204,7 @@ describe("parseSchema", () => {
 
     test("should parse optional autodate fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "dateCollection",
         type: "base",
         fields: [
@@ -219,6 +229,7 @@ describe("parseSchema", () => {
 
     test("should parse autodate fields with onCreate correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "dateCollection",
         type: "base",
         fields: [
@@ -246,6 +257,7 @@ describe("parseSchema", () => {
   describe("geoPoint", () => {
     test("should parse geoPoint fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "geoPointCollection",
         type: "base",
         fields: [
@@ -274,6 +286,7 @@ describe("parseSchema", () => {
 
     test("should parse optional geoPoint fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "geoPointCollection",
         type: "base",
         fields: [
@@ -300,6 +313,7 @@ describe("parseSchema", () => {
   describe("select", () => {
     test("should parse select fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "selectCollection",
         type: "base",
         fields: [
@@ -326,6 +340,7 @@ describe("parseSchema", () => {
 
     test("should throw an error if no values are defined", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "selectCollection",
         type: "base",
         fields: [
@@ -343,6 +358,7 @@ describe("parseSchema", () => {
 
     test("should parse select fields with multiple values correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "selectCollection",
         type: "base",
         fields: [
@@ -372,6 +388,7 @@ describe("parseSchema", () => {
 
     test("should parse optional select fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "selectCollection",
         type: "base",
         fields: [
@@ -400,6 +417,7 @@ describe("parseSchema", () => {
   describe("relation", () => {
     test("should parse relation fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "relationCollection",
         type: "base",
         fields: [
@@ -425,6 +443,7 @@ describe("parseSchema", () => {
 
     test("should parse relation fields with multiple values correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "relationCollection",
         type: "base",
         fields: [
@@ -451,6 +470,7 @@ describe("parseSchema", () => {
 
     test("should parse optional relation fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "relationCollection",
         type: "base",
         fields: [
@@ -478,6 +498,7 @@ describe("parseSchema", () => {
   describe("file", () => {
     test("should parse file fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "fileCollection",
         type: "base",
         fields: [
@@ -503,6 +524,7 @@ describe("parseSchema", () => {
 
     test("should parse file fields with multiple values correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "fileCollection",
         type: "base",
         fields: [
@@ -536,6 +558,7 @@ describe("parseSchema", () => {
 
     test("should parse optional file fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "fileCollection",
         type: "base",
         fields: [
@@ -563,6 +586,7 @@ describe("parseSchema", () => {
   describe("json", () => {
     test("should parse json fields with custom schema correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "jsonCollection",
         type: "base",
         fields: [
@@ -601,6 +625,7 @@ describe("parseSchema", () => {
 
     test("should parse json fields without custom schema correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "jsonCollection",
         type: "base",
         fields: [
@@ -631,6 +656,7 @@ describe("parseSchema", () => {
 
     test("should parse optional json fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "jsonCollection",
         type: "base",
         fields: [
@@ -660,6 +686,7 @@ describe("parseSchema", () => {
   describe("text", () => {
     test("should parse text fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "stringCollection",
         type: "base",
         fields: [{ name: "name", type: "text", required: true, hidden: false }]
@@ -678,6 +705,7 @@ describe("parseSchema", () => {
 
     test("should parse optional text fields correctly", () => {
       const collection: PocketBaseCollection = {
+        id: "0",
         name: "stringCollection",
         type: "base",
         fields: [{ name: "name", type: "text", required: false, hidden: false }]
