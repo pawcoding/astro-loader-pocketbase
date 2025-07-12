@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import type { PocketBaseCollection } from "../types/pocketbase-collection.type";
 
 /**
  * Reads the local PocketBase schema file and returns the schema for the specified collection.

@@ -1,9 +1,9 @@
 import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
+import type { PocketBaseCollection } from "../types/pocketbase-collection.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
-import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
 import { getRemoteSchema } from "./get-remote-schema";
-import { parseSchema } from "./parse-schema";
+import { parseExpandedSchemaField, parseSchema } from "./parse-schema";
 import { readLocalSchema } from "./read-local-schema";
 import { transformFiles } from "./transform-files";
 
@@ -35,6 +35,7 @@ export async function generateSchema(
   token: string | undefined
 ): Promise<ZodSchema> {
   let collection: PocketBaseCollection | undefined;
+  const expandedFields: Record<string, z.ZodType> = {};
 
   if (token) {
     // Try to get the schema directly from the PocketBase instance
@@ -133,10 +134,51 @@ export async function generateSchema(
     }
   }
 
-  // Combine the basic schema with the parsed fields
+  if (options.expand && options.expand.length > 0) {
+    for (const expandedFieldName of options.expand) {
+      const [currentLevelFieldName, ...deeperExpandFields] =
+        getCurrentLevelExpandedFieldName(expandedFieldName);
+
+      const expandedFieldDefinition = collection.fields.find(
+        (field) => field.name === currentLevelFieldName
+      );
+
+      if (!expandedFieldDefinition) {
+        throw new Error(
+          `The provided field in the expand property "${expandedFieldName}" is not present in the schema of the collection "${options.collectionName}".\nThis will lead to use unable to provide a definition for this field.`
+        );
+      }
+
+      if (!expandedFieldDefinition.collectionId) {
+        throw new Error(
+          `The provided field in the expand property "${expandedFieldName}" does not have an associated collection linked to it, we need this in order to know the shape of the related schema.`
+        );
+      }
+
+      const expandedSchema = await generateSchema(
+        {
+          collectionName: expandedFieldDefinition.collectionId,
+          superuserCredentials: options.superuserCredentials,
+          expand: deeperExpandFields.length ? deeperExpandFields : undefined,
+          localSchema: options.localSchema,
+          jsonSchemas: options.jsonSchemas,
+          improveTypes: options.improveTypes,
+          url: options.url
+        },
+        token
+      );
+
+      expandedFields[expandedFieldName] = parseExpandedSchemaField(
+        expandedFieldDefinition,
+        expandedSchema
+      );
+    }
+  }
+
   const schema = z.object({
     ...BASIC_SCHEMA,
-    ...fields
+    ...fields,
+    expand: z.optional(z.object(expandedFields))
   });
 
   // Get all file fields
@@ -153,4 +195,16 @@ export async function generateSchema(
   return schema.transform((entry) =>
     transformFiles(options.url, fileFields, entry)
   );
+}
+
+function getCurrentLevelExpandedFieldName(s: string): Array<string> {
+  const fields = s.split(".");
+
+  if (fields.length >= 7) {
+    throw new Error(
+      `Expand value ${s} exceeds 6 levels of depth that Pocketbase allows`
+    );
+  }
+
+  return fields;
 }

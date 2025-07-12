@@ -1,10 +1,13 @@
 import type { ZodObject, ZodSchema } from "astro/zod";
+import { randomUUID } from "crypto";
 import { afterEach, assert, beforeAll, describe, expect, it, vi } from "vitest";
 import { generateSchema } from "../../src/schema/generate-schema";
 import { transformFileUrl } from "../../src/schema/transform-files";
 import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
+import { deleteCollection } from "../_mocks/delete-collection";
+import { insertCollection } from "../_mocks/insert-collection";
 
 describe("generateSchema", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
@@ -63,7 +66,8 @@ describe("generateSchema", () => {
         "emailVisibility",
         "verified",
         "created",
-        "updated"
+        "updated",
+        "expand"
       ]);
     });
 
@@ -85,7 +89,8 @@ describe("generateSchema", () => {
         "emailVisibility",
         "verified",
         "created",
-        "updated"
+        "updated",
+        "expand"
       ]);
     });
   });
@@ -246,6 +251,79 @@ describe("generateSchema", () => {
         entry.id,
         entry.avatar
       )
+    });
+  });
+
+  describe("expand field", async () => {
+    it("the related fields schema is provided for expanded fields", async () => {
+      const RELATION_FIELD_NAME = "related";
+
+      const redCollectionOptions = {
+        ...options,
+        collectionName: `red_${randomUUID().replace(/-/g, "")}`
+      };
+
+      const blueCollectionOptions = {
+        ...options,
+        collectionName: `blue_${randomUUID().replace(/-/g, "")}`
+      };
+
+      const blueCollection = await insertCollection(
+        [
+          {
+            name: "name",
+            type: "text"
+          }
+        ],
+        blueCollectionOptions,
+        token
+      );
+
+      await insertCollection(
+        [
+          {
+            name: RELATION_FIELD_NAME,
+            type: "relation",
+            collectionId: blueCollection.id,
+            maxSelect: 999
+          }
+        ],
+        redCollectionOptions,
+        token
+      );
+
+      const testOptions = {
+        ...options,
+        collectionName: redCollectionOptions.collectionName,
+        expand: [RELATION_FIELD_NAME]
+      };
+      const schema = (await generateSchema(testOptions, token)) as ZodObject<
+        Record<string, ZodSchema<unknown>>
+      >;
+
+      const expandSchema = schema.shape.expand;
+
+      const validArrayExpand = {
+        related: [
+          {
+            collectionId: blueCollection.id,
+            collectionName: blueCollection.name,
+            id: "test",
+            name: "Blue Entry"
+          },
+          {
+            collectionId: blueCollection.id,
+            collectionName: blueCollection.name,
+            id: "test",
+            name: "Blue Entry"
+          }
+        ]
+      };
+
+      expect(() => expandSchema.parse(validArrayExpand)).not.toThrow();
+
+      await deleteCollection(redCollectionOptions, token);
+      await deleteCollection(blueCollectionOptions, token);
     });
   });
 });
