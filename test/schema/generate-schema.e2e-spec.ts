@@ -261,7 +261,8 @@ describe("generateSchema", () => {
           {
             name: RELATION_FIELD_NAME,
             type: "relation",
-            collectionId: blueCollection.id
+            collectionId: blueCollection.id,
+            maxSelect: 999
           }
         ],
         redCollectionOptions,
@@ -278,16 +279,6 @@ describe("generateSchema", () => {
       >;
 
       const expandSchema = schema.shape.expand;
-      const validExpand = {
-        related: {
-          collectionId: blueCollection.id,
-          collectionName: blueCollection.name,
-          id: "test",
-          name: "Blue Entry"
-        }
-      };
-
-      expect(() => expandSchema.parse(validExpand)).not.toThrow();
 
       const validArrayExpand = {
         related: [

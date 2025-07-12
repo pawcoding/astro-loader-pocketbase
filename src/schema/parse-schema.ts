@@ -1,4 +1,4 @@
-import { z } from "astro/zod";
+import { z, ZodSchema } from "astro/zod";
 import type { PocketBaseCollection } from "../types/pocketbase-collection.type";
 import type { PocketBaseSchemaEntry } from "../types/pocketbase-schema.type";
 
@@ -99,6 +99,21 @@ export function parseSchema(
   return fields;
 }
 
+export function parseExpandedSchemaField(
+  originalField: PocketBaseSchemaEntry,
+  expandedSchema: ZodSchema
+): z.ZodType {
+  const isRequired = originalField.required;
+  let fieldType = parseSingleOrMultipleValues(originalField, expandedSchema);
+
+  // If the field is not required, mark it as optional
+  if (!isRequired) {
+    fieldType = z.preprocess((val) => val || undefined, z.optional(fieldType));
+  }
+
+  return fieldType;
+}
+
 /**
  * Parse the field type based on the number of values it can have
  *
@@ -112,9 +127,9 @@ function parseSingleOrMultipleValues(
   type: z.ZodType
 ): z.ZodType {
   // If the select allows multiple values, create an array of the enum
-  if (field.maxSelect === undefined || field.maxSelect === 1) {
+  if (field.maxSelect === undefined || field.maxSelect <= 1) {
     return type;
-  } else {
-    return z.array(type);
   }
+
+  return z.array(type);
 }

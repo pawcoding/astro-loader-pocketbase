@@ -6,7 +6,7 @@ import type {
 } from "../types/pocketbase-collection.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { getRemoteSchema } from "./get-remote-schema";
-import { parseSchema } from "./parse-schema";
+import { parseExpandedSchemaField, parseSchema } from "./parse-schema";
 import { readLocalSchema } from "./read-local-schema";
 import { transformFiles } from "./transform-files";
 
@@ -154,6 +154,8 @@ export async function generateSchema(
         );
       }
 
+      const isRequired = expandedFieldDefinition.required;
+
       const expandedSchema = await generateSchema({
         collectionName: expandedFieldDefinition.collectionId,
         superuserCredentials: options.superuserCredentials,
@@ -164,10 +166,10 @@ export async function generateSchema(
         url: options.url
       });
 
-      expandedFields[expandedFieldName] = z.union([
-        expandedSchema,
-        z.array(expandedSchema)
-      ]);
+      expandedFields[expandedFieldName] = parseExpandedSchemaField(
+        expandedFieldDefinition,
+        expandedSchema
+      );
     }
   }
 
