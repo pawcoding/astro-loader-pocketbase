@@ -99,3 +99,16 @@ export interface PocketBaseLoaderOptions {
    */
   improveTypes?: boolean;
 }
+
+/**
+ * Options for the PocketBase live loader.
+ */
+export type ExperimentalPocketBaseLiveLoaderOptions = Pick<
+  PocketBaseLoaderOptions,
+  | "url"
+  | "collectionName"
+  | "contentFields"
+  | "updatedField"
+  | "filter"
+  | "superuserCredentials"
+>;
