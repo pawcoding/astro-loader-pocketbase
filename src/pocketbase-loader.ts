@@ -40,6 +40,14 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
   return {
     name: "pocketbase-loader",
     load: async (context): Promise<void> => {
+      if (options.experimental?.liveTypesOnly) {
+        context.logger.label = `pocketbase-loader:${options.collectionName}`;
+        context.logger.info(
+          "Experimental live types only mode enabled. No data will be loaded, only types will be generated."
+        );
+        return;
+      }
+
       const token = await tokenPromise;
 
       // Load the entries from the collection
