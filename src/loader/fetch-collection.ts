@@ -1,7 +1,7 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 
-export async function fetchCollection(
+export async function fetchCollection<TEntry extends PocketBaseEntry>(
   options: Pick<
     PocketBaseLoaderOptions,
     | "collectionName"
@@ -10,7 +10,7 @@ export async function fetchCollection(
     | "filter"
     | "superuserCredentials"
   >,
-  chunkLoaded: (entries: Array<PocketBaseEntry>) => Promise<void>,
+  chunkLoaded: (entries: Array<TEntry>) => Promise<void>,
   token: string | undefined,
   lastModified: string | undefined
 ): Promise<void> {

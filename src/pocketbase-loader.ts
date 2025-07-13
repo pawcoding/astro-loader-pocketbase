@@ -1,6 +1,8 @@
+import type { LiveDataCollection, LiveDataEntry } from "astro";
 import type { LiveLoader, Loader } from "astro/loaders";
 import type { ZodSchema } from "astro/zod";
 import { liveCollectionLoader } from "./loader/live-collection-loader";
+import { liveEntryLoader } from "./loader/live-entry-loader";
 import { loader } from "./loader/loader";
 import { generateSchema } from "./schema/generate-schema";
 import type { PocketBaseEntry } from "./types/pocketbase-entry.type";
@@ -84,16 +86,21 @@ export function experimentalPocketbaseLiveLoader<
 
   return {
     name: "pocketbase-live-loader",
-    loadCollection: async () => {
+    loadCollection: async (): Promise<
+      LiveDataCollection<TEntry> | { error: Error }
+    > => {
       const token = await tokenPromise;
 
       // Load entries from the collection
       return await liveCollectionLoader(options, token);
     },
-    loadEntry: async () => {
-      return {
-        error: new Error("Not implemented yet")
-      };
+    loadEntry: async ({
+      filter
+    }): Promise<LiveDataEntry<TEntry> | { error: Error }> => {
+      const token = await tokenPromise;
+
+      // Load a single entry from the collection
+      return await liveEntryLoader(filter.id, options, token);
     }
   };
 }
