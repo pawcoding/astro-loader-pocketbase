@@ -72,7 +72,7 @@ export function experimentalPocketbaseLiveLoader<
   TEntry extends PocketBaseEntry
 >(
   options: ExperimentalPocketBaseLiveLoaderOptions
-): LiveLoader<TEntry, { id: string }> {
+): LiveLoader<TEntry, { id: string }, { additionalFilter: string }> {
   let tokenPromise: Promise<string | undefined>;
   if (options.superuserCredentials) {
     if ("impersonateToken" in options.superuserCredentials) {
@@ -94,13 +94,17 @@ export function experimentalPocketbaseLiveLoader<
 
   return {
     name: "pocketbase-live-loader",
-    loadCollection: async (): Promise<
-      LiveDataCollection<TEntry> | { error: Error }
-    > => {
+    loadCollection: async ({
+      filter
+    }): Promise<LiveDataCollection<TEntry> | { error: Error }> => {
       const token = await tokenPromise;
 
       // Load entries from the collection
-      return await liveCollectionLoader(options, token);
+      return await liveCollectionLoader(
+        filter?.additionalFilter,
+        options,
+        token
+      );
     },
     loadEntry: async ({
       filter
