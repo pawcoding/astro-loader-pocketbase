@@ -8,7 +8,8 @@ export function parseSchema(
   collection: PocketBaseCollection,
   customSchemas: Record<string, z.ZodType> | undefined,
   hasSuperuserRights: boolean,
-  improveTypes: boolean
+  improveTypes: boolean,
+  experimentalLiveTypesOnly?: boolean
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
@@ -32,6 +33,11 @@ export function parseSchema(
         break;
       case "date":
       case "autodate":
+        if (experimentalLiveTypesOnly) {
+          // If experimental live types only mode is enabled, treat dates as strings
+          fieldType = z.string();
+          break;
+        }
         // Coerce and parse the value as a date
         fieldType = z.coerce.date();
         break;
