@@ -18,6 +18,8 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
     entryHeaders.set("Authorization", token);
   }
 
+  console.log(entryUrl);
+
   // Fetch the entry from the collection
   const entryRequest = await fetch(entryUrl, {
     headers: entryHeaders

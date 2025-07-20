@@ -54,6 +54,10 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
       searchParams.set("filter", filters.join("&&"));
     }
 
+    console.log(
+      `${collectionUrl}?${decodeURIComponent(searchParams.toString())}`
+    );
+
     // Fetch entries from the collection
     const collectionRequest = await fetch(
       `${collectionUrl}?${searchParams.toString()}`,
