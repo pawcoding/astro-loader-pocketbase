@@ -1,5 +1,14 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
+import type { PocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+
+export type CollectionFilter = {
+  /**
+   * Date string to only fetch entries that have been modified since this date.
+   * If not provided, all entries will be fetched.
+   */
+  lastModified?: string;
+} & PocketBaseLiveLoaderCollectionFilter;
 
 export async function fetchCollection<TEntry extends PocketBaseEntry>(
   options: Pick<
@@ -12,7 +21,7 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
   >,
   chunkLoaded: (entries: Array<TEntry>) => Promise<void>,
   token: string | undefined,
-  lastModified: string | undefined
+  collectionFilter: CollectionFilter | undefined
 ): Promise<void> {
   // Build the URL for the collections endpoint
   const collectionUrl = new URL(
@@ -32,27 +41,11 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
 
   // Fetch all (modified) entries
   do {
-    // Build search parameters
-    const searchParams = new URLSearchParams({
-      page: `${++page}`,
-      perPage: "100"
+    const searchParams = buildSearchParams(options, {
+      ...collectionFilter,
+      page: collectionFilter?.page ?? ++page,
+      perPage: collectionFilter?.perPage ?? 100
     });
-
-    const filters = [];
-    if (lastModified && options.updatedField) {
-      // If `lastModified` is set, only fetch entries that have been modified since the last fetch
-      filters.push(`(${options.updatedField}>"${lastModified}")`);
-      // Sort by the updated field and id
-      searchParams.set("sort", `-${options.updatedField},id`);
-    }
-    if (options.filter) {
-      filters.push(`(${options.filter})`);
-    }
-
-    // Add filters to search parameters
-    if (filters.length > 0) {
-      searchParams.set("filter", filters.join("&&"));
-    }
 
     console.log(
       `${collectionUrl}?${decodeURIComponent(searchParams.toString())}`
@@ -99,5 +92,56 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
     // Update the page and total pages
     page = response.page;
     totalPages = response.totalPages;
-  } while (page < totalPages);
+  } while (!collectionFilter?.perPage && page < totalPages);
+}
+
+/**
+ * Build search parameters for the PocketBase collection request.
+ */
+function buildSearchParams(
+  loaderOptions: Pick<PocketBaseLoaderOptions, "updatedField" | "filter">,
+  collectionFilter: CollectionFilter
+): URLSearchParams {
+  // Build search parameters
+  const searchParams = new URLSearchParams();
+
+  if (collectionFilter.page) {
+    searchParams.set("page", `${collectionFilter.page}`);
+  }
+
+  if (collectionFilter.perPage) {
+    searchParams.set("perPage", `${collectionFilter.perPage}`);
+  }
+
+  const filters = [];
+
+  // If `lastModified` is set, only fetch entries that have been modified since the last fetch
+  // Sort by the updated field and id
+  if (collectionFilter.lastModified && loaderOptions.updatedField) {
+    filters.push(
+      `(${loaderOptions.updatedField}>"${collectionFilter.lastModified}")`
+    );
+    searchParams.set("sort", `-${loaderOptions.updatedField},id`);
+  }
+
+  // Add filter from the loader options
+  if (loaderOptions.filter) {
+    filters.push(`(${loaderOptions.filter})`);
+  }
+
+  // Add additional filter from the collection filter
+  if (collectionFilter.filter) {
+    filters.push(`(${collectionFilter.filter})`);
+  }
+
+  // Add filters to search parameters
+  if (filters.length > 0) {
+    searchParams.set("filter", filters.join("&&"));
+  }
+
+  if (collectionFilter.sort) {
+    searchParams.set("sort", collectionFilter.sort);
+  }
+
+  return searchParams;
 }

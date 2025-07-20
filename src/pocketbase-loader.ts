@@ -7,6 +7,10 @@ import { loader } from "./loader/loader";
 import { generateSchema } from "./schema/generate-schema";
 import type { PocketBaseEntry } from "./types/pocketbase-entry.type";
 import type {
+  PocketBaseLiveLoaderCollectionFilter,
+  PocketBaseLiveLoaderEntryFilter
+} from "./types/pocketbase-live-loader-filter.type";
+import type {
   ExperimentalPocketBaseLiveLoaderOptions,
   PocketBaseLoaderOptions
 } from "./types/pocketbase-loader-options.type";
@@ -72,7 +76,11 @@ export function experimentalPocketbaseLiveLoader<
   TEntry extends PocketBaseEntry
 >(
   options: ExperimentalPocketBaseLiveLoaderOptions
-): LiveLoader<TEntry, { id: string }, { additionalFilter: string }> {
+): LiveLoader<
+  TEntry,
+  PocketBaseLiveLoaderEntryFilter,
+  PocketBaseLiveLoaderCollectionFilter
+> {
   let tokenPromise: Promise<string | undefined>;
   if (options.superuserCredentials) {
     if ("impersonateToken" in options.superuserCredentials) {
@@ -100,11 +108,7 @@ export function experimentalPocketbaseLiveLoader<
       const token = await tokenPromise;
 
       // Load entries from the collection
-      return await liveCollectionLoader(
-        filter?.additionalFilter,
-        options,
-        token
-      );
+      return await liveCollectionLoader(filter, options, token);
     },
     loadEntry: async ({
       filter

@@ -36,7 +36,9 @@ export async function loadEntries(
       numEntries += entries.length;
     },
     superuserToken,
-    lastModified
+    {
+      lastModified
+    }
   );
 
   // Log the number of fetched entries
