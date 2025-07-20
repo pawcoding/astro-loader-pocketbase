@@ -1,6 +1,6 @@
 {
   "name": "astro-loader-pocketbase",
-  "version": "2.7.0-live-collections.2",
+  "version": "2.7.0-live-collections.3",
   "description": "A content loader for Astro that uses the PocketBase API",
   "keywords": [
     "astro",
