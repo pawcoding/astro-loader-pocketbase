@@ -84,14 +84,14 @@ describe("cleanupEntries", () => {
     await cleanupEntries(options, context, superuserToken);
 
     expect(context.logger.error).not.toHaveBeenCalled();
-    expect(context.store.has(entry.id)).toBe(false);
+    expect(context.store.has(entry.id)).toBeFalsy();
     expect(context.store.keys()).toHaveLength(0);
   });
 
   test("should cleanup filtered entries", async () => {
     const testOptions = {
       ...options,
-      collectionName: randomUUID().replace(/-/g, ""),
+      collectionName: randomUUID().replaceAll("-", ""),
       filter: "visible=true"
     };
 
@@ -125,8 +125,8 @@ describe("cleanupEntries", () => {
     await cleanupEntries(testOptions, context, superuserToken);
 
     expect(context.store.keys()).toHaveLength(1);
-    expect(context.store.has(visibleEntry.id)).toBe(true);
-    expect(context.store.has(hiddenEntry.id)).toBe(false);
+    expect(context.store.has(visibleEntry.id)).toBeTruthy();
+    expect(context.store.has(hiddenEntry.id)).toBeFalsy();
 
     await deleteCollection(testOptions, superuserToken);
   });
@@ -195,7 +195,7 @@ describe("cleanupEntries", () => {
 
     await cleanupEntries(options, context, superuserToken);
 
-    expect(context.store.has(entry.id)).toBe(true);
+    expect(context.store.has(entry.id)).toBeTruthy();
     expect(context.store.keys()).toHaveLength(1);
     expect(storeDeleteSpy).not.toHaveBeenCalled();
 
