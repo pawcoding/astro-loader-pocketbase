@@ -32,6 +32,10 @@ jobs:
           node-version: "lts/*"
           cache: "npm"
 
+      # Enable corepack
+      - name: ⚙️ Enable corepack
+        run: corepack enable && corepack enable npm
+
       # Install dependencies
       - name: 📦 Install dependencies
         run: npm ci
