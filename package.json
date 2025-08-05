@@ -47,21 +47,21 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@types/node": "^22.14.1",
     "@vitest/coverage-v8": "^3.2.4",
-    "astro": "^5.11.0",
+    "astro": "^5.12.8",
     "globals": "^16.3.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.2",
-    "oxlint": "^1.8.0",
+    "lint-staged": "^16.1.4",
+    "oxlint": "^1.9.0",
     "prettier": "^3.6.2",
-    "prettier-plugin-organize-imports": "^4.1.0",
-    "prettier-plugin-packagejson": "^2.5.18",
-    "typescript": "^5.8.3",
+    "prettier-plugin-organize-imports": "^4.2.0",
+    "prettier-plugin-packagejson": "^2.5.19",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "astro": "^5.0.0"
   },
-  "packageManager": "npm@11.4.2",
+  "packageManager": "npm@11.5.2",
   "publishConfig": {
     "access": "public",
     "provenance": true

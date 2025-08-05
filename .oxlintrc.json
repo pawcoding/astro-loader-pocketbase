@@ -38,7 +38,7 @@
     "no-commonjs": "error",
     "no-cycle": "error",
     "bad-bitwise-operator": "error",
-    "explicit-function-return-type": "warn",
+    "explicit-module-boundary-types": "warn",
     "no-empty-object-type": "warn",
     "no-explicit-any": "error",
     "no-import-type-side-effects": "error",
