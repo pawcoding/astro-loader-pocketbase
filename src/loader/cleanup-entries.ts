@@ -95,14 +95,16 @@ export async function cleanupEntries(
 
   let cleanedUp = 0;
 
-  // Get all ids of the entries in the store
-  const storedIds = context.store
-    .values()
-    .map((entry) => entry.data.id) as Array<string>;
-  for (const id of storedIds) {
-    // If the id is not in the entries set, remove the entry from the store
-    if (!entries.has(id)) {
-      context.store.delete(id);
+  // Create a mapping from PocketBase IDs to store keys for proper cleanup
+  const storedIds = new Map<string, string>(
+    context.store.values().map((entry) => [entry.data.id as string, entry.id])
+  );
+
+  // Check which PocketBase IDs are missing from the server response
+  for (const [pocketbaseId, storeKey] of storedIds.entries()) {
+    // If the PocketBase ID is not in the entries set, remove the entry from the store
+    if (!entries.has(pocketbaseId)) {
+      context.store.delete(storeKey);
       cleanedUp++;
     }
   }

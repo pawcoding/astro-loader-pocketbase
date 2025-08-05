@@ -131,6 +131,52 @@ describe("cleanupEntries", () => {
     await deleteCollection(testOptions, superuserToken);
   });
 
+  // https://github.com/pawcoding/astro-loader-pocketbase/issues/46
+  test("should cleanup entries with custom ID field", async () => {
+    const testOptions = {
+      ...options,
+      collectionName: randomUUID().replace(/-/g, ""),
+      idField: "slug"
+    };
+
+    await insertCollection(
+      [
+        {
+          name: "slug",
+          type: "text"
+        }
+      ],
+      testOptions,
+      superuserToken
+    );
+
+    const [entry1, entry2] = await insertEntries(
+      [
+        {
+          slug: "entry-1"
+        },
+        {
+          slug: "entry-2"
+        }
+      ],
+      testOptions,
+      superuserToken
+    );
+
+    context.store.set({ id: entry1.slug as string, data: entry1 });
+    context.store.set({ id: entry2.slug as string, data: entry2 });
+
+    await deleteEntry(entry1.id, testOptions, superuserToken);
+
+    await cleanupEntries(testOptions, context, superuserToken);
+
+    expect(context.store.keys()).toHaveLength(1);
+    expect(context.store.has(entry2.slug as string)).toBe(true);
+    expect(context.store.has(entry1.slug as string)).toBe(false);
+
+    await deleteCollection(testOptions, superuserToken);
+  });
+
   test("should not cleanup entries if all are up-to-date", async () => {
     const entry = await insertEntry(
       {
