@@ -1,0 +1,58 @@
+name: "Copilot Setup Steps"
+
+# Automatically run the setup steps when they are changed to allow for easy validation
+on:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    # Set the permissions to the lowest permissions possible needed for your steps.
+    # Copilot will be given its own token for its operations.
+    permissions:
+      # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
+      contents: read
+
+    # You can define any steps you want, and they will run before the agent starts.
+    # If you do not check out your code, Copilot will do this for you.
+    steps:
+      # Checkout repository
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Setup Node
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "npm"
+
+      # Enable corepack
+      - name: ⚙️ Enable corepack
+        run: corepack enable && corepack enable npm
+
+      # Install dependencies
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      # Setup PocketBase
+      - name: 🗄️ Download and setup PocketBase
+        run: npm run test:e2e:setup
+
+      # Start PocketBase
+      - name: 🚀 Start PocketBase
+        run: ./.pocketbase/pocketbase serve &
+
+      # Wait for PocketBase to be ready
+      - name: ⏳ Wait for PocketBase
+        run: |
+          until curl -s --fail http://localhost:8090/api/health; do
+            echo 'Waiting for PocketBase...'
+            sleep 5
+          done
