@@ -1,0 +1,209 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "node",
+    "promise",
+    "vitest"
+  ],
+  "env": {
+    "builtin": true,
+    "node": true
+  },
+  "rules": {
+    // Correctness (in addition to the default rules)
+    "no-new-statics": "error",
+    "valid-params": "error",
+    // Perf
+    "no-useless-call": "error",
+    "no-accumulating-spread": "error",
+    "prefer-array-find": "error",
+    "prefer-array-flat-map": "error",
+    "prefer-set-has": "warn",
+    // Restriction
+    "default-case": "warn",
+    "no-alert": "error",
+    "no-bitwise": "error",
+    "no-div-regex": "error",
+    "no-empty": "warn",
+    "no-empty-function": "warn",
+    "no-eq-null": "error",
+    "no-iterator": "error",
+    "no-proto": "error",
+    "no-unused-expressions": "warn",
+    "no-var": "error",
+    "no-commonjs": "error",
+    "no-cycle": "error",
+    "bad-bitwise-operator": "error",
+    "explicit-module-boundary-types": "warn",
+    "no-empty-object-type": "warn",
+    "no-explicit-any": "error",
+    "no-import-type-side-effects": "error",
+    "no-non-null-asserted-nullish-coalescing": "error",
+    "no-non-null-assertion": "warn",
+    "no-require-imports": "error",
+    "no-abusive-eslint-disable": "error",
+    "no-array-for-each": "error",
+    "no-array-reduce": "warn",
+    "no-magic-array-flat-depth": "error",
+    "no-process-exit": "error",
+    // Suspicious
+    "no-extra-bind": "error",
+    "no-new": "warn",
+    "no-unexpected-multiline": "warn",
+    "no-unneeded-ternary": "warn",
+    "no-useless-concat": "warn",
+    "no-self-import": "error",
+    "no-unassigned-import": "warn",
+    "misrefactored-assign-op": "error",
+    "no-promise-in-callback": "error",
+    "no-confusing-non-null-assertion": "warn",
+    "consistent-function-scoping": "warn",
+    "no-instanceof-builtins": "warn",
+    "prefer-add-event-listener": "error",
+    // Pedantic
+    "array-callback-return": "warn",
+    "eqeqeq": "error",
+    "max-depth": [
+      "warn",
+      {
+        "max": 4
+      }
+    ],
+    "max-lines": [
+      "warn",
+      {
+        "max": 500,
+        "skipBlankLines": true,
+        "skipComments": true
+      }
+    ],
+    "max-lines-per-function": [
+      "warn",
+      {
+        "max": 100,
+        "skipBlankLines": true,
+        "skipComments": true
+      }
+    ],
+    "max-nested-callbacks": [
+      "warn",
+      {
+        "max": 2
+      }
+    ],
+    "no-array-constructor": "warn",
+    "no-case-declarations": "warn",
+    "no-constructor-return": "error",
+    "no-else-return": "warn",
+    "no-fallthrough": "warn",
+    "no-inner-declarations": "error",
+    "no-lonely-if": "warn",
+    "no-object-constructor": "warn",
+    "no-prototype-builtins": "warn",
+    "no-redeclare": "error",
+    "no-self-compare": "error",
+    "no-throw-literal": "error",
+    "require-await": "warn",
+    "symbol-description": "error",
+    "no-unsafe-function-type": "error",
+    "prefer-ts-expect-error": "error",
+    "consistent-empty-array-spread": "warn",
+    "explicit-length-check": "warn",
+    "new-for-builtins": "warn",
+    "no-instanceof-array": "error",
+    "no-negation-in-equality-check": "warn",
+    "no-static-only-class": "error",
+    "no-this-assignment": "error",
+    "no-typeof-undefined": "warn",
+    "no-unnecessary-slice-end": "warn",
+    "no-useless-promise-resolve-reject": "error",
+    "no-useless-switch-case": "warn",
+    "prefer-array-flat": "error",
+    "prefer-array-some": "warn",
+    "prefer-date-now": "warn",
+    "prefer-math-min-max": "warn",
+    "prefer-math-trunc": "error",
+    "prefer-string-replace-all": "warn",
+    "prefer-string-slice": "warn",
+    "prefer-type-error": "warn",
+    // Style
+    "arrow-body-style": "warn",
+    "curly": "error",
+    "default-case-last": "error",
+    "default-param-last": "warn",
+    "func-names": "warn",
+    "func-style": ["warn", "declaration"],
+    "no-lone-blocks": "warn",
+    "no-multi-assign": "error",
+    "no-multi-str": "warn",
+    "no-nested-ternary": "warn",
+    "no-return-assign": "error",
+    "no-template-curly-in-string": "error",
+    "prefer-object-spread": "error",
+    "prefer-promise-reject-errors": "warn",
+    "yoda": "warn",
+    "consistent-type-specifier-style": "warn",
+    "first": "warn",
+    "no-duplicates": "warn",
+    "no-mutable-exports": "warn",
+    "avoid-new": "warn",
+    "no-nesting": "warn",
+    "no-return-wrap": "error",
+    "prefer-await-to-callbacks": "warn",
+    "prefer-await-to-then": "warn",
+    "prefer-catch": "warn",
+    "array-type": [
+      "error",
+      {
+        "default": "generic"
+      }
+    ],
+    "consistent-generic-constructors": "error",
+    "consistent-indexed-object-style": ["error", "record"],
+    "consistent-type-definitions": ["error", "interface"],
+    "consistent-type-imports": "error",
+    "no-empty-interface": "error",
+    "prefer-for-of": "error",
+    "catch-error-name": "warn",
+    "consistent-date-clone": "warn",
+    "consistent-existence-index-check": "warn",
+    "empty-brace-spaces": "warn",
+    "error-message": "error",
+    "filename-case": "error",
+    "no-await-expression-member": "error",
+    "no-console-spaces": "warn",
+    "no-null": "error",
+    "no-unreadable-array-destructuring": "warn",
+    "prefer-includes": "warn",
+    "prefer-logical-operator-over-ternary": "error",
+    "prefer-negative-index": "warn",
+    "prefer-object-from-entries": "error",
+    "prefer-optional-catch-binding": "warn",
+    "prefer-spread": "warn",
+    "prefer-structured-clone": "error",
+    "require-array-join-separator": "error",
+    "switch-case-braces": ["error", "avoid"],
+    "throw-new-error": "error"
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*"],
+      "rules": {
+        "max-depth": "off",
+        "max-lines": "off",
+        "max-lines-per-function": "off",
+        "max-nested-callbacks": "off",
+        // Vitest specific rules
+        "no-import-node-test": "warn",
+        "prefer-to-be-falsy": "warn",
+        "prefer-to-be-object": "warn",
+        "prefer-to-be-truthy": "warn"
+      }
+    }
+  ],
+  "ignorePatterns": [".pocketbase/**/*", "coverage", "*.{js,cjs}"]
+}

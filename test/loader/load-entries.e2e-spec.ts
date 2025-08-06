@@ -72,13 +72,13 @@ describe("loadEntries", () => {
   test("should load all pages", async () => {
     const testOptions = {
       ...options,
-      collectionName: randomUUID().replace(/-/g, "")
+      collectionName: randomUUID().replaceAll("-", "")
     };
     const numberOfEntries = 202;
 
     await insertCollection([], testOptions, superuserToken);
     await insertEntries(
-      new Array(numberOfEntries).fill({}),
+      Array.from<Record<string, unknown>>({ length: numberOfEntries }).fill({}),
       testOptions,
       superuserToken
     );
@@ -93,7 +93,7 @@ describe("loadEntries", () => {
   test("should load filtered pages", async () => {
     const testOptions = {
       ...options,
-      collectionName: randomUUID().replace(/-/g, ""),
+      collectionName: randomUUID().replaceAll("-", ""),
       filter: "value=true"
     };
     const numberOfEntries = 101;
@@ -109,12 +109,16 @@ describe("loadEntries", () => {
       superuserToken
     );
     await insertEntries(
-      new Array(numberOfEntries).fill({ value: true }),
+      Array.from<Record<string, unknown>>({ length: numberOfEntries }).fill({
+        value: true
+      }),
       testOptions,
       superuserToken
     );
     await insertEntries(
-      new Array(numberOfEntries).fill({ value: false }),
+      Array.from<Record<string, unknown>>({ length: numberOfEntries }).fill({
+        value: false
+      }),
       testOptions,
       superuserToken
     );

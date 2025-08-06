@@ -41,7 +41,7 @@ export function parseSchema(
           lat: z.number()
         });
         break;
-      case "select":
+      case "select": {
         if (!field.values) {
           throw new Error(
             `Field ${field.name} is of type "select" but has no values defined.`
@@ -55,6 +55,7 @@ export function parseSchema(
         // Parse the field type based on the number of values it can have
         fieldType = parseSingleOrMultipleValues(field, values);
         break;
+      }
       case "relation":
       case "file":
         // NOTE: Relations are currently not supported and are treated as strings
@@ -116,7 +117,7 @@ function parseSingleOrMultipleValues(
   // If the select allows multiple values, create an array of the enum
   if (field.maxSelect === undefined || field.maxSelect === 1) {
     return type;
-  } else {
-    return z.array(type);
   }
+
+  return z.array(type);
 }
