@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+// oxlint-disable no-explicit-any
+// oxlint-disable explicit-module-boundary-types
 import type { DataStore } from "astro/loaders";
 
 export class StoreMock implements DataStore {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly #store = new Map<string, any>();
 
   public get(key: string) {
@@ -13,7 +13,6 @@ export class StoreMock implements DataStore {
     return Array.from(this.#store.entries());
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public set(opts: any) {
     this.#store.set(opts.id, opts);
     return true;
