@@ -30,14 +30,14 @@ Each commit entry includes:
 **For Pre-releases:**
 
 ```
-🎉 This issue is included in version X.X.X-next.X which is now available for testing! 🚀
+🎉 This issue is included in version X.X.X-next.X which is now available for testing! 🧪
 
 📦 NPM: astro-loader-pocketbase@X.X.X-next.X
 📖 GitHub Release: X.X.X-next.X
 
-@username Would you mind testing this fix in your project and letting us know if it works as expected? We'd love your feedback!
+@username Can you check if everything works as expected in your project with this new version? Any feedback is welcome.
 
-This change will be included in the next regular release.
+<small>This change will be included in the next regular release.</small>
 ```
 
 **For Regular Releases:**
@@ -54,14 +54,14 @@ This change will be included in the next regular release.
 **For Pre-releases:**
 
 ```
-🎉 This PR is included in version X.X.X-next.X which is now available for testing! 🚀
+🎉 This PR is included in version X.X.X-next.X which is now available for testing! 🧪
 
 📦 NPM: astro-loader-pocketbase@X.X.X-next.X
 📖 GitHub Release: X.X.X-next.X
 
-@username Thank you for your contribution! This PR
+@username Thank you for your contribution!
 
-This change will be included in the next regular release.
+<small>This change will be included in the next regular release.</small>
 ```
 
 **For Regular Releases:**
@@ -73,6 +73,36 @@ This change will be included in the next regular release.
 📖 GitHub Release: X.X.X
 
 Thank you for your contribution!
+```
+
+### 📚 Documentation
+
+Added comprehensive documentation in `.github/semantic-release.md` explaining:
+
+- How the new changelog categories work
+- Examples of issue and PR comment templates
+- Configuration file structure
+- Commit types and their release impact
+
+### 💻 Example Changelog Entry
+
+Here's an example of how a changelog entry would look for a release like [PR #48](https://github.com/pawcoding/astro-loader-pocketbase/pull/48):
+
+```markdown
+## 2.7.1 (2025-08-10)
+
+### 🩹 Fixes
+
+- Cleanup entries correctly when using `idField` configuration option ([a1b2c3d](https://github.com/pawcoding/astro-loader-pocketbase/commit/a1b2c3d)) by @pawcoding
+
+### 🛠️ Internals
+
+- Replace `eslint` with `oxlint` to make linting tasks even faster ([d4e5f6g](https://github.com/pawcoding/astro-loader-pocketbase/commit/d4e5f6g)) by @pawcoding
+- Setup for Copilot and other agents ([h7i8j9k](https://github.com/pawcoding/astro-loader-pocketbase/commit/h7i8j9k)) by @pawcoding
+- Add GitHub issue templates for better bug reporting and feature requests ([l0m1n2o](https://github.com/pawcoding/astro-loader-pocketbase/commit/l0m1n2o)) by @pawcoding
+- Update dependencies to latest versions ([p3q4r5s](https://github.com/pawcoding/astro-loader-pocketbase/commit/p3q4r5s)) by @pawcoding
+
+[2.7.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/2.7.0...2.7.1) (5 commits)
 ```
 
 ## Configuration Files
