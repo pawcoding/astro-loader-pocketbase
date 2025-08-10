@@ -29,8 +29,12 @@ jobs:
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "lts/*"
+          node-version-file: .nvmrc
           cache: "npm"
+
+      # Enable corepack
+      - name: ⚙️ Enable corepack
+        run: corepack enable && corepack enable npm
 
       # Install dependencies
       - name: 📦 Install dependencies

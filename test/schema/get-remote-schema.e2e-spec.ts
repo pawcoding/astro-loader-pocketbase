@@ -66,7 +66,7 @@ describe("getRemoteSchema", () => {
     delete result.created;
     // @ts-expect-error - updated is not typed
     delete result.updated;
-    for (const field of result!.fields) {
+    for (const field of result.fields) {
       // @ts-expect-error - id is not typed
       delete field.id;
     }

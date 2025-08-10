@@ -3,5 +3,5 @@
  */
 export default {
   "!(*.ts|*.ts.snap)": "prettier --write",
-  "*.ts": ["eslint --fix", "prettier --write"]
+  "*.ts": ["oxlint", "prettier --write"]
 };
