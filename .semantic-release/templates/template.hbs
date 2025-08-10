@@ -1,0 +1,40 @@
+{{> header}}
+
+{{#each commitGroups}}
+
+{{#if title}}
+{{#if (eq title 'Features')}}
+### ✨ Features
+{{else if (eq title 'Bug Fixes')}}
+### 🩹 Fixes
+{{else if (eq title 'Documentation')}}
+### 📚 Documentation
+{{else if (eq title 'Internals')}}
+### 🛠️ Internals
+{{else if (eq title 'Performance Improvements')}}
+### ⚡ Performance
+{{else if (eq title 'Reverts')}}
+### ↩️ Reverts
+{{else}}
+### {{title}}
+{{/if}}
+
+{{/if}}
+{{#each commits}}
+{{> commit root=@root}}
+{{/each}}
+
+{{/each}}
+
+{{#if noteGroups}}
+{{#each noteGroups}}
+
+### ⚠️ BREAKING CHANGES
+
+{{#each notes}}
+* {{#if commit.scope}}**{{commit.scope}}:** {{/if}}{{text}}
+{{/each}}
+{{/each}}
+
+{{/if}}
+{{> footer}}
