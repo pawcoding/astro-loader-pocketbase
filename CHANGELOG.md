@@ -1,3 +1,10 @@
+## [2.7.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.7.0...v2.7.1) (2025-08-10)
+
+
+### Bug Fixes
+
+* **cleanup:** delete entries with custom ids ([b072088](https://github.com/pawcoding/astro-loader-pocketbase/commit/b072088d6be11a8c78ac667f5b2ae549eaf5e6b6))
+
 # [2.7.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.6.2...v2.7.0) (2025-07-05)
 
 
