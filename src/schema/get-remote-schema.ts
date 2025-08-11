@@ -1,5 +1,5 @@
+import type { PocketBaseCollection } from "../types/pocketbase-collection.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
-import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
 
 /**
  * Fetches the schema for the specified collection from the PocketBase instance.

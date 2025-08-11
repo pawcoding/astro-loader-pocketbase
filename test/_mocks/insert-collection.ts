@@ -1,11 +1,12 @@
 import { assert } from "console";
+import type { PocketBaseCollection } from "../../src/types/pocketbase-collection.type";
 import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
 
 export async function insertCollection(
   fields: Array<Record<string, unknown>>,
   options: PocketBaseLoaderOptions,
   superuserToken: string
-): Promise<void> {
+): Promise<PocketBaseCollection> {
   const insertRequest = await fetch(new URL(`api/collections`, options.url), {
     method: "POST",
     headers: {
@@ -19,4 +20,9 @@ export async function insertCollection(
   });
 
   assert(insertRequest.status === 200, "Collection is not available.");
+
+  const collection = await insertRequest.json();
+  assert(collection.id, "Collection ID is not available.");
+
+  return collection;
 }
