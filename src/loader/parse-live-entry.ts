@@ -6,10 +6,26 @@ export function parseLiveEntry<TEntry extends PocketBaseEntry>(
   entry: TEntry,
   options: ExperimentalPocketBaseLiveLoaderOptions
 ): LiveDataEntry<TEntry> {
-  let updated: string | undefined;
-  if (options.updatedField) {
-    // If an updated field is provided, use it to determine the last modified date
-    updated = `${entry[options.updatedField]}`;
+  // Build a cache tag
+  const tag = `${options.collectionName}-${entry.id}`;
+
+  let lastModified: Date | undefined = undefined;
+  // If an updated field is provided and the entry has a valid date value,
+  // use it as the last modified date cache hint
+  if (options.updatedField && entry[options.updatedField]) {
+    const value = `${entry[options.updatedField]}`;
+    try {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) {
+        throw new TypeError("Invalid date");
+      }
+
+      lastModified = date;
+    } catch {
+      console.warn(
+        `Entry ${entry.id} of collection ${options.collectionName} has an invalid date in ${options.updatedField}: ${value}`
+      );
+    }
   }
 
   if (!options.contentFields) {
@@ -17,8 +33,8 @@ export function parseLiveEntry<TEntry extends PocketBaseEntry>(
       id: entry.id,
       data: entry,
       cacheHint: {
-        tags: [`${options.collectionName}-${entry.id}`],
-        lastModified: updated ? new Date(updated) : undefined
+        tags: [tag],
+        lastModified
       }
     };
   }
@@ -42,8 +58,8 @@ export function parseLiveEntry<TEntry extends PocketBaseEntry>(
       html: content
     },
     cacheHint: {
-      tags: [`${options.collectionName}-${entry.id}`],
-      lastModified: updated ? new Date(updated) : undefined
+      tags: [tag],
+      lastModified
     }
   };
 }
