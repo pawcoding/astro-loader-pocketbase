@@ -2,6 +2,7 @@
 dist/
 .eslintcache
 CHANGELOG.md
+
 # generated types
 .astro/
 
@@ -28,3 +29,5 @@ pnpm-debug.log*
 # misc
 .husky/
 .prettierignore
+.gitignore
+.nvmrc

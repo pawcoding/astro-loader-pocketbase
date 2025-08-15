@@ -9,7 +9,7 @@ export async function sendBatchRequest(
   }>,
   options: PocketBaseLoaderOptions,
   superuserToken: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line no-explicit-any
 ): Promise<any> {
   await enableBatchApi(options, superuserToken);
 

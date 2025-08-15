@@ -2,7 +2,7 @@ import type { AstroIntegrationLogger } from "astro";
 import { vi } from "vitest";
 
 export class LoggerMock implements AstroIntegrationLogger {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // oxlint-disable-next-line no-explicit-any
   public options!: any;
   public label = "mock";
 

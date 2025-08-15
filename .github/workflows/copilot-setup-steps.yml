@@ -1,24 +1,24 @@
-name: 🧪 Test code
-# Run this on every push except master and next
+name: "Copilot Setup Steps"
+
+# Automatically run the setup steps when they are changed to allow for easy validation
 on:
   push:
-    branches:
-      - "**"
-      - "!master"
-      - "!next"
-
-env:
-  HUSKY: 0
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
 
 jobs:
-  test:
-    # Use the latest version of Ubuntu
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+  copilot-setup-steps:
     runs-on: ubuntu-latest
+
+    # Set the permissions to the lowest permissions possible needed for your steps.
+    # Copilot will be given its own token for its operations.
     permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
+      # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
+      contents: read
+
+    # You can define any steps you want, and they will run before the agent starts.
+    # If you do not check out your code, Copilot will do this for you.
     steps:
       # Checkout repository
       - name: 📥 Checkout code
@@ -41,22 +41,6 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      # Lint code
-      - name: 🧹 Lint code
-        run: npm run lint
-
-      # Check format
-      - name: 🧹 Check format
-        run: npm run format:check
-
-      # Type check
-      - name: 🧪 Type check
-        run: npm run typecheck
-
-      # Run tests
-      - name: 🧪 Run unit tests
-        run: npm run test:unit
-
       # Setup PocketBase
       - name: 🗄️ Download and setup PocketBase
         run: npm run test:e2e:setup
@@ -72,7 +56,3 @@ jobs:
             echo 'Waiting for PocketBase...'
             sleep 5
           done
-
-      # Run tests
-      - name: 🧪 Run e2e tests
-        run: npm run test:e2e
