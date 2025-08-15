@@ -2,6 +2,9 @@ import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 
+/**
+ * Provides utilities to fetch entries from a PocketBase collection, supporting filtering and pagination.
+ */
 export type CollectionFilter = {
   /**
    * Date string to only fetch entries that have been modified since this date.
@@ -10,6 +13,9 @@ export type CollectionFilter = {
   lastModified?: string;
 } & PocketBaseLiveLoaderCollectionFilter;
 
+/**
+ * Fetches entries from a PocketBase collection, optionally filtering by modification date and supporting pagination.
+ */
 export async function fetchCollection<TEntry extends PocketBaseEntry>(
   options: Pick<
     PocketBaseLoaderOptions,

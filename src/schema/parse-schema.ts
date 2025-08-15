@@ -4,6 +4,9 @@ import type {
   PocketBaseSchemaEntry
 } from "../types/pocketbase-schema.type";
 
+/**
+ * Converts PocketBase collection fields into Zod types, handling field types, required status, and custom schemas.
+ */
 export function parseSchema(
   collection: PocketBaseCollection,
   customSchemas: Record<string, z.ZodType> | undefined,

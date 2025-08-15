@@ -1,6 +1,9 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 
+/**
+ * Retrieves a specific entry from a PocketBase collection using its ID and loader options.
+ */
 export async function fetchEntry<TEntry extends PocketBaseEntry>(
   id: string,
   options: ExperimentalPocketBaseLiveLoaderOptions,

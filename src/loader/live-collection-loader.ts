@@ -5,6 +5,9 @@ import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbas
 import { fetchCollection } from "./fetch-collection";
 import { parseLiveEntry } from "./parse-live-entry";
 
+/**
+ * Loads and parses a PocketBase collection for live data, returning entries or an error.
+ */
 export async function liveCollectionLoader<TEntry extends PocketBaseEntry>(
   collectionFilter: PocketBaseLiveLoaderCollectionFilter | undefined,
   options: ExperimentalPocketBaseLiveLoaderOptions,

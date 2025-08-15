@@ -4,6 +4,9 @@ import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbas
 import { fetchEntry } from "./fetch-entry";
 import { parseLiveEntry } from "./parse-live-entry";
 
+/**
+ * Loads and parses a single PocketBase entry for live data, returning the entry or an error.
+ */
 export async function liveEntryLoader<TEntry extends PocketBaseEntry>(
   id: string,
   options: ExperimentalPocketBaseLiveLoaderOptions,

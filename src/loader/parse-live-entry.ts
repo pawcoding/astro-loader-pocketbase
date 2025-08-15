@@ -2,6 +2,9 @@ import type { LiveDataEntry } from "astro";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 
+/**
+ * Converts a PocketBase entry into a LiveDataEntry for Astro, extracting content and cache metadata.
+ */
 export function parseLiveEntry<TEntry extends PocketBaseEntry>(
   entry: TEntry,
   options: ExperimentalPocketBaseLiveLoaderOptions
