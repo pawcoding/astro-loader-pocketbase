@@ -65,7 +65,8 @@ export async function generateSchema(
     collection,
     options.jsonSchemas,
     hasSuperuserRights,
-    options.improveTypes ?? false
+    options.improveTypes ?? false,
+    options.experimental?.liveTypesOnly ?? false
   );
 
   // Check if custom id field is present
