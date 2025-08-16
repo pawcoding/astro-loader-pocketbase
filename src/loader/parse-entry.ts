@@ -74,8 +74,7 @@ export async function parseEntry(
   } else {
     // Multiple fields are used as content, wrap each block in a section and concatenate them
     content = contentFields
-      .map((field) => entry[field])
-      .map((block) => `<section>${block}</section>`)
+      .map((field) => `<section id="${field}">${entry[field]}</section>`)
       .join("");
   }
 

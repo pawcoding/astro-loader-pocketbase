@@ -693,4 +693,147 @@ describe("parseSchema", () => {
       expect(z.object(schema).parse({})).toEqual({});
     });
   });
+
+  describe("experimental live types", () => {
+    test("should treat date fields as strings when experimentalLiveTypesOnly is true", () => {
+      const collection: PocketBaseCollection = {
+        name: "dateCollection",
+        type: "base",
+        fields: [
+          { name: "birthday", type: "date", required: true, hidden: false }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false, true);
+
+      const valid = {
+        birthday: "2023-12-01T10:00:00Z"
+      };
+
+      expect(z.object(schema).parse(valid)).toEqual(valid);
+      expect(() => z.object(schema).parse({})).toThrow();
+    });
+
+    test("should treat autodate fields as strings when experimentalLiveTypesOnly is true", () => {
+      const collection: PocketBaseCollection = {
+        name: "dateCollection",
+        type: "base",
+        fields: [
+          { name: "created", type: "autodate", required: true, hidden: false }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false, true);
+
+      const valid = {
+        created: "2023-12-01T10:00:00Z"
+      };
+
+      expect(z.object(schema).parse(valid)).toEqual(valid);
+      expect(() => z.object(schema).parse({ created: new Date() })).toThrow();
+    });
+
+    test("should parse date fields normally when experimentalLiveTypesOnly is false", () => {
+      const collection: PocketBaseCollection = {
+        name: "dateCollection",
+        type: "base",
+        fields: [
+          { name: "birthday", type: "date", required: true, hidden: false }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false, false);
+
+      const valid = {
+        birthday: new Date()
+      };
+
+      expect(z.object(schema).parse(valid)).toEqual(valid);
+      expect(
+        z.object(schema).parse({ birthday: valid.birthday.toISOString() })
+      ).toEqual({ birthday: valid.birthday });
+    });
+
+    test("should parse date fields normally when experimentalLiveTypesOnly is undefined", () => {
+      const collection: PocketBaseCollection = {
+        name: "dateCollection",
+        type: "base",
+        fields: [
+          { name: "birthday", type: "date", required: true, hidden: false }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false);
+
+      const valid = {
+        birthday: new Date()
+      };
+
+      expect(z.object(schema).parse(valid)).toEqual(valid);
+      expect(
+        z.object(schema).parse({ birthday: valid.birthday.toISOString() })
+      ).toEqual({ birthday: valid.birthday });
+    });
+
+    test("should handle mixed field types with experimentalLiveTypesOnly", () => {
+      const collection: PocketBaseCollection = {
+        name: "mixedCollection",
+        type: "base",
+        fields: [
+          { name: "title", type: "text", required: true, hidden: false },
+          { name: "birthday", type: "date", required: true, hidden: false },
+          { name: "created", type: "autodate", required: true, hidden: false },
+          { name: "count", type: "number", required: true, hidden: false }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false, true);
+
+      const valid = {
+        title: "Test Title",
+        birthday: "2023-12-01T10:00:00Z",
+        created: "2023-12-01T10:00:00Z",
+        count: 42
+      };
+
+      expect(z.object(schema).parse(valid)).toEqual(valid);
+
+      // Date should not work as Date object
+      expect(() =>
+        z.object(schema).parse({
+          ...valid,
+          birthday: new Date()
+        })
+      ).toThrow();
+
+      // Other types should work normally
+      expect(() =>
+        z.object(schema).parse({
+          ...valid,
+          count: "not a number"
+        })
+      ).toThrow();
+    });
+
+    test("should handle optional date fields with experimentalLiveTypesOnly", () => {
+      const collection: PocketBaseCollection = {
+        name: "dateCollection",
+        type: "base",
+        fields: [
+          { name: "birthday", type: "date", required: false, hidden: false }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, false, false, true);
+
+      const validWithDate = {
+        birthday: "2023-12-01T10:00:00Z"
+      };
+
+      const validEmpty = {};
+
+      expect(z.object(schema).parse(validWithDate)).toEqual(validWithDate);
+      expect(z.object(schema).parse(validEmpty)).toEqual(validEmpty);
+    });
+  });
 });
