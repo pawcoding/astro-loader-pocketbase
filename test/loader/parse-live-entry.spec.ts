@@ -56,7 +56,7 @@ describe("parseLiveEntry", () => {
         id: entry.id,
         data: entry,
         rendered: {
-          html: `<section>${entry.title}</section><section>${entry.content}</section>`
+          html: `<section id="title">${entry.title}</section><section id="content">${entry.content}</section>`
         }
       });
     });

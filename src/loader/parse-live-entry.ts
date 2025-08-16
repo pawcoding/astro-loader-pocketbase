@@ -49,7 +49,7 @@ export function parseLiveEntry<TEntry extends PocketBaseEntry>(
   } else {
     // If multiple content fields are provided, concatenate them with `<section>` tags
     content = options.contentFields
-      .map((field) => `<section>${entry[field]}</section>`)
+      .map((field) => `<section id="${field}">${entry[field]}</section>`)
       .join("");
   }
 

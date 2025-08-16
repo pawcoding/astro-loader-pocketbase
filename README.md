@@ -83,7 +83,7 @@ const blog = defineCollection({
 
 Since the goal of the `render` function is to render the content as HTML, it's recommended to use a field of type `editor` (rich text) in PocketBase as content.
 
-If you specify an array of fields, the loader will wrap the content of these fields in a `<section>` and concatenate them.
+If you specify an array of fields, the loader will wrap the content of these fields in a `<section>` and concatenate them; each section will have an `id` attribute matching the content field name.
 
 ### Images and files
 
