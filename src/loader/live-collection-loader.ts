@@ -1,6 +1,6 @@
 import type { LiveDataCollection, LiveDataEntry } from "astro";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
-import type { PocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
+import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { fetchCollection } from "./fetch-collection";
 import { parseLiveEntry } from "./parse-live-entry";
@@ -9,7 +9,9 @@ import { parseLiveEntry } from "./parse-live-entry";
  * Loads and parses a PocketBase collection for live data, returning entries or an error.
  */
 export async function liveCollectionLoader<TEntry extends PocketBaseEntry>(
-  collectionFilter: PocketBaseLiveLoaderCollectionFilter | undefined,
+  collectionFilter:
+    | ExperimentalPocketBaseLiveLoaderCollectionFilter
+    | undefined,
   options: ExperimentalPocketBaseLiveLoaderOptions,
   token: string | undefined
 ): Promise<LiveDataCollection<TEntry> | { error: Error }> {

@@ -7,8 +7,8 @@ import { loader } from "./loader/loader";
 import { generateSchema } from "./schema/generate-schema";
 import type { PocketBaseEntry } from "./types/pocketbase-entry.type";
 import type {
-  PocketBaseLiveLoaderCollectionFilter,
-  PocketBaseLiveLoaderEntryFilter
+  ExperimentalPocketBaseLiveLoaderCollectionFilter,
+  ExperimentalPocketBaseLiveLoaderEntryFilter
 } from "./types/pocketbase-live-loader-filter.type";
 import type {
   ExperimentalPocketBaseLiveLoaderOptions,
@@ -55,6 +55,8 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
  * This loader is currently experimental and may change in any future release.
  *
  * @param options Options for the live loader. See {@link ExperimentalPocketBaseLiveLoaderOptions} for more details.
+ *
+ * @experimental Live content collections are still experimental
  */
 export function experimentalPocketbaseLiveLoader<
   TEntry extends PocketBaseEntry
@@ -62,8 +64,8 @@ export function experimentalPocketbaseLiveLoader<
   options: ExperimentalPocketBaseLiveLoaderOptions
 ): LiveLoader<
   TEntry,
-  PocketBaseLiveLoaderEntryFilter,
-  PocketBaseLiveLoaderCollectionFilter
+  ExperimentalPocketBaseLiveLoaderEntryFilter,
+  ExperimentalPocketBaseLiveLoaderCollectionFilter
 > {
   // Create shared promise for the superuser token, which can be reused
   const tokenPromise = createTokenPromise(options);

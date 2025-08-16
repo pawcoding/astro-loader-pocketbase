@@ -1,5 +1,5 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
-import type { PocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
+import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 
 /**
@@ -11,7 +11,7 @@ export type CollectionFilter = {
    * If not provided, all entries will be fetched.
    */
   lastModified?: string;
-} & PocketBaseLiveLoaderCollectionFilter;
+} & ExperimentalPocketBaseLiveLoaderCollectionFilter;
 
 /**
  * Fetches entries from a PocketBase collection, optionally filtering by modification date and supporting pagination.
