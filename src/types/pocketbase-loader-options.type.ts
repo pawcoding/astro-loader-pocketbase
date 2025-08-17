@@ -98,4 +98,33 @@ export interface PocketBaseLoaderOptions {
    * The PocketBase API does always return at least `0` or `false` as the default values, even though the fields are not marked as required in the schema.
    */
   improveTypes?: boolean;
+  /**
+   * Experimental options for the loader.
+   *
+   * @experimental All of these options are experimental and may change in the future.
+   */
+  experimental?: {
+    /**
+     * Whether to only create types for the live loader.
+     * This will not load any data, but only generate types that can be used with the live loader.
+     *
+     * @experimental Live content collections are still experimental
+     */
+    liveTypesOnly?: boolean;
+  };
 }
+
+/**
+ * Options for the PocketBase live loader.
+ *
+ * @experimental Live content collections are still experimental
+ */
+export type ExperimentalPocketBaseLiveLoaderOptions = Pick<
+  PocketBaseLoaderOptions,
+  | "url"
+  | "collectionName"
+  | "contentFields"
+  | "updatedField"
+  | "filter"
+  | "superuserCredentials"
+>;

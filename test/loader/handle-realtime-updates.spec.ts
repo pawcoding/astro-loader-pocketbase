@@ -54,7 +54,7 @@ describe("handleRealtimeUpdates", () => {
       }
     });
     const options = createLoaderOptions({
-      collectionName: record.collectionName + "invalid"
+      collectionName: `${record.collectionName}-invalid`
     });
     const result = await handleRealtimeUpdates(context, options);
 

@@ -97,7 +97,7 @@ describe("parseEntry", () => {
       data: {},
       digest: "digest",
       rendered: {
-        html: `<section>${entry.collectionName}</section><section>${entry.customId}</section>`
+        html: `<section id="collectionName">${entry.collectionName}</section><section id="customId">${entry.customId}</section>`
       }
     });
   });
