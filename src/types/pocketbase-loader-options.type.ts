@@ -59,7 +59,12 @@ export interface PocketBaseLoaderOptions {
    * This can be either a comma-separated string of field names or an array of field names.
    * Only the specified fields will be included in the response and schema.
    *
-   * Note: The basic fields (`id`, `collectionId`, `collectionName`, `created`, `updated`) are always included.
+   * Use "*" to include all fields (same as not specifying the fields option).
+   *
+   * Note: The basic fields (`id`, `collectionId`, `collectionName`) are always included by PocketBase.
+   * The `created` and `updated` fields are not automatically included and may not exist in PocketBase v0.23+.
+   *
+   * Note: Expand fields are not currently supported by this loader.
    *
    * Example:
    * ```ts
@@ -68,6 +73,9 @@ export interface PocketBaseLoaderOptions {
    *
    * // Using array format:
    * fields: ['title', 'content', 'author']
+   *
+   * // Include all fields:
+   * fields: '*'
    * ```
    *
    * @see {@link https://pocketbase.io/docs/api-records/#query-parameters PocketBase fields documentation}

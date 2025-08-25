@@ -1,27 +1,30 @@
 /**
- * Format fields option into a comma-separated string and validate for expand usage.
+ * Format fields option into an array and validate for expand usage.
  *
  * @param fields The fields option (string or array)
- * @returns Formatted fields string, or undefined if no fields specified
+ * @returns Formatted fields array, or undefined if no fields specified or "*" wildcard is used
  */
 export function formatFields(
   fields: string | Array<string> | undefined
-): string | undefined {
+): Array<string> | undefined {
   if (!fields) {
     return undefined;
   }
 
-  let fieldsStr: string;
+  let fieldList: Array<string>;
 
   if (Array.isArray(fields)) {
-    fieldsStr = fields.join(",");
+    fieldList = fields.map((f) => f.trim());
   } else {
-    fieldsStr = fields;
+    // Handle "*" wildcard which means include all fields
+    if (fields.trim() === "*") {
+      return undefined;
+    }
+    fieldList = fields.split(",").map((f) => f.trim());
   }
 
   // Warn if expand is used since it's not currently supported
   // Check for exact field match or field with dot notation (e.g., "expand" or "expand.user")
-  const fieldList = fieldsStr.split(",").map((f) => f.trim());
   const hasExpand = fieldList.some(
     (field) => field === "expand" || field.startsWith("expand.")
   );
@@ -33,5 +36,5 @@ export function formatFields(
     );
   }
 
-  return fieldsStr;
+  return fieldList;
 }

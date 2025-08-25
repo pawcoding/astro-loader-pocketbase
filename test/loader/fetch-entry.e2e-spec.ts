@@ -256,8 +256,7 @@ describe("fetchEntry", () => {
       // Should include all fields when no fields filter is specified
       expect(result).toHaveProperty("title");
       expect(result).toHaveProperty("content");
-      expect(result).toHaveProperty("created");
-      expect(result).toHaveProperty("updated");
+      // Note: created and updated are not automatically included in PocketBase v0.23+
 
       await deleteCollection(testOptions, superuserToken);
     });

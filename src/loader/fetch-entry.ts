@@ -17,9 +17,12 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
   );
 
   // Add fields parameter if specified
-  const fieldsStr = formatFields(options.fields);
-  if (fieldsStr) {
-    entryUrl.searchParams.set("fields", fieldsStr);
+  const fieldsArray = formatFields(options.fields);
+  if (fieldsArray) {
+    // Always include basic fields that are required by the system
+    const basicFields = ["id", "collectionId", "collectionName"];
+    const allFields = [...new Set([...basicFields, ...fieldsArray])];
+    entryUrl.searchParams.set("fields", allFields.join(","));
   }
 
   // Create the headers for the request to append the token (if available)

@@ -489,8 +489,61 @@ describe("fetchCollection", () => {
       // Should include all fields when no fields filter is specified
       expect(results[0]).toHaveProperty("title");
       expect(results[0]).toHaveProperty("content");
-      expect(results[0]).toHaveProperty("created");
-      expect(results[0]).toHaveProperty("updated");
+      // Note: created and updated are not automatically included in PocketBase v0.23+
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+
+    test("should include all fields when '*' wildcard is used", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", ""),
+        fields: "*"
+      };
+
+      await insertCollection(
+        [
+          {
+            name: "title",
+            type: "text"
+          },
+          {
+            name: "content",
+            type: "text"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      await insertEntries(
+        [
+          {
+            title: "Test Title",
+            content: "Test Content"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        testOptions,
+        async (entries) => {
+          // oxlint-disable-next-line require-await
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(results).toHaveLength(1);
+
+      // Should include all fields when "*" wildcard is used
+      expect(results[0]).toHaveProperty("title");
+      expect(results[0]).toHaveProperty("content");
+      // Note: created and updated are not automatically included in PocketBase v0.23+
 
       await deleteCollection(testOptions, superuserToken);
     });

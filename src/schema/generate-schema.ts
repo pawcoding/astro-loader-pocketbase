@@ -23,37 +23,6 @@ const BASIC_SCHEMA = {
 const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
 
 /**
- * Filter fields based on the fields option.
- */
-function filterFieldsByOptions(
-  fields: Record<string, z.ZodType>,
-  fieldsOption: string | Array<string> | undefined
-): Record<string, z.ZodType> {
-  if (!fieldsOption) {
-    return fields;
-  }
-
-  // Format fields and trigger expand validation
-  const fieldsStr = formatFields(fieldsOption);
-  if (!fieldsStr) {
-    return fields;
-  }
-
-  // Get the list of fields to include
-  const fieldsToInclude = fieldsStr.split(",").map((f) => f.trim());
-
-  // Filter the fields object to only include specified fields
-  const filteredFields: Record<string, z.ZodType> = {};
-  for (const fieldName of fieldsToInclude) {
-    if (fields[fieldName]) {
-      filteredFields[fieldName] = fields[fieldName];
-    }
-  }
-
-  return filteredFields;
-}
-
-/**
  * Generate a schema for the collection based on the collection's schema in PocketBase.
  * By default, a basic schema is returned if no other schema is available.
  * If superuser credentials are provided, the schema is fetched from the PocketBase API.
@@ -92,17 +61,18 @@ export async function generateSchema(
     return z.object(BASIC_SCHEMA);
   }
 
-  // Parse the schema
+  // Get fields to include from options
+  const fieldsToInclude = formatFields(options.fields);
+
+  // Parse the schema with optional field filtering
   const fields = parseSchema(
     collection,
     options.jsonSchemas,
     hasSuperuserRights,
     options.improveTypes ?? false,
-    options.experimental?.liveTypesOnly ?? false
+    options.experimental?.liveTypesOnly ?? false,
+    fieldsToInclude
   );
-
-  // Filter fields based on the fields option if specified
-  const filteredFields = filterFieldsByOptions(fields, options.fields);
 
   // Check if custom id field is present
   if (options.idField) {
@@ -132,14 +102,14 @@ export async function generateSchema(
   // Check if the content field is present
   if (
     typeof options.contentFields === "string" &&
-    !filteredFields[options.contentFields]
+    !fields[options.contentFields]
   ) {
     console.error(
       `The content field "${options.contentFields}" is not present in the schema of the collection "${options.collectionName}".`
     );
   } else if (Array.isArray(options.contentFields)) {
     for (const field of options.contentFields) {
-      if (!filteredFields[field]) {
+      if (!fields[field]) {
         console.error(
           `The content field "${field}" is not present in the schema of the collection "${options.collectionName}".`
         );
@@ -149,7 +119,7 @@ export async function generateSchema(
 
   // Check if the updated field is present
   if (options.updatedField) {
-    if (!filteredFields[options.updatedField]) {
+    if (!fields[options.updatedField]) {
       console.error(
         `The field "${options.updatedField}" is not present in the schema of the collection "${options.collectionName}".\nThis will lead to errors when trying to fetch only updated entries.`
       );
@@ -172,7 +142,7 @@ export async function generateSchema(
   // Combine the basic schema with the parsed fields
   const schema = z.object({
     ...BASIC_SCHEMA,
-    ...filteredFields
+    ...fields
   });
 
   // Get all file fields

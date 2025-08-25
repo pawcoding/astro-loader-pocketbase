@@ -151,9 +151,12 @@ function buildSearchParams(
   }
 
   // Add fields parameter if specified
-  const fieldsStr = formatFields(loaderOptions.fields);
-  if (fieldsStr) {
-    searchParams.set("fields", fieldsStr);
+  const fieldsArray = formatFields(loaderOptions.fields);
+  if (fieldsArray) {
+    // Always include basic fields that are required by the system
+    const basicFields = ["id", "collectionId", "collectionName"];
+    const allFields = [...new Set([...basicFields, ...fieldsArray])];
+    searchParams.set("fields", allFields.join(","));
   }
 
   return searchParams;
