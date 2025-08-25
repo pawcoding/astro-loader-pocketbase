@@ -1,12 +1,19 @@
+import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+
 /**
  * Combine basic, special, and user-specified fields for PocketBase API requests.
  * This utility ensures that required system fields are always included in API requests.
  *
  * @param userFields Array of fields specified by the user, or undefined for all fields
+ * @param options PocketBase loader options containing custom field configurations
  * @returns Combined array of fields to include in the API request, or undefined for all fields
  */
 export function combineFieldsForRequest(
-  userFields: Array<string> | undefined
+  userFields: Array<string> | undefined,
+  options: Pick<
+    PocketBaseLoaderOptions,
+    "idField" | "updatedField" | "contentFields"
+  >
 ): Array<string> | undefined {
   // If no fields specified, return undefined to get all fields
   if (!userFields) {
@@ -16,9 +23,27 @@ export function combineFieldsForRequest(
   // Basic fields that are always required by the system
   const basicFields = ["id", "collectionId", "collectionName"];
 
-  // Special fields that are commonly needed but not always present
-  // These include metadata fields that might be useful for content management
-  const specialFields = ["created", "updated"];
+  // Special fields that are configured in options
+  const specialFields: Array<string> = [];
+
+  // Add custom id field if specified
+  if (options.idField && options.idField !== "id") {
+    specialFields.push(options.idField);
+  }
+
+  // Add updated field if specified
+  if (options.updatedField) {
+    specialFields.push(options.updatedField);
+  }
+
+  // Add content fields if specified
+  if (options.contentFields) {
+    if (Array.isArray(options.contentFields)) {
+      specialFields.push(...options.contentFields);
+    } else {
+      specialFields.push(options.contentFields);
+    }
+  }
 
   // Combine all field sets, removing duplicates
   const allFields = [

@@ -153,7 +153,7 @@ function buildSearchParams(
 
   // Add fields parameter if specified
   const fieldsArray = formatFields(loaderOptions.fields);
-  const combinedFields = combineFieldsForRequest(fieldsArray);
+  const combinedFields = combineFieldsForRequest(fieldsArray, loaderOptions);
   if (combinedFields) {
     searchParams.set("fields", combinedFields.join(","));
   }

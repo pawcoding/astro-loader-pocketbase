@@ -2,6 +2,7 @@ import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import { extractFieldNames } from "../utils/extract-field-names";
 import { formatFields } from "../utils/format-fields";
 import { getRemoteSchema } from "./get-remote-schema";
 import { parseSchema } from "./parse-schema";
@@ -64,6 +65,9 @@ export async function generateSchema(
   // Get fields to include from options
   const fieldsToInclude = formatFields(options.fields);
 
+  // Extract field names for schema parsing (remove modifiers like :excerpt)
+  const fieldNamesForSchema = extractFieldNames(fieldsToInclude);
+
   // Parse the schema with optional field filtering
   const fields = parseSchema(
     collection,
@@ -71,7 +75,7 @@ export async function generateSchema(
     hasSuperuserRights,
     options.improveTypes ?? false,
     options.experimental?.liveTypesOnly ?? false,
-    fieldsToInclude
+    fieldNamesForSchema
   );
 
   // Check if custom id field is present

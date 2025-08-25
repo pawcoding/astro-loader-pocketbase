@@ -61,8 +61,9 @@ export interface PocketBaseLoaderOptions {
    *
    * Use "*" to include all fields (same as not specifying the fields option).
    *
-   * Note: The basic fields (`id`, `collectionId`, `collectionName`) and common metadata fields
-   * (`created`, `updated`) are automatically included in API requests when using field filtering.
+   * Note: The basic fields (`id`, `collectionId`, `collectionName`) are automatically included
+   * in API requests when using field filtering. Additionally, any custom fields specified in the
+   * loader options (`idField`, `updatedField`, `contentFields`) are also automatically included.
    *
    * Note: Expand fields are not currently supported by this loader.
    *

@@ -21,20 +21,6 @@ export function formatFields(
     fieldList = smartSplitFields(fields).map((f) => f.trim());
   }
 
-  // Check for "*" wildcard after splitting - if found anywhere, include all fields
-  const hasWildcard = fieldList.some((field) => field === "*");
-  if (hasWildcard) {
-    // Still check for expand to show warning even with wildcard
-    const hasExpand = fieldList.some((field) => field.includes("expand"));
-    if (hasExpand) {
-      console.warn(
-        'The "expand" field is not currently supported by the PocketBase loader. ' +
-          "Expand functionality may be added in a future version."
-      );
-    }
-    return undefined;
-  }
-
   // Warn if expand is used since it's not currently supported
   // Use string includes to check for expand fields
   const hasExpand = fieldList.some((field) => field.includes("expand"));
@@ -44,6 +30,12 @@ export function formatFields(
       'The "expand" field is not currently supported by the PocketBase loader. ' +
         "Expand functionality may be added in a future version."
     );
+  }
+
+  // Check for "*" wildcard after expand check - if found anywhere, include all fields
+  const hasWildcard = fieldList.some((field) => field === "*");
+  if (hasWildcard) {
+    return undefined;
   }
 
   // Handle excerpt field modifiers (:excerpt(maxLength, withEllipsis?))
@@ -68,28 +60,41 @@ export function formatFields(
 }
 
 /**
- * Smart split that respects parentheses in excerpt syntax
+ * Smart split that respects parentheses in excerpt syntax.
+ * First splits by comma, then recombines any incomplete parentheses groups.
  */
 function smartSplitFields(fieldsString: string): Array<string> {
+  // First, split by comma
+  const initialSplit = fieldsString.split(",");
   const fields: Array<string> = [];
   let current = "";
   let parenDepth = 0;
 
-  for (const char of fieldsString) {
-    if (char === "(") {
-      parenDepth++;
-      current += char;
-    } else if (char === ")") {
-      parenDepth--;
-      current += char;
-    } else if (char === "," && parenDepth === 0) {
+  for (const part of initialSplit) {
+    // Count parentheses in this part
+    for (const char of part) {
+      if (char === "(") {
+        parenDepth++;
+      } else if (char === ")") {
+        parenDepth--;
+      }
+    }
+
+    // Add to current field
+    if (current) {
+      current += "," + part;
+    } else {
+      current = part;
+    }
+
+    // If parentheses are balanced, this field is complete
+    if (parenDepth === 0) {
       fields.push(current);
       current = "";
-    } else {
-      current += char;
     }
   }
 
+  // If there's any remaining content, add it (shouldn't happen with valid syntax)
   if (current) {
     fields.push(current);
   }

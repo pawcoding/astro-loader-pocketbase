@@ -19,7 +19,7 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
 
   // Add fields parameter if specified
   const fieldsArray = formatFields(options.fields);
-  const combinedFields = combineFieldsForRequest(fieldsArray);
+  const combinedFields = combineFieldsForRequest(fieldsArray, options);
   if (combinedFields) {
     entryUrl.searchParams.set("fields", combinedFields.join(","));
   }
