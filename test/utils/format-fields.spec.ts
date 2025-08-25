@@ -132,8 +132,6 @@ describe("formatFields", () => {
 
   describe("when excerpt fields are used", () => {
     it("should preserve valid excerpt field syntax", () => {
-      const consoleWarnSpy = vi.spyOn(console, "warn");
-
       const result = formatFields(
         "title,description:excerpt(200,true),content"
       );
@@ -143,40 +141,24 @@ describe("formatFields", () => {
         "description:excerpt(200,true)",
         "content"
       ]);
-      expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
     it("should preserve excerpt field with just maxLength", () => {
-      const consoleWarnSpy = vi.spyOn(console, "warn");
-
       const result = formatFields("title,content:excerpt(150)");
 
       expect(result).toEqual(["title", "content:excerpt(150)"]);
-      expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
-    it("should warn about invalid excerpt syntax", () => {
-      const consoleWarnSpy = vi.spyOn(console, "warn");
-
+    it("should preserve excerpt field even with invalid syntax", () => {
       const result = formatFields("title,content:excerpt(invalid),author");
 
       expect(result).toEqual(["title", "content:excerpt(invalid)", "author"]);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Invalid excerpt syntax for field "content:excerpt(invalid)". ' +
-          "Expected format: fieldname:excerpt(maxLength, withEllipsis?)"
-      );
     });
 
-    it("should warn about excerpt with missing parentheses", () => {
-      const consoleWarnSpy = vi.spyOn(console, "warn");
-
+    it("should preserve excerpt field even with missing parentheses", () => {
       const result = formatFields("title,content:excerpt");
 
       expect(result).toEqual(["title", "content:excerpt"]);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Invalid excerpt syntax for field "content:excerpt". ' +
-          "Expected format: fieldname:excerpt(maxLength, withEllipsis?)"
-      );
     });
   });
 });

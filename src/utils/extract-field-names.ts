@@ -16,7 +16,7 @@ export function extractFieldNames(
     // Extract the field name before any colon modifier (like :excerpt)
     const colonIndex = field.indexOf(":");
     if (colonIndex !== -1) {
-      return field.substring(0, colonIndex);
+      return field.slice(0, colonIndex);
     }
     return field;
   });

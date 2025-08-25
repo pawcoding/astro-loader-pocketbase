@@ -1,6 +1,6 @@
 /**
  * Format fields option into an array and validate for expand usage.
- * Handles wildcard "*" and excerpt field modifiers according to PocketBase API spec.
+ * Handles wildcard "*" and preserves excerpt field modifiers.
  *
  * @param fields The fields option (string or array)
  * @returns Formatted fields array, or undefined if no fields specified or "*" wildcard is used
@@ -38,25 +38,7 @@ export function formatFields(
     return undefined;
   }
 
-  // Handle excerpt field modifiers (:excerpt(maxLength, withEllipsis?))
-  // These are valid PocketBase field modifiers that should be preserved
-  const processedFields = fieldList.map((field) => {
-    // Check if field has excerpt modifier
-    if (field.includes(":excerpt")) {
-      // Validate excerpt syntax - should match pattern: fieldname:excerpt(number, boolean?)
-      const excerptPattern =
-        /^[a-zA-Z_][a-zA-Z0-9_.]*:excerpt\(\d+(?:,\s*(?:true|false))?\)$/;
-      if (!excerptPattern.test(field)) {
-        console.warn(
-          `Invalid excerpt syntax for field "${field}". ` +
-            "Expected format: fieldname:excerpt(maxLength, withEllipsis?)"
-        );
-      }
-    }
-    return field;
-  });
-
-  return processedFields;
+  return fieldList;
 }
 
 /**
@@ -82,7 +64,7 @@ function smartSplitFields(fieldsString: string): Array<string> {
 
     // Add to current field
     if (current) {
-      current += "," + part;
+      current += `,${part}`;
     } else {
       current = part;
     }
