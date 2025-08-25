@@ -12,7 +12,8 @@ export function parseSchema(
   customSchemas: Record<string, z.ZodType> | undefined,
   hasSuperuserRights: boolean,
   improveTypes: boolean,
-  experimentalLiveTypesOnly?: boolean
+  experimentalLiveTypesOnly?: boolean,
+  fieldsToInclude?: Array<string>
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
@@ -21,6 +22,11 @@ export function parseSchema(
   for (const field of collection.fields) {
     // Skip hidden fields if the user does not have superuser rights
     if (field.hidden && !hasSuperuserRights) {
+      continue;
+    }
+
+    // If fieldsToInclude is specified, only include fields that are in the list
+    if (fieldsToInclude && !fieldsToInclude.includes(field.name)) {
       continue;
     }
 

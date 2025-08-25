@@ -222,6 +222,118 @@ describe("generateSchema", () => {
     });
   });
 
+  describe("fields filtering", () => {
+    it("should include only specified fields when fields option is provided as string", async () => {
+      const result = (await generateSchema(
+        {
+          ...options,
+          fields: "email,verified"
+        },
+        token
+      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+
+      // Should always include basic schema fields
+      expect(Object.keys(result.shape)).toEqual([
+        "id",
+        "collectionId",
+        "collectionName",
+        "email",
+        "verified"
+      ]);
+    });
+
+    it("should include only specified fields when fields option is provided as array", async () => {
+      const result = (await generateSchema(
+        {
+          ...options,
+          fields: ["email", "emailVisibility", "created"]
+        },
+        token
+      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+
+      // Should always include basic schema fields
+      expect(Object.keys(result.shape)).toEqual([
+        "id",
+        "collectionId",
+        "collectionName",
+        "email",
+        "emailVisibility",
+        "created"
+      ]);
+    });
+
+    it("should include all fields when no fields option is provided", async () => {
+      const result = (await generateSchema(options, token)) as ZodObject<
+        Record<string, ZodSchema<unknown>>
+      >;
+
+      // Should include all available fields
+      expect(Object.keys(result.shape)).toEqual([
+        "id",
+        "collectionId",
+        "collectionName",
+        "password",
+        "tokenKey",
+        "email",
+        "emailVisibility",
+        "verified",
+        "created",
+        "updated"
+      ]);
+    });
+
+    it("should log warning when expand field is used", async () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn");
+
+      await generateSchema(
+        {
+          ...options,
+          fields: "email,expand,verified"
+        },
+        token
+      );
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'The "expand" field is not currently supported by the PocketBase loader. ' +
+          "Expand functionality may be added in a future version."
+      );
+    });
+
+    it("should validate content fields against filtered fields", async () => {
+      const consoleErrorSpy = vi.spyOn(console, "error");
+
+      await generateSchema(
+        {
+          ...options,
+          fields: "email,verified",
+          contentFields: "password" // password not in filtered fields
+        },
+        token
+      );
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        `The content field "password" is not present in the schema of the collection "${options.collectionName}".`
+      );
+    });
+
+    it("should validate updated field against filtered fields", async () => {
+      const consoleErrorSpy = vi.spyOn(console, "error");
+
+      await generateSchema(
+        {
+          ...options,
+          fields: "email,verified",
+          updatedField: "updated" // updated not in filtered fields
+        },
+        token
+      );
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        `The field "updated" is not present in the schema of the collection "${options.collectionName}".\nThis will lead to errors when trying to fetch only updated entries.`
+      );
+    });
+  });
+
   it("should return entry with transformed file fields", async () => {
     const testOptions = { ...options, collectionName: "users" };
     const schema = await generateSchema(testOptions, token);
