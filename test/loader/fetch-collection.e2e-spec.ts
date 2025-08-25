@@ -414,6 +414,7 @@ describe("fetchCollection", () => {
       const results: Array<PocketBaseEntry> = [];
       await fetchCollection(
         testOptions,
+        // oxlint-disable-next-line require-await
         async (entries) => {
           results.push(...entries);
         },
@@ -476,6 +477,7 @@ describe("fetchCollection", () => {
       await fetchCollection(
         testOptions,
         async (entries) => {
+          // oxlint-disable-next-line require-await
           results.push(...entries);
         },
         superuserToken,
