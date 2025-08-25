@@ -1,6 +1,7 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
 
 /**
@@ -152,11 +153,9 @@ function buildSearchParams(
 
   // Add fields parameter if specified
   const fieldsArray = formatFields(loaderOptions.fields);
-  if (fieldsArray) {
-    // Always include basic fields that are required by the system
-    const basicFields = ["id", "collectionId", "collectionName"];
-    const allFields = [...new Set([...basicFields, ...fieldsArray])];
-    searchParams.set("fields", allFields.join(","));
+  const combinedFields = combineFieldsForRequest(fieldsArray);
+  if (combinedFields) {
+    searchParams.set("fields", combinedFields.join(","));
   }
 
   return searchParams;

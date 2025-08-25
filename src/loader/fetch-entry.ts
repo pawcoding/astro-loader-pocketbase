@@ -1,5 +1,6 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
 
 /**
@@ -18,11 +19,9 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
 
   // Add fields parameter if specified
   const fieldsArray = formatFields(options.fields);
-  if (fieldsArray) {
-    // Always include basic fields that are required by the system
-    const basicFields = ["id", "collectionId", "collectionName"];
-    const allFields = [...new Set([...basicFields, ...fieldsArray])];
-    entryUrl.searchParams.set("fields", allFields.join(","));
+  const combinedFields = combineFieldsForRequest(fieldsArray);
+  if (combinedFields) {
+    entryUrl.searchParams.set("fields", combinedFields.join(","));
   }
 
   // Create the headers for the request to append the token (if available)

@@ -25,6 +25,16 @@ describe("formatFields", () => {
       expect(result).toBeUndefined();
     });
 
+    it("should return undefined when * wildcard is mixed with other fields", () => {
+      const result = formatFields("title,*,content");
+      expect(result).toBeUndefined();
+    });
+
+    it("should return undefined when * wildcard is at the end", () => {
+      const result = formatFields("title,content,*");
+      expect(result).toBeUndefined();
+    });
+
     it("should trim whitespace from fields", () => {
       const result = formatFields(" title , content , author ");
       expect(result).toEqual(["title", "content", "author"]);
@@ -35,6 +45,11 @@ describe("formatFields", () => {
     it("should return the trimmed array", () => {
       const result = formatFields(["title", "content", "author"]);
       expect(result).toEqual(["title", "content", "author"]);
+    });
+
+    it("should return undefined when * wildcard is in array", () => {
+      const result = formatFields(["title", "*", "content"]);
+      expect(result).toBeUndefined();
     });
 
     it("should handle single field array", () => {
@@ -90,13 +105,78 @@ describe("formatFields", () => {
       );
     });
 
-    it("should not warn when expand is part of another field name", () => {
+    it("should warn when expand is part of field name with includes check", () => {
       const consoleWarnSpy = vi.spyOn(console, "warn");
 
-      const result = formatFields("title,expanded_content,content");
+      const result = formatFields("title,some_expand_field,content");
 
-      expect(result).toEqual(["title", "expanded_content", "content"]);
+      expect(result).toEqual(["title", "some_expand_field", "content"]);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'The "expand" field is not currently supported by the PocketBase loader. ' +
+          "Expand functionality may be added in a future version."
+      );
+    });
+
+    it("should warn with mixed wildcard and expand but return undefined for wildcard", () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn");
+
+      const result = formatFields("*,expand.field");
+
+      expect(result).toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'The "expand" field is not currently supported by the PocketBase loader. ' +
+          "Expand functionality may be added in a future version."
+      );
+    });
+  });
+
+  describe("when excerpt fields are used", () => {
+    it("should preserve valid excerpt field syntax", () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn");
+
+      const result = formatFields(
+        "title,description:excerpt(200,true),content"
+      );
+
+      expect(result).toEqual([
+        "title",
+        "description:excerpt(200,true)",
+        "content"
+      ]);
       expect(consoleWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it("should preserve excerpt field with just maxLength", () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn");
+
+      const result = formatFields("title,content:excerpt(150)");
+
+      expect(result).toEqual(["title", "content:excerpt(150)"]);
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+    });
+
+    it("should warn about invalid excerpt syntax", () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn");
+
+      const result = formatFields("title,content:excerpt(invalid),author");
+
+      expect(result).toEqual(["title", "content:excerpt(invalid)", "author"]);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Invalid excerpt syntax for field "content:excerpt(invalid)". ' +
+          "Expected format: fieldname:excerpt(maxLength, withEllipsis?)"
+      );
+    });
+
+    it("should warn about excerpt with missing parentheses", () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn");
+
+      const result = formatFields("title,content:excerpt");
+
+      expect(result).toEqual(["title", "content:excerpt"]);
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Invalid excerpt syntax for field "content:excerpt". ' +
+          "Expected format: fieldname:excerpt(maxLength, withEllipsis?)"
+      );
     });
   });
 });
