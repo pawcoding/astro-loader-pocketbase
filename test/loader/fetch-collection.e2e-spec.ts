@@ -371,4 +371,126 @@ describe("fetchCollection", () => {
       await deleteCollection(testOptions, superuserToken);
     });
   });
+
+  describe("fields filtering", () => {
+    test("should include fields parameter in request when fields option is provided", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", ""),
+        fields: ["title", "content"]
+      };
+
+      await insertCollection(
+        [
+          {
+            name: "title",
+            type: "text"
+          },
+          {
+            name: "content",
+            type: "text"
+          },
+          {
+            name: "description",
+            type: "text"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      await insertEntries(
+        [
+          {
+            title: "Test Title",
+            content: "Test Content",
+            description: "Test Description"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        testOptions,
+        async (entries) => {
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(results).toHaveLength(1);
+
+      // Should include the specified fields
+      expect(results[0]).toHaveProperty("title");
+      expect(results[0]).toHaveProperty("content");
+      expect(results[0].title).toBe("Test Title");
+      expect(results[0].content).toBe("Test Content");
+
+      // Should not include the non-specified field
+      expect(results[0]).not.toHaveProperty("description");
+
+      // Should always include basic fields
+      expect(results[0]).toHaveProperty("id");
+      expect(results[0]).toHaveProperty("collectionId");
+      expect(results[0]).toHaveProperty("collectionName");
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+
+    test("should include all fields when no fields option is provided", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", "")
+      };
+
+      await insertCollection(
+        [
+          {
+            name: "title",
+            type: "text"
+          },
+          {
+            name: "content",
+            type: "text"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      await insertEntries(
+        [
+          {
+            title: "Test Title",
+            content: "Test Content"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        testOptions,
+        async (entries) => {
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(results).toHaveLength(1);
+
+      // Should include all fields when no fields filter is specified
+      expect(results[0]).toHaveProperty("title");
+      expect(results[0]).toHaveProperty("content");
+      expect(results[0]).toHaveProperty("created");
+      expect(results[0]).toHaveProperty("updated");
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+  });
 });

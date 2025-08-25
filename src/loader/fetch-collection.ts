@@ -1,6 +1,7 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { formatFields } from "../utils/format-fields";
 
 /**
  * Provides utilities to fetch entries from a PocketBase collection, supporting filtering and pagination.
@@ -23,6 +24,7 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
     | "url"
     | "updatedField"
     | "filter"
+    | "fields"
     | "superuserCredentials"
   >,
   chunkLoaded: (entries: Array<TEntry>) => Promise<void>,
@@ -101,7 +103,10 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
  * Build search parameters for the PocketBase collection request.
  */
 function buildSearchParams(
-  loaderOptions: Pick<PocketBaseLoaderOptions, "updatedField" | "filter">,
+  loaderOptions: Pick<
+    PocketBaseLoaderOptions,
+    "updatedField" | "filter" | "fields"
+  >,
   collectionFilter: CollectionFilter
 ): URLSearchParams {
   // Build search parameters
@@ -143,6 +148,12 @@ function buildSearchParams(
 
   if (collectionFilter.sort) {
     searchParams.set("sort", collectionFilter.sort);
+  }
+
+  // Add fields parameter if specified
+  const fieldsStr = formatFields(loaderOptions.fields);
+  if (fieldsStr) {
+    searchParams.set("fields", fieldsStr);
   }
 
   return searchParams;

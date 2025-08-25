@@ -55,6 +55,25 @@ export interface PocketBaseLoaderOptions {
    */
   filter?: string;
   /**
+   * Specify which fields to return for each record.
+   * This can be either a comma-separated string of field names or an array of field names.
+   * Only the specified fields will be included in the response and schema.
+   *
+   * Note: The basic fields (`id`, `collectionId`, `collectionName`, `created`, `updated`) are always included.
+   *
+   * Example:
+   * ```ts
+   * // Using string format:
+   * fields: 'title,content,author'
+   *
+   * // Using array format:
+   * fields: ['title', 'content', 'author']
+   * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#query-parameters PocketBase fields documentation}
+   */
+  fields?: string | Array<string>;
+  /**
    * Credentials of a superuser to get full access to the PocketBase instance.
    * This is required to get automatic type generation without a local schema, to access all resources even if they are not public and to fetch content of hidden fields.
    */
@@ -126,5 +145,6 @@ export type ExperimentalPocketBaseLiveLoaderOptions = Pick<
   | "contentFields"
   | "updatedField"
   | "filter"
+  | "fields"
   | "superuserCredentials"
 >;

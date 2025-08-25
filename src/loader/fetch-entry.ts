@@ -1,5 +1,6 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { formatFields } from "../utils/format-fields";
 
 /**
  * Retrieves a specific entry from a PocketBase collection using its ID and loader options.
@@ -13,7 +14,13 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
   const entryUrl = new URL(
     `api/collections/${options.collectionName}/records/${id}`,
     options.url
-  ).href;
+  );
+
+  // Add fields parameter if specified
+  const fieldsStr = formatFields(options.fields);
+  if (fieldsStr) {
+    entryUrl.searchParams.set("fields", fieldsStr);
+  }
 
   // Create the headers for the request to append the token (if available)
   const entryHeaders = new Headers();
@@ -22,7 +29,7 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
   }
 
   // Fetch the entry from the collection
-  const entryRequest = await fetch(entryUrl, {
+  const entryRequest = await fetch(entryUrl.href, {
     headers: entryHeaders
   });
 
