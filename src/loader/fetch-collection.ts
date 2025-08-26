@@ -44,17 +44,24 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
     collectionHeaders.set("Authorization", token);
   }
 
+  // Cache fields computation outside the loop
+  const fieldsArray = formatFields(options.fields);
+  const combinedFields = combineFieldsForRequest(fieldsArray, options);
+
   // Prepare pagination variables
   let page = 0;
   let totalPages = 0;
 
   // Fetch all (modified) entries
   do {
-    addSearchParams(collectionUrl.searchParams, options, {
+    const searchParams = buildSearchParams(options, combinedFields, {
       ...collectionFilter,
       page: collectionFilter?.page ?? ++page,
       perPage: collectionFilter?.perPage ?? 100
     });
+
+    // Apply search parameters to URL
+    collectionUrl.search = searchParams.toString();
 
     // Fetch entries from the collection
     const collectionRequest = await fetch(collectionUrl.href, {
@@ -100,14 +107,13 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
 /**
  * Build search parameters for the PocketBase collection request.
  */
-function addSearchParams(
-  searchParams: URLSearchParams,
-  loaderOptions: Pick<
-    PocketBaseLoaderOptions,
-    "updatedField" | "filter" | "fields"
-  >,
+function buildSearchParams(
+  loaderOptions: Pick<PocketBaseLoaderOptions, "updatedField" | "filter">,
+  combinedFields: Array<string> | undefined,
   collectionFilter: CollectionFilter
 ): URLSearchParams {
+  const searchParams = new URLSearchParams();
+
   if (collectionFilter.page) {
     searchParams.set("page", `${collectionFilter.page}`);
   }
@@ -147,8 +153,6 @@ function addSearchParams(
   }
 
   // Add fields parameter if specified
-  const fieldsArray = formatFields(loaderOptions.fields);
-  const combinedFields = combineFieldsForRequest(fieldsArray, loaderOptions);
   if (combinedFields) {
     searchParams.set("fields", combinedFields.join(","));
   }
