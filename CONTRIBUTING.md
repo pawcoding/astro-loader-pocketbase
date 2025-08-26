@@ -196,42 +196,6 @@ Use our issue templates for:
 
 Provide as much detail as possible to help us understand and reproduce the issue.
 
-## Preview Packages
-
-For testing and preview purposes, you can create preview packages without going through the normal release process. This is useful when you want to test changes in a real environment before merging to the main branch.
-
-### Creating a Preview Package
-
-To create a preview package:
-
-1. Create an empty commit with the special pattern `[img:<tag-name>]` in the commit message:
-
-   ```bash
-   git commit --allow-empty -m "test: preview for feature X [img:feature-x-preview]"
-   ```
-
-2. Push the commit to your branch
-3. The GitHub Actions workflow will detect the pattern and:
-   - Create a new package version
-   - Publish it to npm under the custom tag (e.g., `feature-x-preview`)
-   - **Skip** creating a GitHub release
-   - **Skip** committing changes back to the repository
-
-### Installing Preview Packages
-
-To install a preview package in your project:
-
-```bash
-npm install astro-loader-pocketbase@feature-x-preview
-```
-
-### Important Notes
-
-- Preview packages are prerelease versions and should not be used in production
-- They don't affect the normal release process or version numbering
-- No changelog entries or GitHub releases are created for preview packages
-- The tag name should be descriptive and unique to avoid conflicts
-
 ## Code of Conduct
 
 Please be respectful and constructive in all interactions. We want to maintain a welcoming environment for all contributors.
