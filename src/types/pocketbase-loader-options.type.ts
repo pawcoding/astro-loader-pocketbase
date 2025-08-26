@@ -39,7 +39,6 @@ export interface PocketBaseLoaderOptions {
   updatedField?: string;
   /**
    * Custom filter that is applied when loading data from PocketBase.
-   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
    *
    * The loader will also add it's own filters for incremental builds.
    * These will be added to your custom filter query.
@@ -52,6 +51,8 @@ export interface PocketBaseLoaderOptions {
    * // request
    * `?filter=(${loaderFilter})&&(release >= @now && deleted = false)`
    * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
    */
   filter?: string;
   /**
@@ -65,7 +66,7 @@ export interface PocketBaseLoaderOptions {
    * in API requests when using field filtering. Additionally, any custom fields specified in the
    * loader options (`idField`, `updatedField`, `contentFields`) are also automatically included.
    *
-   * Note: Expand fields are not currently supported by this loader.
+   * Warning: Expand fields are not currently supported by this loader.
    *
    * Example:
    * ```ts
@@ -79,7 +80,7 @@ export interface PocketBaseLoaderOptions {
    * fields: '*'
    * ```
    *
-   * @see {@link https://pocketbase.io/docs/api-records/#query-parameters PocketBase fields documentation}
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
    */
   fields?: string | Array<string>;
   /**
