@@ -36,7 +36,7 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
   const collectionUrl = new URL(
     `api/collections/${options.collectionName}/records`,
     options.url
-  ).href;
+  );
 
   // Create the headers for the request to append the token (if available)
   const collectionHeaders = new Headers();
@@ -50,19 +50,16 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
 
   // Fetch all (modified) entries
   do {
-    const searchParams = buildSearchParams(options, {
+    addSearchParams(collectionUrl.searchParams, options, {
       ...collectionFilter,
       page: collectionFilter?.page ?? ++page,
       perPage: collectionFilter?.perPage ?? 100
     });
 
     // Fetch entries from the collection
-    const collectionRequest = await fetch(
-      `${collectionUrl}?${searchParams.toString()}`,
-      {
-        headers: collectionHeaders
-      }
-    );
+    const collectionRequest = await fetch(collectionUrl.href, {
+      headers: collectionHeaders
+    });
 
     // If the request was not successful, print the error message and return
     if (!collectionRequest.ok) {
@@ -103,16 +100,14 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
 /**
  * Build search parameters for the PocketBase collection request.
  */
-function buildSearchParams(
+function addSearchParams(
+  searchParams: URLSearchParams,
   loaderOptions: Pick<
     PocketBaseLoaderOptions,
     "updatedField" | "filter" | "fields"
   >,
   collectionFilter: CollectionFilter
 ): URLSearchParams {
-  // Build search parameters
-  const searchParams = new URLSearchParams();
-
   if (collectionFilter.page) {
     searchParams.set("page", `${collectionFilter.page}`);
   }
