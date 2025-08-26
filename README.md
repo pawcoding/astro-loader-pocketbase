@@ -130,6 +130,24 @@ This filter will be added to the PocketBase API request and will only fetch entr
 This is in addition to the built-in filtering of the loader, which handles the incremental builds using the `updated` field.
 For more information on how to use filters, check out the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records).
 
+### Partial data loading
+
+By default, the loader fetches all fields for each entry in your PocketBase collection.
+If you want to optimize data loading or restrict the fields available in your content collection, you can use the `fields` option.
+
+```ts
+const blog = defineCollection({
+  loader: pocketbaseLoader({
+    ...options,
+    fields: ["title", "summary", "coverImage"]
+  })
+});
+```
+
+This parameter will be added to the PocketBase API request and will only return these fields for each entry.
+Additional system fields like `id`, `collectionName` and `collectionId`, as well as any fields specified for `idField`, `updatedField` or `contentFields` will be added automatically.
+For further details on field selection, see the [PocketBase API documentation](https://pocketbase.io/docs/api-records/#listsearch-records).
+
 ## Type generation
 
 The loader can automatically generate types for your collection.
