@@ -20,7 +20,7 @@ export function combineFieldsForRequest(
     return undefined;
   }
 
-  // Basic fields that are always required by the system
+  // Basic fields that are always required by the loader
   const basicFields = ["id", "collectionId", "collectionName"];
 
   // Special fields that are configured in options
