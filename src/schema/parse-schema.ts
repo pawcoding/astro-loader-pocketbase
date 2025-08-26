@@ -4,23 +4,42 @@ import type {
   PocketBaseSchemaEntry
 } from "../types/pocketbase-schema.type";
 
+export interface ParseSchemaOptions {
+  hasSuperuserRights: boolean;
+  improveTypes?: boolean;
+  fieldsToInclude?: Array<string>;
+  experimentalLiveTypesOnly?: boolean;
+}
+
 /**
  * Converts PocketBase collection fields into Zod types, handling field types, required status, and custom schemas.
  */
 export function parseSchema(
   collection: PocketBaseCollection,
   customSchemas: Record<string, z.ZodType> | undefined,
-  hasSuperuserRights: boolean,
-  improveTypes: boolean,
-  experimentalLiveTypesOnly?: boolean
+  options: ParseSchemaOptions
 ): Record<string, z.ZodType> {
   // Prepare the schemas fields
   const fields: Record<string, z.ZodType> = {};
 
   // Parse every field in the schema
   for (const field of collection.fields) {
+    // If fieldsToInclude is specified, only include fields that are in the list
+    if (
+      options.fieldsToInclude &&
+      !options.fieldsToInclude.includes(field.name)
+    ) {
+      continue;
+    }
+
     // Skip hidden fields if the user does not have superuser rights
-    if (field.hidden && !hasSuperuserRights) {
+    if (field.hidden && !options.hasSuperuserRights) {
+      if (options.fieldsToInclude) {
+        console.warn(
+          `"${field.name}" is requested but hidden. Provide superuser credentials to include this field.`
+        );
+      }
+
       continue;
     }
 
@@ -36,7 +55,7 @@ export function parseSchema(
         break;
       case "date":
       case "autodate":
-        if (experimentalLiveTypesOnly) {
+        if (options.experimentalLiveTypesOnly) {
           // If experimental live types only mode is enabled, treat dates as strings
           fieldType = z.string();
           break;
@@ -94,7 +113,8 @@ export function parseSchema(
       // `onCreate autodate` fields are always set
       (field.type === "autodate" && field.onCreate) ||
       // Improve number and boolean types by providing default values
-      (improveTypes && (field.type === "number" || field.type === "bool"));
+      (options.improveTypes &&
+        (field.type === "number" || field.type === "bool"));
 
     // If the field is not required, mark it as optional
     if (!isRequired) {

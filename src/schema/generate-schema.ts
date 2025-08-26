@@ -2,6 +2,9 @@ import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
+import { extractFieldNames } from "../utils/extract-field-names";
+import { formatFields } from "../utils/format-fields";
 import { getRemoteSchema } from "./get-remote-schema";
 import { parseSchema } from "./parse-schema";
 import { readLocalSchema } from "./read-local-schema";
@@ -60,79 +63,23 @@ export async function generateSchema(
     return z.object(BASIC_SCHEMA);
   }
 
-  // Parse the schema
-  const fields = parseSchema(
-    collection,
-    options.jsonSchemas,
+  // Get fields to include from options
+  const formattedFields = formatFields(options.fields);
+  const fieldNames = extractFieldNames(formattedFields);
+  const fieldsToInclude = combineFieldsForRequest(fieldNames, options);
+
+  // Parse the schema with optional field filtering
+  const fields = parseSchema(collection, options.jsonSchemas, {
     hasSuperuserRights,
-    options.improveTypes ?? false,
-    options.experimental?.liveTypesOnly ?? false
-  );
+    improveTypes: options.improveTypes,
+    fieldsToInclude,
+    experimentalLiveTypesOnly: options.experimental?.liveTypesOnly
+  });
 
-  // Check if custom id field is present
-  if (options.idField) {
-    // Find the id field in the schema
-    const idField = collection.fields.find(
-      (field) => field.name === options.idField
-    );
-
-    // Check if the id field is present and of a valid type
-    if (!idField) {
-      console.error(
-        `The id field "${options.idField}" is not present in the schema of the collection "${options.collectionName}".`
-      );
-    } else if (!VALID_ID_TYPES.includes(idField.type)) {
-      console.error(
-        `The id field "${options.idField}" for collection "${
-          options.collectionName
-        }" is of type "${
-          idField.type
-        }" which is not recommended. Please use one of the following types: ${VALID_ID_TYPES.join(
-          ", "
-        )}.`
-      );
-    }
-  }
-
-  // Check if the content field is present
-  if (
-    typeof options.contentFields === "string" &&
-    !fields[options.contentFields]
-  ) {
-    console.error(
-      `The content field "${options.contentFields}" is not present in the schema of the collection "${options.collectionName}".`
-    );
-  } else if (Array.isArray(options.contentFields)) {
-    for (const field of options.contentFields) {
-      if (!fields[field]) {
-        console.error(
-          `The content field "${field}" is not present in the schema of the collection "${options.collectionName}".`
-        );
-      }
-    }
-  }
-
-  // Check if the updated field is present
-  if (options.updatedField) {
-    if (!fields[options.updatedField]) {
-      console.error(
-        `The field "${options.updatedField}" is not present in the schema of the collection "${options.collectionName}".\nThis will lead to errors when trying to fetch only updated entries.`
-      );
-    } else {
-      const updatedField = collection.fields.find(
-        (field) => field.name === options.updatedField
-      );
-      if (
-        !updatedField ||
-        updatedField.type !== "autodate" ||
-        !updatedField.onUpdate
-      ) {
-        console.warn(
-          `The field "${options.updatedField}" is not of type "autodate" with the value "Update" or "Create/Update".\nMake sure that the field is automatically updated when the entry is updated!`
-        );
-      }
-    }
-  }
+  // Do some sanity checks on the provided options
+  checkCustomIdField(collection, options);
+  checkContentField(fields, options);
+  checkUpdatedField(fields, collection, options);
 
   // Combine the basic schema with the parsed fields
   const schema = z.object({
@@ -154,4 +101,95 @@ export async function generateSchema(
   return schema.transform((entry) =>
     transformFiles(options.url, fileFields, entry)
   );
+}
+
+/**
+ * Check if the custom id field is present
+ */
+function checkCustomIdField(
+  collection: PocketBaseCollection,
+  options: PocketBaseLoaderOptions
+): void {
+  if (!options.idField) {
+    return;
+  }
+
+  // Find the id field in the schema
+  const idField = collection.fields.find(
+    (field) => field.name === options.idField
+  );
+
+  // Check if the id field is present and of a valid type
+  if (!idField) {
+    console.error(
+      `The id field "${options.idField}" is not present in the schema of the collection "${options.collectionName}".`
+    );
+  } else if (!VALID_ID_TYPES.includes(idField.type)) {
+    console.error(
+      `The id field "${options.idField}" for collection "${
+        options.collectionName
+      }" is of type "${
+        idField.type
+      }" which is not recommended. Please use one of the following types: ${VALID_ID_TYPES.join(
+        ", "
+      )}.`
+    );
+  }
+}
+
+/**
+ * Check if the content field(s) are present
+ */
+function checkContentField(
+  fields: Record<string, z.ZodType>,
+  options: PocketBaseLoaderOptions
+): void {
+  if (
+    typeof options.contentFields === "string" &&
+    !fields[options.contentFields]
+  ) {
+    console.error(
+      `The content field "${options.contentFields}" is not present in the schema of the collection "${options.collectionName}".`
+    );
+  } else if (Array.isArray(options.contentFields)) {
+    for (const field of options.contentFields) {
+      if (!fields[field]) {
+        console.error(
+          `The content field "${field}" is not present in the schema of the collection "${options.collectionName}".`
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Check if the updated field is present
+ */
+function checkUpdatedField(
+  fields: Record<string, z.ZodType>,
+  collection: PocketBaseCollection,
+  options: PocketBaseLoaderOptions
+): void {
+  if (!options.updatedField) {
+    return;
+  }
+
+  if (!fields[options.updatedField]) {
+    console.error(
+      `The field "${options.updatedField}" is not present in the schema of the collection "${options.collectionName}".\nThis will lead to errors when trying to fetch only updated entries.`
+    );
+  } else {
+    const updatedField = collection.fields.find(
+      (field) => field.name === options.updatedField
+    );
+    if (
+      !updatedField ||
+      updatedField.type !== "autodate" ||
+      !updatedField.onUpdate
+    ) {
+      console.warn(
+        `The field "${options.updatedField}" is not of type "autodate" with the value "Update" or "Create/Update".\nMake sure that the field is automatically updated when the entry is updated!`
+      );
+    }
+  }
 }

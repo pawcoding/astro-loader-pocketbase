@@ -16,7 +16,7 @@ import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
-import { insertEntries } from "../_mocks/insert-entry";
+import { insertEntries, insertEntry } from "../_mocks/insert-entry";
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -367,6 +367,159 @@ describe("fetchCollection", () => {
       expect(results[0].title).toBe("A Title");
       expect(results[1].title).toBe("M Title");
       expect(results[2].title).toBe("Z Title");
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+  });
+
+  describe("fields filtering", () => {
+    test("should include fields parameter in request when fields option is provided", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", ""),
+        fields: ["title", "content"]
+      };
+
+      await insertCollection(
+        [
+          {
+            name: "title",
+            type: "text"
+          },
+          {
+            name: "content",
+            type: "text"
+          },
+          {
+            name: "description",
+            type: "text"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content",
+          description: "Test Description"
+        },
+        testOptions,
+        superuserToken
+      );
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        testOptions,
+        // oxlint-disable-next-line require-await
+        async (entries) => {
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(results).toHaveLength(1);
+
+      // Description should not be included
+      delete entry["description"];
+      expect(results[0]).toMatchObject(entry);
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+
+    test("should include all fields when no fields option is provided", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", "")
+      };
+
+      await insertCollection(
+        [
+          {
+            name: "title",
+            type: "text"
+          },
+          {
+            name: "content",
+            type: "text"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content"
+        },
+        testOptions,
+        superuserToken
+      );
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        testOptions,
+        // oxlint-disable-next-line require-await
+        async (entries) => {
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0]).toEqual(entry);
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+
+    test("should include all fields when '*' wildcard is used", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", ""),
+        fields: "*"
+      };
+
+      await insertCollection(
+        [
+          {
+            name: "title",
+            type: "text"
+          },
+          {
+            name: "content",
+            type: "text"
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content"
+        },
+        testOptions,
+        superuserToken
+      );
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        testOptions,
+        // oxlint-disable-next-line require-await
+        async (entries) => {
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(results).toHaveLength(1);
+      expect(results[0]).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);
     });
