@@ -186,37 +186,25 @@ describe("fetchEntry", () => {
         superuserToken
       );
 
-      const entryData = {
-        title: "Test Title",
-        content: "Test Content",
-        description: "Test Description"
-      };
-
-      const insertedEntry = await insertEntry(
-        entryData,
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content",
+          description: "Test Description"
+        },
         testOptions,
         superuserToken
       );
 
       const result = await fetchEntry<PocketBaseEntry>(
-        insertedEntry.id,
+        entry.id,
         testOptions,
         superuserToken
       );
 
-      // Should include the specified fields
-      expect(result).toHaveProperty("title");
-      expect(result).toHaveProperty("content");
-      expect(result.title).toBe("Test Title");
-      expect(result.content).toBe("Test Content");
-
-      // Should not include the non-specified field
-      expect(result).not.toHaveProperty("description");
-
-      // Should always include basic fields
-      expect(result).toHaveProperty("id");
-      expect(result).toHaveProperty("collectionId");
-      expect(result).toHaveProperty("collectionName");
+      // Description should not be included
+      delete entry["description"];
+      expect(result).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -236,27 +224,22 @@ describe("fetchEntry", () => {
         superuserToken
       );
 
-      const entryData = {
-        title: "Test Title",
-        content: "Test Content"
-      };
-
-      const insertedEntry = await insertEntry(
-        entryData,
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content"
+        },
         testOptions,
         superuserToken
       );
 
       const result = await fetchEntry<PocketBaseEntry>(
-        insertedEntry.id,
+        entry.id,
         testOptions,
         superuserToken
       );
 
-      // Should include all fields when no fields filter is specified
-      expect(result).toHaveProperty("title");
-      expect(result).toHaveProperty("content");
-      // Note: created and updated are not automatically included in PocketBase v0.23+
+      expect(result).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);
     });

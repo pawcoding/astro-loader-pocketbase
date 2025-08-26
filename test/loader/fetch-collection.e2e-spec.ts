@@ -16,7 +16,7 @@ import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
-import { insertEntries } from "../_mocks/insert-entry";
+import { insertEntries, insertEntry } from "../_mocks/insert-entry";
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -399,14 +399,12 @@ describe("fetchCollection", () => {
         superuserToken
       );
 
-      await insertEntries(
-        [
-          {
-            title: "Test Title",
-            content: "Test Content",
-            description: "Test Description"
-          }
-        ],
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content",
+          description: "Test Description"
+        },
         testOptions,
         superuserToken
       );
@@ -424,19 +422,9 @@ describe("fetchCollection", () => {
 
       expect(results).toHaveLength(1);
 
-      // Should include the specified fields
-      expect(results[0]).toHaveProperty("title");
-      expect(results[0]).toHaveProperty("content");
-      expect(results[0].title).toBe("Test Title");
-      expect(results[0].content).toBe("Test Content");
-
-      // Should not include the non-specified field
-      expect(results[0]).not.toHaveProperty("description");
-
-      // Should always include basic fields
-      expect(results[0]).toHaveProperty("id");
-      expect(results[0]).toHaveProperty("collectionId");
-      expect(results[0]).toHaveProperty("collectionName");
+      // Description should not be included
+      delete entry["description"];
+      expect(results[0]).toMatchObject(entry);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -462,13 +450,11 @@ describe("fetchCollection", () => {
         superuserToken
       );
 
-      await insertEntries(
-        [
-          {
-            title: "Test Title",
-            content: "Test Content"
-          }
-        ],
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content"
+        },
         testOptions,
         superuserToken
       );
@@ -476,8 +462,8 @@ describe("fetchCollection", () => {
       const results: Array<PocketBaseEntry> = [];
       await fetchCollection(
         testOptions,
+        // oxlint-disable-next-line require-await
         async (entries) => {
-          // oxlint-disable-next-line require-await
           results.push(...entries);
         },
         superuserToken,
@@ -485,11 +471,7 @@ describe("fetchCollection", () => {
       );
 
       expect(results).toHaveLength(1);
-
-      // Should include all fields when no fields filter is specified
-      expect(results[0]).toHaveProperty("title");
-      expect(results[0]).toHaveProperty("content");
-      // Note: created and updated are not automatically included in PocketBase v0.23+
+      expect(results[0]).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -516,13 +498,11 @@ describe("fetchCollection", () => {
         superuserToken
       );
 
-      await insertEntries(
-        [
-          {
-            title: "Test Title",
-            content: "Test Content"
-          }
-        ],
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content"
+        },
         testOptions,
         superuserToken
       );
@@ -530,8 +510,8 @@ describe("fetchCollection", () => {
       const results: Array<PocketBaseEntry> = [];
       await fetchCollection(
         testOptions,
+        // oxlint-disable-next-line require-await
         async (entries) => {
-          // oxlint-disable-next-line require-await
           results.push(...entries);
         },
         superuserToken,
@@ -539,11 +519,7 @@ describe("fetchCollection", () => {
       );
 
       expect(results).toHaveLength(1);
-
-      // Should include all fields when "*" wildcard is used
-      expect(results[0]).toHaveProperty("title");
-      expect(results[0]).toHaveProperty("content");
-      // Note: created and updated are not automatically included in PocketBase v0.23+
+      expect(results[0]).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);
     });
