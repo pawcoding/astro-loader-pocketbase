@@ -1,4 +1,8 @@
 import type { AstroIntegrationLogger } from "astro";
+import {
+  errorSchema,
+  loginResponseSchema
+} from "../types/pocketbase-response.type";
 
 /**
  * This function will get a superuser token from the given PocketBase instance.
@@ -35,8 +39,8 @@ export async function getSuperuserToken(
 
   // If the login request was not successful, print the error message and return undefined
   if (!loginRequest.ok) {
-    const reason = await loginRequest.json().then((data) => data.message);
-    const errorMessage = `The given email / password for ${url} was not correct. Astro can't generate type definitions automatically and may not have access to all resources.\nReason: ${reason}`;
+    const reason = errorSchema.parse(await loginRequest.json());
+    const errorMessage = `The given email / password for ${url} was not correct. Astro can't generate type definitions automatically and may not have access to all resources.\nReason: ${reason.message}`;
     if (logger) {
       logger.error(errorMessage);
     } else {
@@ -46,5 +50,6 @@ export async function getSuperuserToken(
   }
 
   // Return the token
-  return await loginRequest.json().then((data) => data.token);
+  const payload = loginResponseSchema.parse(await loginRequest.json());
+  return payload.token;
 }

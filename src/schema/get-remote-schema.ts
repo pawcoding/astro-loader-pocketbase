@@ -1,4 +1,5 @@
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { errorSchema } from "../types/pocketbase-response.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
 
 /**
@@ -26,13 +27,13 @@ export async function getRemoteSchema(
 
   // If the request was not successful, try another method
   if (!schemaRequest.ok) {
-    const reason = await schemaRequest.json().then((data) => data.message);
-    const errorMessage = `Fetching schema from ${options.collectionName} failed with status code ${schemaRequest.status}.\nReason: ${reason}`;
+    const reason = errorSchema.parse(await schemaRequest.json());
+    const errorMessage = `Fetching schema from ${options.collectionName} failed with status code ${schemaRequest.status}.\nReason: ${reason.message}`;
     console.error(errorMessage);
 
     return undefined;
   }
 
   // Get the schema from the response
-  return await schemaRequest.json();
+  return schemaRequest.json();
 }

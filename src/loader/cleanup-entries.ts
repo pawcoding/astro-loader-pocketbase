@@ -1,5 +1,10 @@
 import type { LoaderContext } from "astro/loaders";
+import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import {
+  cleanupResponseSchema,
+  errorSchema
+} from "../types/pocketbase-response.type";
 
 /**
  * Cleanup entries that are no longer in the collection.
@@ -67,10 +72,8 @@ export async function cleanupEntries(
           );
         }
       } else {
-        const reason = await collectionRequest
-          .json()
-          .then((data) => data.message);
-        const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+        const reason = errorSchema.parse(await collectionRequest.json());
+        const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason.message}`;
         context.logger.error(errorMessage);
       }
 
@@ -81,7 +84,9 @@ export async function cleanupEntries(
     }
 
     // Get the data from the response
-    const response = await collectionRequest.json();
+    const response = cleanupResponseSchema.parse(
+      await collectionRequest.json()
+    );
 
     // Add the ids to the set
     for (const item of response.items) {
@@ -97,7 +102,9 @@ export async function cleanupEntries(
 
   // Create a mapping from PocketBase IDs to store keys for proper cleanup
   const storedIds = new Map<string, string>(
-    context.store.values().map((entry) => [entry.data.id as string, entry.id])
+    context.store
+      .values()
+      .map((entry) => [z.string().parse(entry.data.id), entry.id])
   );
 
   // Check which PocketBase IDs are missing from the server response

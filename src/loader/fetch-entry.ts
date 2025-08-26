@@ -1,5 +1,6 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { errorSchema } from "../types/pocketbase-response.type";
 
 /**
  * Retrieves a specific entry from a PocketBase collection using its ID and loader options.
@@ -43,13 +44,11 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
     }
 
     // Get the reason for the error
-    const reason = await entryRequest.json().then((data) => data.message);
-    const errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.\nReason: ${reason}`;
+    const reason = errorSchema.parse(await entryRequest.json());
+    const errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.\nReason: ${reason.message}`;
     throw new Error(errorMessage);
   }
 
   // Get the data from the response
-  const response = await entryRequest.json();
-
-  return response;
+  return entryRequest.json();
 }

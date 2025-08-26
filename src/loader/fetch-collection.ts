@@ -1,6 +1,10 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import {
+  collectionResponseSchema,
+  errorSchema
+} from "../types/pocketbase-response.type";
 
 /**
  * Provides utilities to fetch entries from a PocketBase collection, supporting filtering and pagination.
@@ -78,15 +82,15 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
       }
 
       // Get the reason for the error
-      const reason = await collectionRequest
-        .json()
-        .then((data) => data.message);
-      const errorMessage = `Fetching data failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+      const reason = errorSchema.parse(await collectionRequest.json());
+      const errorMessage = `Fetching data failed with status code ${collectionRequest.status}.\nReason: ${reason.message}`;
       throw new Error(errorMessage);
     }
 
     // Get the data from the response
-    const response = await collectionRequest.json();
+    const response = collectionResponseSchema.parse(
+      await collectionRequest.json()
+    );
 
     // Return current chunk
     await chunkLoaded(response.items);
