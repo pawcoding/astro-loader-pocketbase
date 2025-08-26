@@ -86,8 +86,38 @@ jobs:
 
           # Increment patch version
           NEW_PATCH=$((PATCH + 1))
-          PREVIEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH-$TAG_NAME"
+          BASE_VERSION="$MAJOR.$MINOR.$NEW_PATCH-$TAG_NAME"
 
+          # Check npm for existing versions with this pattern to find next available counter
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          echo "Checking npm for existing versions of pattern: $BASE_VERSION.*"
+
+          # Get all published versions and filter for our pattern
+          EXISTING_VERSIONS=$(npm view "$PACKAGE_NAME" versions --json 2>/dev/null || echo "[]")
+          HIGHEST_COUNTER=0
+
+          # Find the highest counter for this base version pattern
+          if [ "$EXISTING_VERSIONS" != "[]" ]; then
+            while IFS= read -r version; do
+              # Remove quotes from version string
+              clean_version=$(echo "$version" | tr -d '"')
+              # Check if version matches our pattern (base-tag.counter)
+              if [[ "$clean_version" =~ ^${BASE_VERSION}\.([0-9]+)$ ]]; then
+                counter="${BASH_REMATCH[1]}"
+                if [ "$counter" -gt "$HIGHEST_COUNTER" ]; then
+                  HIGHEST_COUNTER="$counter"
+                fi
+              fi
+            done <<< "$(echo "$EXISTING_VERSIONS" | jq -r '.[]?' 2>/dev/null || echo "$EXISTING_VERSIONS" | grep -o '"[^"]*"' || echo)"
+          fi
+
+          # Increment counter for new version
+          NEW_COUNTER=$((HIGHEST_COUNTER + 1))
+          PREVIEW_VERSION="$BASE_VERSION.$NEW_COUNTER"
+
+          echo "Base version pattern: $BASE_VERSION"
+          echo "Highest existing counter: $HIGHEST_COUNTER"
+          echo "New counter: $NEW_COUNTER"
           echo "Preview version: $PREVIEW_VERSION"
           echo "preview_version=$PREVIEW_VERSION" >> $GITHUB_OUTPUT
 
