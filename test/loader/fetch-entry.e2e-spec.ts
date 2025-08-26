@@ -167,4 +167,81 @@ describe("fetchEntry", () => {
       await deleteCollection(testOptions, superuserToken);
     });
   });
+
+  describe("fields filtering", () => {
+    test("should include fields parameter in request when fields option is provided", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", ""),
+        fields: ["title", "content"]
+      };
+
+      await insertCollection(
+        [
+          { name: "title", type: "text" },
+          { name: "content", type: "text" },
+          { name: "description", type: "text" }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content",
+          description: "Test Description"
+        },
+        testOptions,
+        superuserToken
+      );
+
+      const result = await fetchEntry<PocketBaseEntry>(
+        entry.id,
+        testOptions,
+        superuserToken
+      );
+
+      // Description should not be included
+      delete entry["description"];
+      expect(result).toEqual(entry);
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+
+    test("should include all fields when no fields option is provided", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", "")
+      };
+
+      await insertCollection(
+        [
+          { name: "title", type: "text" },
+          { name: "content", type: "text" }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const entry = await insertEntry(
+        {
+          title: "Test Title",
+          content: "Test Content"
+        },
+        testOptions,
+        superuserToken
+      );
+
+      const result = await fetchEntry<PocketBaseEntry>(
+        entry.id,
+        testOptions,
+        superuserToken
+      );
+
+      expect(result).toEqual(entry);
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+  });
 });

@@ -1,5 +1,6 @@
 import type { ZodObject, ZodSchema } from "astro/zod";
 import { afterEach, assert, beforeAll, describe, expect, it, vi } from "vitest";
+import type { PocketBaseLoaderOptions } from "../../src";
 import { generateSchema } from "../../src/schema/generate-schema";
 import { transformFileUrl } from "../../src/schema/transform-files";
 import { getSuperuserToken } from "../../src/utils/get-superuser-token";
@@ -219,6 +220,95 @@ describe("generateSchema", () => {
       );
 
       expect(consoleWarnSpy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe("fields filtering", () => {
+    it("should include only specified fields when fields option is provided as string", async () => {
+      const result = (await generateSchema(
+        {
+          ...options,
+          fields: "email,verified"
+        },
+        token
+      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+
+      // Should always include basic schema fields
+      expect(Object.keys(result.shape)).toEqual([
+        "id",
+        "collectionId",
+        "collectionName",
+        "email",
+        "verified"
+      ]);
+    });
+
+    it("should include only specified fields when fields option is provided as array", async () => {
+      const result = (await generateSchema(
+        {
+          ...options,
+          fields: ["email", "emailVisibility", "created"]
+        },
+        token
+      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+
+      // Should always include basic schema fields
+      expect(Object.keys(result.shape)).toEqual([
+        "id",
+        "collectionId",
+        "collectionName",
+        "email",
+        "emailVisibility",
+        "created"
+      ]);
+    });
+
+    it("should include all fields when no fields option is provided", async () => {
+      const result = (await generateSchema(options, token)) as ZodObject<
+        Record<string, ZodSchema<unknown>>
+      >;
+
+      // Should include all available fields
+      expect(Object.keys(result.shape)).toEqual([
+        "id",
+        "collectionId",
+        "collectionName",
+        "password",
+        "tokenKey",
+        "email",
+        "emailVisibility",
+        "verified",
+        "created",
+        "updated"
+      ]);
+    });
+
+    it("should include extra fields when provided via options", async () => {
+      const testOptions: PocketBaseLoaderOptions = {
+        ...options,
+        idField: "email",
+        updatedField: "updated",
+        contentFields: "password",
+        fields: ["emailVisibility"]
+      };
+
+      const result = (await generateSchema(testOptions, token)) as ZodObject<
+        Record<string, ZodSchema<unknown>>
+      >;
+
+      // Should include extra fields
+      expect(Object.keys(result.shape)).toEqual(
+        expect.arrayContaining([
+          "id",
+          "collectionId",
+          "collectionName",
+          "password",
+          "email",
+          "emailVisibility",
+          "updated"
+        ])
+      );
+      expect(Object.keys(result.shape)).toHaveLength(7);
     });
   });
 
