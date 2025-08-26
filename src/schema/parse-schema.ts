@@ -36,7 +36,7 @@ export function parseSchema(
     if (field.hidden && !options.hasSuperuserRights) {
       if (options.fieldsToInclude) {
         console.warn(
-          `"${field.name}" should be included, but is hidden and no superuser credentials are provided. `
+          `"${field.name}" is requested but hidden. Provide superuser credentials to include this field.`
         );
       }
 
