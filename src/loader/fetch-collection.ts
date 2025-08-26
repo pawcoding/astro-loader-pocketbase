@@ -1,6 +1,8 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
+import { formatFields } from "../utils/format-fields";
 
 /**
  * Provides utilities to fetch entries from a PocketBase collection, supporting filtering and pagination.
@@ -23,6 +25,7 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
     | "url"
     | "updatedField"
     | "filter"
+    | "fields"
     | "superuserCredentials"
   >,
   chunkLoaded: (entries: Array<TEntry>) => Promise<void>,
@@ -33,7 +36,7 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
   const collectionUrl = new URL(
     `api/collections/${options.collectionName}/records`,
     options.url
-  ).href;
+  );
 
   // Create the headers for the request to append the token (if available)
   const collectionHeaders = new Headers();
@@ -41,25 +44,29 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
     collectionHeaders.set("Authorization", token);
   }
 
+  // Cache fields computation outside the loop
+  const fieldsArray = formatFields(options.fields);
+  const combinedFields = combineFieldsForRequest(fieldsArray, options);
+
   // Prepare pagination variables
   let page = 0;
   let totalPages = 0;
 
   // Fetch all (modified) entries
   do {
-    const searchParams = buildSearchParams(options, {
+    const searchParams = buildSearchParams(options, combinedFields, {
       ...collectionFilter,
       page: collectionFilter?.page ?? ++page,
       perPage: collectionFilter?.perPage ?? 100
     });
 
+    // Apply search parameters to URL
+    collectionUrl.search = searchParams.toString();
+
     // Fetch entries from the collection
-    const collectionRequest = await fetch(
-      `${collectionUrl}?${searchParams.toString()}`,
-      {
-        headers: collectionHeaders
-      }
-    );
+    const collectionRequest = await fetch(collectionUrl.href, {
+      headers: collectionHeaders
+    });
 
     // If the request was not successful, print the error message and return
     if (!collectionRequest.ok) {
@@ -102,9 +109,9 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
  */
 function buildSearchParams(
   loaderOptions: Pick<PocketBaseLoaderOptions, "updatedField" | "filter">,
+  combinedFields: Array<string> | undefined,
   collectionFilter: CollectionFilter
 ): URLSearchParams {
-  // Build search parameters
   const searchParams = new URLSearchParams();
 
   if (collectionFilter.page) {
@@ -143,6 +150,11 @@ function buildSearchParams(
 
   if (collectionFilter.sort) {
     searchParams.set("sort", collectionFilter.sort);
+  }
+
+  // Add fields parameter if specified
+  if (combinedFields) {
+    searchParams.set("fields", combinedFields.join(","));
   }
 
   return searchParams;

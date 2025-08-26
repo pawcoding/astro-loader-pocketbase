@@ -2,6 +2,9 @@ import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
+import { extractFieldNames } from "../utils/extract-field-names";
+import { formatFields } from "../utils/format-fields";
 import { getRemoteSchema } from "./get-remote-schema";
 import { parseSchema } from "./parse-schema";
 import { readLocalSchema } from "./read-local-schema";
@@ -60,14 +63,18 @@ export async function generateSchema(
     return z.object(BASIC_SCHEMA);
   }
 
-  // Parse the schema
-  const fields = parseSchema(
-    collection,
-    options.jsonSchemas,
+  // Get fields to include from options
+  const formattedFields = formatFields(options.fields);
+  const fieldNames = extractFieldNames(formattedFields);
+  const fieldsToInclude = combineFieldsForRequest(fieldNames, options);
+
+  // Parse the schema with optional field filtering
+  const fields = parseSchema(collection, options.jsonSchemas, {
     hasSuperuserRights,
-    options.improveTypes ?? false,
-    options.experimental?.liveTypesOnly ?? false
-  );
+    improveTypes: options.improveTypes,
+    fieldsToInclude,
+    experimentalLiveTypesOnly: options.experimental?.liveTypesOnly
+  });
 
   // Do some sanity checks on the provided options
   checkCustomIdField(collection, options);

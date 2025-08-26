@@ -39,7 +39,6 @@ export interface PocketBaseLoaderOptions {
   updatedField?: string;
   /**
    * Custom filter that is applied when loading data from PocketBase.
-   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
    *
    * The loader will also add it's own filters for incremental builds.
    * These will be added to your custom filter query.
@@ -52,8 +51,38 @@ export interface PocketBaseLoaderOptions {
    * // request
    * `?filter=(${loaderFilter})&&(release >= @now && deleted = false)`
    * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
    */
   filter?: string;
+  /**
+   * Specify which fields to return for each record.
+   * This can be either a comma-separated string of field names or an array of field names.
+   * Only the specified fields will be included in the response and schema.
+   *
+   * Use "*" to include all fields (same as not specifying the fields option).
+   *
+   * Note: The basic fields (`id`, `collectionId`, `collectionName`) are automatically included
+   * in API requests when using field filtering. Additionally, any custom fields specified in the
+   * loader options (`idField`, `updatedField`, `contentFields`) are also automatically included.
+   *
+   * Warning: Expand fields are not currently supported by this loader.
+   *
+   * Example:
+   * ```ts
+   * // Using string format:
+   * fields: 'title,content,author'
+   *
+   * // Using array format:
+   * fields: ['title', 'content', 'author']
+   *
+   * // Include all fields:
+   * fields: '*'
+   * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
+   */
+  fields?: string | Array<string>;
   /**
    * Credentials of a superuser to get full access to the PocketBase instance.
    * This is required to get automatic type generation without a local schema, to access all resources even if they are not public and to fetch content of hidden fields.
@@ -126,5 +155,6 @@ export type ExperimentalPocketBaseLiveLoaderOptions = Pick<
   | "contentFields"
   | "updatedField"
   | "filter"
+  | "fields"
   | "superuserCredentials"
 >;
