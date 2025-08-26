@@ -63,20 +63,15 @@ export async function generateSchema(
   }
 
   // Get fields to include from options
-  const fieldsToInclude = formatFields(options.fields);
-
-  // Extract field names for schema parsing (remove modifiers like :excerpt)
-  const fieldNamesForSchema = extractFieldNames(fieldsToInclude);
+  const fieldsToInclude = extractFieldNames(formatFields(options.fields));
 
   // Parse the schema with optional field filtering
-  const fields = parseSchema(
-    collection,
-    options.jsonSchemas,
+  const fields = parseSchema(collection, options.jsonSchemas, {
     hasSuperuserRights,
-    options.improveTypes ?? false,
-    options.experimental?.liveTypesOnly ?? false,
-    fieldNamesForSchema
-  );
+    improveTypes: options.improveTypes,
+    fieldsToInclude,
+    experimentalLiveTypesOnly: options.experimental?.liveTypesOnly
+  });
 
   // Do some sanity checks on the provided options
   checkCustomIdField(collection, options);

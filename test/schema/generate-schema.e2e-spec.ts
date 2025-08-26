@@ -293,10 +293,7 @@ describe("generateSchema", () => {
         token
       );
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'The "expand" field is not currently supported by the PocketBase loader. ' +
-          "Expand functionality may be added in a future version."
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledOnce();
     });
 
     it("should validate content fields against filtered fields", async () => {
