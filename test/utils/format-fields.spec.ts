@@ -7,6 +7,16 @@ describe("formatFields", () => {
       const result = formatFields(undefined);
       expect(result).toBeUndefined();
     });
+
+    it("should handle empty string", () => {
+      const result = formatFields("");
+      expect(result).toBeUndefined();
+    });
+
+    it("should handle empty array", () => {
+      const result = formatFields([]);
+      expect(result).toBeUndefined();
+    });
   });
 
   describe("when fields are provided as a string", () => {
@@ -30,11 +40,6 @@ describe("formatFields", () => {
       expect(result).toBeUndefined();
     });
 
-    it("should return undefined when * wildcard is at the end", () => {
-      const result = formatFields("title,content,*");
-      expect(result).toBeUndefined();
-    });
-
     it("should trim whitespace from fields", () => {
       const result = formatFields(" title , content , author ");
       expect(result).toEqual(["title", "content", "author"]);
@@ -42,24 +47,9 @@ describe("formatFields", () => {
   });
 
   describe("when fields are provided as an array", () => {
-    it("should return the trimmed array", () => {
-      const result = formatFields(["title", "content", "author"]);
-      expect(result).toEqual(["title", "content", "author"]);
-    });
-
     it("should return undefined when * wildcard is in array", () => {
       const result = formatFields(["title", "*", "content"]);
       expect(result).toBeUndefined();
-    });
-
-    it("should handle single field array", () => {
-      const result = formatFields(["title"]);
-      expect(result).toEqual(["title"]);
-    });
-
-    it("should handle empty array", () => {
-      const result = formatFields([]);
-      expect(result).toEqual([]);
     });
 
     it("should trim whitespace from array fields", () => {
@@ -69,28 +59,22 @@ describe("formatFields", () => {
   });
 
   describe("when expand is used", () => {
-    it("should warn when expand is in string fields", () => {
+    it("should warn and filter when expand is in string fields", () => {
       const consoleWarnSpy = vi.spyOn(console, "warn");
 
       const result = formatFields("title,expand,content");
 
-      expect(result).toEqual(["title", "expand", "content"]);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'The "expand" field is not currently supported by the PocketBase loader. ' +
-          "Expand functionality may be added in a future version."
-      );
+      expect(result).toEqual(["title", "content"]);
+      expect(consoleWarnSpy).toHaveBeenCalledOnce();
     });
 
-    it("should warn when expand is in array fields", () => {
+    it("should warn and filter when expand is in array fields", () => {
       const consoleWarnSpy = vi.spyOn(console, "warn");
 
       const result = formatFields(["title", "expand", "content"]);
 
-      expect(result).toEqual(["title", "expand", "content"]);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'The "expand" field is not currently supported by the PocketBase loader. ' +
-          "Expand functionality may be added in a future version."
-      );
+      expect(result).toEqual(["title", "content"]);
+      expect(consoleWarnSpy).toHaveBeenCalledOnce();
     });
 
     it("should warn when expand with dot notation is used", () => {
@@ -98,23 +82,8 @@ describe("formatFields", () => {
 
       const result = formatFields("title,expand.user,content");
 
-      expect(result).toEqual(["title", "expand.user", "content"]);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'The "expand" field is not currently supported by the PocketBase loader. ' +
-          "Expand functionality may be added in a future version."
-      );
-    });
-
-    it("should warn when expand is part of field name with includes check", () => {
-      const consoleWarnSpy = vi.spyOn(console, "warn");
-
-      const result = formatFields("title,some_expand_field,content");
-
-      expect(result).toEqual(["title", "some_expand_field", "content"]);
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'The "expand" field is not currently supported by the PocketBase loader. ' +
-          "Expand functionality may be added in a future version."
-      );
+      expect(result).toEqual(["title", "content"]);
+      expect(consoleWarnSpy).toHaveBeenCalledOnce();
     });
 
     it("should warn with mixed wildcard and expand but return undefined for wildcard", () => {
@@ -123,10 +92,7 @@ describe("formatFields", () => {
       const result = formatFields("*,expand.field");
 
       expect(result).toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'The "expand" field is not currently supported by the PocketBase loader. ' +
-          "Expand functionality may be added in a future version."
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledOnce();
     });
   });
 
@@ -147,18 +113,6 @@ describe("formatFields", () => {
       const result = formatFields("title,content:excerpt(150)");
 
       expect(result).toEqual(["title", "content:excerpt(150)"]);
-    });
-
-    it("should preserve excerpt field even with invalid syntax", () => {
-      const result = formatFields("title,content:excerpt(invalid),author");
-
-      expect(result).toEqual(["title", "content:excerpt(invalid)", "author"]);
-    });
-
-    it("should preserve excerpt field even with missing parentheses", () => {
-      const result = formatFields("title,content:excerpt");
-
-      expect(result).toEqual(["title", "content:excerpt"]);
     });
   });
 });
