@@ -6,7 +6,7 @@ import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { extractFieldNames } from "../utils/extract-field-names";
 import { formatFields } from "../utils/format-fields";
 import { getRemoteSchema } from "./get-remote-schema";
-import { parseSchema } from "./parse-schema";
+import { parseSchema, parseSingleOrMultipleValues } from "./parse-schema";
 import { readLocalSchema } from "./read-local-schema";
 import { transformFiles } from "./transform-files";
 
@@ -82,10 +82,19 @@ export async function generateSchema(
   checkUpdatedField(fields, collection, options);
 
   // Combine the basic schema with the parsed fields
-  const schema = z.object({
+  const schemaShape = {
     ...BASIC_SCHEMA,
     ...fields
-  });
+  };
+
+  // Generate schema for expanded fields
+  const expandSchema = await generateExpandSchema(collection, options, token);
+  if (expandSchema) {
+    // @ts-expect-error - "expand" is not known yet
+    schemaShape["expand"] = z.optional(z.object(expandSchema));
+  }
+
+  const schema = z.object(schemaShape);
 
   // Get all file fields
   const fileFields = collection.fields
@@ -101,6 +110,70 @@ export async function generateSchema(
   return schema.transform((entry) =>
     transformFiles(options.url, fileFields, entry)
   );
+}
+
+/**
+ * Generate schema for expanded fields
+ */
+async function generateExpandSchema(
+  collection: PocketBaseCollection,
+  options: PocketBaseLoaderOptions,
+  token: string | undefined
+): Promise<Record<string, z.ZodType> | undefined> {
+  if (!options.expand || options.expand.length === 0) {
+    return undefined;
+  }
+
+  const expandedFields: Record<string, z.ZodType> = {};
+
+  for (const field of options.expand) {
+    const fields = field.split(".");
+    if (fields.length > 6) {
+      throw new Error(
+        `Expand value ${field} is not valid, since it exceeds 6 levels of depth. This is not supported by PocketBase.`
+      );
+    }
+
+    const currentField = fields.at(0);
+    if (!currentField) {
+      throw new Error(`Expand value ${field} contains an empty block`);
+    }
+
+    const fieldDefinition = collection.fields.find(
+      (field) => field.name === currentField
+    );
+    if (
+      !fieldDefinition ||
+      fieldDefinition.type !== "relation" ||
+      !fieldDefinition.collectionId
+    ) {
+      throw new Error(
+        `The provided field ${currentField} in ${field} does not exist or has no associated collection. Thus the field cannot be expanded.`
+      );
+    }
+
+    const deeperFields =
+      fields.length > 1 ? [fields.slice(1).join(".")] : undefined;
+    const schema = await generateSchema(
+      {
+        ...options,
+        collectionName: fieldDefinition.collectionId,
+        expand: deeperFields
+      },
+      token
+    );
+
+    let fieldType = parseSingleOrMultipleValues(fieldDefinition, schema);
+    if (!fieldDefinition.required) {
+      fieldType = z.preprocess(
+        (val) => val || undefined,
+        z.optional(fieldType)
+      );
+    }
+    expandedFields[currentField] = fieldType;
+  }
+
+  return expandedFields;
 }
 
 /**

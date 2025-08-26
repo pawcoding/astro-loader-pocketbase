@@ -147,6 +147,26 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
      * @experimental Live content collections are still experimental
      */
     liveTypesOnly?: boolean;
+    /**
+     * Array of relation field names to include (expand) when loading data from PocketBase.
+     *
+     * This is only reccomended to use with the live-loader.
+     * For the default build time loader using a separate collection instead is more efficient.
+     *
+     * Example:
+     * ```ts
+     * // config:
+     * expand: ['relatedField1', 'relatedField2']
+     *
+     * // request
+     * `?expand=relatedField1,relatedField2`
+     * ```
+     *
+     * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
+     *
+     * @experimental Expand has many edge cases to consinder, especially regarding the schema generation and build cache. So this will be experimental for now.
+     */
+    expand?: Array<string>;
   };
 };
 

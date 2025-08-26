@@ -39,12 +39,21 @@ export interface PocketBaseSchemaEntry {
    * This is only present on "autodate" fields.
    */
   onUpdate?: boolean;
+  /**
+   * Id of the associated collection that the relation is referencing.
+   * This is only present on "relation" fields.
+   */
+  collectionId?: string;
 }
 
 /**
  * Schema for a PocketBase collection.
  */
 export interface PocketBaseCollection {
+  /**
+   * Id of the collection.
+   */
+  id: string;
   /**
    * Name of the collection.
    */
