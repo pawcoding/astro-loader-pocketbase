@@ -55,7 +55,12 @@ export const pocketBaseSchemaEntry = z.object({
    * Whether the field is updated when the entry is updated.
    * This is only present on "autodate" fields.
    */
-  onUpdate: z.optional(z.boolean())
+  onUpdate: z.optional(z.boolean()),
+  /**
+   * Id of the associated collection that the relation is referencing.
+   * This is only present on "relation" fields.
+   */
+  collectionId: z.optional(z.string())
 });
 
 /**
@@ -67,6 +72,10 @@ export type PocketBaseSchemaEntry = z.infer<typeof pocketBaseSchemaEntry>;
  * Schema for a PocketBase collection.
  */
 export const pocketBaseCollection = z.object({
+  /**
+   * Id of the collection.
+   */
+  id: z.string(),
   /**
    * Name of the collection.
    */
