@@ -1,9 +1,9 @@
 import type { z } from "astro/zod";
 
 /**
- * Options for the PocketBase loader.
+ * Options for both build time and live collection loader
  */
-export interface PocketBaseLoaderOptions {
+export interface PocketBaseLoaderBaseOptions {
   /**
    * URL of the PocketBase instance.
    */
@@ -12,15 +12,6 @@ export interface PocketBaseLoaderOptions {
    * Name of the collection in PocketBase.
    */
   collectionName: string;
-  /**
-   * Field that should be used as the unique identifier for the collection.
-   * This must be the name of a field in the collection that contains unique values.
-   * If not provided, the `id` field will be used.
-   * The value of this field will be used in `getEntry` and `getEntries` to load the entry or entries.
-   *
-   * If the field is a string, it will be slugified to be used in the URL.
-   */
-  idField?: string;
   /**
    * Name of the field(s) containing the content of an entry.
    * This must be the name of a field in the PocketBase collection that contains the content.
@@ -34,7 +25,8 @@ export interface PocketBaseLoaderOptions {
   /**
    * Name of the field containing the last update date of an entry.
    * Ideally, this field should be of type `autodate` and have the value "Update" or "Create/Update".
-   * This field is used to only fetch entries that have been modified since the last build.
+   * For the build time loader, this field is used to only fetch entries that have been modified since the last build.
+   * For the live collection loader, this field is used to set the `lastModified` cache hint.
    */
   updatedField?: string;
   /**
@@ -105,6 +97,21 @@ export interface PocketBaseLoaderOptions {
          */
         impersonateToken: string;
       };
+}
+
+/**
+ * Options for the PocketBase loader.
+ */
+export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
+  /**
+   * Field that should be used as the unique identifier for the collection.
+   * This must be the name of a field in the collection that contains unique values.
+   * If not provided, the `id` field will be used.
+   * The value of this field will be used in `getEntry` and `getEntries` to load the entry or entries.
+   *
+   * If the field is a string, it will be slugified to be used in the URL.
+   */
+  idField?: string;
   /**
    * File path to the local schema file.
    * This file will be used to generate the schema for the collection.
@@ -141,20 +148,12 @@ export interface PocketBaseLoaderOptions {
      */
     liveTypesOnly?: boolean;
   };
-}
+};
 
 /**
  * Options for the PocketBase live loader.
  *
  * @experimental Live content collections are still experimental
  */
-export type ExperimentalPocketBaseLiveLoaderOptions = Pick<
-  PocketBaseLoaderOptions,
-  | "url"
-  | "collectionName"
-  | "contentFields"
-  | "updatedField"
-  | "filter"
-  | "fields"
-  | "superuserCredentials"
->;
+export type ExperimentalPocketBaseLiveLoaderOptions =
+  PocketBaseLoaderBaseOptions;

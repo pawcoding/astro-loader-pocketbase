@@ -1,4 +1,7 @@
-import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type {
+  PocketBaseLoaderBaseOptions,
+  PocketBaseLoaderOptions
+} from "../types/pocketbase-loader-options.type";
 
 /**
  * Combine basic, special, and user-specified fields for PocketBase API requests.
@@ -10,10 +13,8 @@ import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options
  */
 export function combineFieldsForRequest(
   userFields: Array<string> | undefined,
-  options: Pick<
-    PocketBaseLoaderOptions,
-    "idField" | "updatedField" | "contentFields"
-  >
+  options: Pick<PocketBaseLoaderBaseOptions, "updatedField" | "contentFields"> &
+    Pick<PocketBaseLoaderOptions, "idField">
 ): Array<string> | undefined {
   // If no fields specified, return undefined to get all fields
   if (!userFields) {

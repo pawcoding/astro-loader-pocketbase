@@ -8,7 +8,7 @@ import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
  * @param token The superuser token to authenticate the request.
  */
 export async function getRemoteSchema(
-  options: PocketBaseLoaderOptions,
+  options: Pick<PocketBaseLoaderOptions, "collectionName" | "url">,
   token: string
 ): Promise<PocketBaseCollection | undefined> {
   // Build URL and headers for the schema request
