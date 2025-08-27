@@ -1,6 +1,6 @@
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
-import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
 
@@ -19,15 +19,7 @@ export type CollectionFilter = {
  * Fetches entries from a PocketBase collection, optionally filtering by modification date and supporting pagination.
  */
 export async function fetchCollection<TEntry extends PocketBaseEntry>(
-  options: Pick<
-    PocketBaseLoaderOptions,
-    | "collectionName"
-    | "url"
-    | "updatedField"
-    | "filter"
-    | "fields"
-    | "superuserCredentials"
-  >,
+  options: PocketBaseLoaderBaseOptions,
   chunkLoaded: (entries: Array<TEntry>) => Promise<void>,
   token: string | undefined,
   collectionFilter: CollectionFilter | undefined
@@ -108,7 +100,7 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
  * Build search parameters for the PocketBase collection request.
  */
 function buildSearchParams(
-  loaderOptions: Pick<PocketBaseLoaderOptions, "updatedField" | "filter">,
+  loaderOptions: PocketBaseLoaderBaseOptions,
   combinedFields: Array<string> | undefined,
   collectionFilter: CollectionFilter
 ): URLSearchParams {

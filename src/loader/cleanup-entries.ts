@@ -1,5 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
-import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 
 /**
  * Cleanup entries that are no longer in the collection.
@@ -9,7 +9,7 @@ import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options
  * @param superuserToken Superuser token to access all resources.
  */
 export async function cleanupEntries(
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   context: LoaderContext,
   superuserToken: string | undefined
 ): Promise<void> {

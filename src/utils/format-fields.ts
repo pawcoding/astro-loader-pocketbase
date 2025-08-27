@@ -1,4 +1,4 @@
-import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 
 /**
  * Format fields option into an array and validate for expand usage.
@@ -8,7 +8,7 @@ import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options
  * @returns Formatted fields array, or undefined if no fields specified or "*" wildcard is used
  */
 export function formatFields(
-  fields: PocketBaseLoaderOptions["fields"]
+  fields: PocketBaseLoaderBaseOptions["fields"]
 ): Array<string> | undefined {
   if (!fields || fields.length === 0) {
     return undefined;

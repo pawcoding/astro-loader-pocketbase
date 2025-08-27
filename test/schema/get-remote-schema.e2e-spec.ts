@@ -27,13 +27,7 @@ describe("getRemoteSchema", () => {
   });
 
   it("should return undefined if superuser token is invalid", async () => {
-    const result = await getRemoteSchema(
-      {
-        ...options,
-        superuserCredentials: { email: "invalid", password: "invalid" }
-      },
-      "invalid-token"
-    );
+    const result = await getRemoteSchema(options, "invalid-token");
 
     expect(result).toBeUndefined();
   });
