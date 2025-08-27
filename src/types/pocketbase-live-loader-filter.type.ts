@@ -20,8 +20,6 @@ export interface ExperimentalPocketBaseLiveLoaderCollectionFilter {
    * Additional filter to apply to the collection.
    * This will be added to the filter supplied in the {@link ExperimentalPocketBaseLiveLoaderOptions}.
    *
-   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
-   *
    * Example:
    * ```ts
    * // config:
@@ -30,6 +28,8 @@ export interface ExperimentalPocketBaseLiveLoaderCollectionFilter {
    * // request
    * `?filter=(${loaderFilter})&&(release >= @now && deleted = false)`
    * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
    */
   filter?: string;
   /**
@@ -44,8 +44,6 @@ export interface ExperimentalPocketBaseLiveLoaderCollectionFilter {
   /**
    * Sort order in which the entries should be returned.
    *
-   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
-   *
    * Example:
    * ```ts
    * // config:
@@ -54,6 +52,8 @@ export interface ExperimentalPocketBaseLiveLoaderCollectionFilter {
    * // request
    * `?sort=-created,id`
    * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
    */
   sort?: string;
 }
