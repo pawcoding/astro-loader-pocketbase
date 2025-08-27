@@ -120,13 +120,16 @@ async function generateExpandSchema(
   options: PocketBaseLoaderOptions,
   token: string | undefined
 ): Promise<Record<string, z.ZodType> | undefined> {
-  if (!options.expand || options.expand.length === 0) {
+  if (
+    !options.experimental?.expand ||
+    options.experimental.expand.length === 0
+  ) {
     return undefined;
   }
 
   const expandedFields: Record<string, z.ZodType> = {};
 
-  for (const field of options.expand) {
+  for (const field of options.experimental.expand) {
     const fields = field.split(".");
     if (fields.length > 6) {
       throw new Error(
@@ -158,7 +161,10 @@ async function generateExpandSchema(
       {
         ...options,
         collectionName: fieldDefinition.collectionId,
-        expand: deeperFields
+        experimental: {
+          ...options.experimental,
+          expand: deeperFields
+        }
       },
       token
     );

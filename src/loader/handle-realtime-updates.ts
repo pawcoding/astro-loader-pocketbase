@@ -21,7 +21,7 @@ export async function handleRealtimeUpdates(
   }
 
   // Check if a expand is set
-  if (options.expand) {
+  if (options.experimental?.expand) {
     // Updating an entry directly via realtime updates is not supported when using expand.
     // This is because updates to a related entry cannot be tracked here.
     // So all (updated) entries must be refreshed when a update is received.

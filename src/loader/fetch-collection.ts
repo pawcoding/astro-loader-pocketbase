@@ -149,5 +149,10 @@ function buildSearchParams(
     searchParams.set("fields", combinedFields.join(","));
   }
 
+  // Add expand parameter if specified
+  if (loaderOptions.experimental?.expand) {
+    searchParams.set("expand", loaderOptions.experimental.expand.join(","));
+  }
+
   return searchParams;
 }

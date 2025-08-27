@@ -25,8 +25,8 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
   }
 
   // Include expanded fields if option is set
-  if (options.expand) {
-    entryUrl.searchParams.set("expand", options.expand.join(","));
+  if (options.experimental?.expand) {
+    entryUrl.searchParams.set("expand", options.experimental.expand.join(","));
   }
 
   // Create the headers for the request to append the token (if available)
