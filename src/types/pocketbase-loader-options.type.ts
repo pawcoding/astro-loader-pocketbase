@@ -1,9 +1,9 @@
 import type { z } from "astro/zod";
 
 /**
- * Options for the PocketBase loader.
+ * Options for both build time and live collection loader
  */
-export interface PocketBaseLoaderOptions {
+export interface PocketBaseLoaderBaseOptions {
   /**
    * URL of the PocketBase instance.
    */
@@ -12,15 +12,6 @@ export interface PocketBaseLoaderOptions {
    * Name of the collection in PocketBase.
    */
   collectionName: string;
-  /**
-   * Field that should be used as the unique identifier for the collection.
-   * This must be the name of a field in the collection that contains unique values.
-   * If not provided, the `id` field will be used.
-   * The value of this field will be used in `getEntry` and `getEntries` to load the entry or entries.
-   *
-   * If the field is a string, it will be slugified to be used in the URL.
-   */
-  idField?: string;
   /**
    * Name of the field(s) containing the content of an entry.
    * This must be the name of a field in the PocketBase collection that contains the content.
@@ -34,12 +25,12 @@ export interface PocketBaseLoaderOptions {
   /**
    * Name of the field containing the last update date of an entry.
    * Ideally, this field should be of type `autodate` and have the value "Update" or "Create/Update".
-   * This field is used to only fetch entries that have been modified since the last build.
+   * For the build time loader, this field is used to only fetch entries that have been modified since the last build.
+   * For the live collection loader, this field is used to set the `lastModified` cache hint.
    */
   updatedField?: string;
   /**
    * Custom filter that is applied when loading data from PocketBase.
-   * Valid syntax can be found in the [PocketBase documentation](https://pocketbase.io/docs/api-records/#listsearch-records)
    *
    * The loader will also add it's own filters for incremental builds.
    * These will be added to your custom filter query.
@@ -52,8 +43,38 @@ export interface PocketBaseLoaderOptions {
    * // request
    * `?filter=(${loaderFilter})&&(release >= @now && deleted = false)`
    * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
    */
   filter?: string;
+  /**
+   * Specify which fields to return for each record.
+   * This can be either a comma-separated string of field names or an array of field names.
+   * Only the specified fields will be included in the response and schema.
+   *
+   * Use "*" to include all fields (same as not specifying the fields option).
+   *
+   * Note: The basic fields (`id`, `collectionId`, `collectionName`) are automatically included
+   * in API requests when using field filtering. Additionally, any custom fields specified in the
+   * loader options (`idField`, `updatedField`, `contentFields`) are also automatically included.
+   *
+   * Warning: Expand fields are not currently supported by this loader.
+   *
+   * Example:
+   * ```ts
+   * // Using string format:
+   * fields: 'title,content,author'
+   *
+   * // Using array format:
+   * fields: ['title', 'content', 'author']
+   *
+   * // Include all fields:
+   * fields: '*'
+   * ```
+   *
+   * @see {@link https://pocketbase.io/docs/api-records/#listsearch-records PocketBase documentation} for valid syntax
+   */
+  fields?: string | Array<string>;
   /**
    * Credentials of a superuser to get full access to the PocketBase instance.
    * This is required to get automatic type generation without a local schema, to access all resources even if they are not public and to fetch content of hidden fields.
@@ -76,6 +97,21 @@ export interface PocketBaseLoaderOptions {
          */
         impersonateToken: string;
       };
+}
+
+/**
+ * Options for the PocketBase loader.
+ */
+export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
+  /**
+   * Field that should be used as the unique identifier for the collection.
+   * This must be the name of a field in the collection that contains unique values.
+   * If not provided, the `id` field will be used.
+   * The value of this field will be used in `getEntry` and `getEntries` to load the entry or entries.
+   *
+   * If the field is a string, it will be slugified to be used in the URL.
+   */
+  idField?: string;
   /**
    * File path to the local schema file.
    * This file will be used to generate the schema for the collection.
@@ -98,4 +134,26 @@ export interface PocketBaseLoaderOptions {
    * The PocketBase API does always return at least `0` or `false` as the default values, even though the fields are not marked as required in the schema.
    */
   improveTypes?: boolean;
-}
+  /**
+   * Experimental options for the loader.
+   *
+   * @experimental All of these options are experimental and may change in the future.
+   */
+  experimental?: {
+    /**
+     * Whether to only create types for the live loader.
+     * This will not load any data, but only generate types that can be used with the live loader.
+     *
+     * @experimental Live content collections are still experimental
+     */
+    liveTypesOnly?: boolean;
+  };
+};
+
+/**
+ * Options for the PocketBase live loader.
+ *
+ * @experimental Live content collections are still experimental
+ */
+export type ExperimentalPocketBaseLiveLoaderOptions =
+  PocketBaseLoaderBaseOptions;

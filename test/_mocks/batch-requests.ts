@@ -1,5 +1,5 @@
 import { assert } from "vitest";
-import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../../src/types/pocketbase-loader-options.type";
 
 export async function sendBatchRequest(
   requests: Array<{
@@ -7,7 +7,7 @@ export async function sendBatchRequest(
     url: string;
     body?: Record<string, unknown>;
   }>,
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
   // oxlint-disable-next-line no-explicit-any
 ): Promise<any> {
@@ -28,7 +28,7 @@ export async function sendBatchRequest(
 }
 
 async function enableBatchApi(
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<void> {
   const updateSettingsRequest = await fetch(

@@ -10,7 +10,7 @@ export class StoreMock implements DataStore {
   }
 
   public entries() {
-    return Array.from(this.#store.entries());
+    return [...this.#store.entries()];
   }
 
   public set(opts: any) {
@@ -19,11 +19,11 @@ export class StoreMock implements DataStore {
   }
 
   public values() {
-    return Array.from(this.#store.values());
+    return [...this.#store.values()];
   }
 
   public keys() {
-    return Array.from(this.#store.keys());
+    return [...this.#store.keys()];
   }
 
   public delete(key: string) {

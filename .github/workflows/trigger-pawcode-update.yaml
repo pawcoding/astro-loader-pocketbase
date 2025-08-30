@@ -1,0 +1,30 @@
+name: 🚀 Trigger pawcode-astro Update
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  trigger-update:
+    if: github.repository == 'pawcoding/astro-loader-pocketbase'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📋 Extract release info
+        id: release
+        run: |
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "package_name=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
+          echo "release_url=${{ github.event.release.html_url }}" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Trigger pawcode-astro update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAWCODE_ASTRO_TOKEN }}
+          repository: pawcoding/pawcode-astro
+          event-type: package-release
+          client-payload: |
+            {
+              "package": "${{ steps.release.outputs.package_name }}",
+              "version": "${{ steps.release.outputs.version }}",
+              "release_url": "${{ steps.release.outputs.release_url }}"
+            }
