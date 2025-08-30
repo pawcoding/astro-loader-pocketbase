@@ -1,3 +1,21 @@
+# [2.8.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.7.1...v2.8.0) (2025-08-30)
+
+
+### Bug Fixes
+
+* **loader:** do not add lastModified cache hint if invalid date ([9ae7733](https://github.com/pawcoding/astro-loader-pocketbase/commit/9ae77330c0a5fe98fe55f63704046eb2c7086294))
+
+
+### Features
+
+* add `fields` option to only load partial entries ([39aded2](https://github.com/pawcoding/astro-loader-pocketbase/commit/39aded2d3e3eadaf349e1a7b0b870b900dcf59bd))
+* **live-loader:** add `page`, `perPage`, and `sort` collection filters ([036e4fe](https://github.com/pawcoding/astro-loader-pocketbase/commit/036e4fe407d60de307362a0a07a1b0191560384c))
+* **live-loader:** add additional filter for `getLiveCollection` function ([8ea02ed](https://github.com/pawcoding/astro-loader-pocketbase/commit/8ea02edfa7cd8d565f451d8b50286a4e7bb5ca3c))
+* **loader:** add experimental setting to only generate types ([2715a23](https://github.com/pawcoding/astro-loader-pocketbase/commit/2715a2350331fd54fc0d973b0bb74cc7e4e324af))
+* **content:** add html id attribute to sections when using multiple content fields ([a931c3e](https://github.com/pawcoding/astro-loader-pocketbase/commit/a931c3e4b53d191adcc6c507b845aeee384bf531))
+* **loader:** add live collection loader ([ea5a107](https://github.com/pawcoding/astro-loader-pocketbase/commit/ea5a107e9da57a605e6475e4974d59dc8b7c08d9))
+* **loader:** add live entry loader ([5d3bf74](https://github.com/pawcoding/astro-loader-pocketbase/commit/5d3bf7432b12edc00f8ecca83c534571e82e8fb9))
+
 ## [2.7.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.7.0...v2.7.1) (2025-08-10)
 
 
