@@ -1,0 +1,182 @@
+name: 📦 Preview Packages
+
+# Run on pushes to branches (excluding master and next) after tests pass
+on:
+  workflow_run:
+    workflows: ["🧪 Test code"]
+    types:
+      - completed
+    branches:
+      - "**"
+      - "!master"
+      - "!next"
+
+env:
+  HUSKY: 0
+
+jobs:
+  preview-package:
+    # Only run if tests passed and commit contains [img:tag-name] pattern
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+      issues: write
+    steps:
+      # Checkout repository
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 2
+
+      # Check if commit contains preview package pattern
+      - name: 🔍 Check for preview package pattern
+        id: check-pattern
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+
+          if [[ "$COMMIT_MSG" =~ \[img:([^\]]+)\] ]]; then
+            TAG_NAME="${BASH_REMATCH[1]}"
+            echo "Preview package detected with tag: $TAG_NAME"
+            echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "No preview package pattern found"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Setup Node if we need to publish
+      - name: 📦 Setup Node.js
+        if: steps.check-pattern.outputs.should_publish == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+
+      # Enable corepack
+      - name: ⚙️ Enable corepack
+        if: steps.check-pattern.outputs.should_publish == 'true'
+        run: corepack enable && corepack enable npm
+
+      # Install dependencies
+      - name: 📦 Install dependencies
+        if: steps.check-pattern.outputs.should_publish == 'true'
+        run: npm ci
+
+      # Create preview package version
+      - name: 📋 Create preview version
+        if: steps.check-pattern.outputs.should_publish == 'true'
+        id: version
+        run: |
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+
+          # Create preview version by incrementing patch and adding tag
+          TAG_NAME="${{ steps.check-pattern.outputs.tag_name }}"
+
+          # Split version into parts
+          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+
+          # Increment patch version
+          NEW_PATCH=$((PATCH + 1))
+          BASE_VERSION="$MAJOR.$MINOR.$NEW_PATCH-$TAG_NAME"
+
+          # Check npm for existing versions with this pattern to find next available counter
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          echo "Checking npm for existing versions of pattern: $BASE_VERSION.*"
+
+          # Get all published versions and filter for our pattern
+          EXISTING_VERSIONS=$(npm view "$PACKAGE_NAME" versions --json 2>/dev/null || echo "[]")
+          HIGHEST_COUNTER=0
+
+          # Find the highest counter for this base version pattern
+          if [ "$EXISTING_VERSIONS" != "[]" ]; then
+            while IFS= read -r version; do
+              # Remove quotes from version string
+              clean_version=$(echo "$version" | tr -d '"')
+              # Check if version matches our pattern (base-tag.counter)
+              if [[ "$clean_version" =~ ^${BASE_VERSION}\.([0-9]+)$ ]]; then
+                counter="${BASH_REMATCH[1]}"
+                if [ "$counter" -gt "$HIGHEST_COUNTER" ]; then
+                  HIGHEST_COUNTER="$counter"
+                fi
+              fi
+            done <<< "$(echo "$EXISTING_VERSIONS" | jq -r '.[]?' 2>/dev/null || echo "$EXISTING_VERSIONS" | grep -o '"[^"]*"' || echo)"
+          fi
+
+          # Increment counter for new version
+          NEW_COUNTER=$((HIGHEST_COUNTER + 1))
+          PREVIEW_VERSION="$BASE_VERSION.$NEW_COUNTER"
+
+          echo "Base version pattern: $BASE_VERSION"
+          echo "Highest existing counter: $HIGHEST_COUNTER"
+          echo "New counter: $NEW_COUNTER"
+          echo "Preview version: $PREVIEW_VERSION"
+          echo "preview_version=$PREVIEW_VERSION" >> $GITHUB_OUTPUT
+
+          # Update package.json with preview version
+          npm version "$PREVIEW_VERSION" --no-git-tag-version
+
+      # Publish preview package to npm
+      - name: 🚀 Publish preview package
+        if: steps.check-pattern.outputs.should_publish == 'true'
+        run: |
+          TAG_NAME="${{ steps.check-pattern.outputs.tag_name }}"
+          PREVIEW_VERSION="${{ steps.version.outputs.preview_version }}"
+
+          echo "Publishing version $PREVIEW_VERSION with tag $TAG_NAME"
+          npm publish --tag "$TAG_NAME" --access public
+
+          echo "✅ Preview package published successfully!"
+          echo "📦 Install with: npm install astro-loader-pocketbase@$TAG_NAME"
+          echo "🔖 Version: $PREVIEW_VERSION"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Comment on PR if this is from a pull request
+      - name: 💬 Comment on PR
+        if: steps.check-pattern.outputs.should_publish == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tagName = '${{ steps.check-pattern.outputs.tag_name }}';
+            const previewVersion = '${{ steps.version.outputs.preview_version }}';
+
+            const comment = `🎭 **Preview Package Published**
+
+            A preview version of this package has been published to npm:
+
+            \`\`\`bash
+            npm install astro-loader-pocketbase@${tagName}
+            \`\`\`
+
+            **Version:** \`${previewVersion}\`  
+            **Tag:** \`${tagName}\`
+
+            This preview package can be used to test changes before merging.`;
+
+            // Find the PR number from the workflow run
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${{ github.event.workflow_run.head_branch }}`,
+              state: 'open'
+            });
+
+            if (prs.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prs.data[0].number,
+                body: comment
+              });
+            }
