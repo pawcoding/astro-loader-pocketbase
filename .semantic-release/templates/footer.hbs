@@ -1,0 +1,35 @@
+{{#if host}}
+  {{~! release link }}
+  {{~#if linkCompare}}
+    {{~#if previousTag}}
+      {{~#if currentTag}}
+        [{{currentTag}}]({{host}}/{{owner}}/{{repository}}/{{compareUrlFormat}}/{{previousTag}}...{{currentTag}})
+      {{~else}}
+        {{~currentTag}}
+      {{~/if}}
+    {{~else}}
+      {{~#if currentTag}}
+        {{~currentTag}}
+      {{~/if}}
+    {{~/if}}
+  {{~else}}
+    {{~#if currentTag}}
+      {{~currentTag}}
+    {{~/if}}
+  {{~/if}}
+
+  {{~! commit range }}
+  {{~#if commitsUrl}}
+    {{~#if previousTag}}
+      ([{{shortHash}}.{{previousTag}}]({{host}}/{{owner}}/{{repository}}/{{commitsUrlFormat}}/{{previousTag}}..{{currentTag}}))
+    {{~else}}
+      ([{{shortHash}}]({{host}}/{{owner}}/{{repository}}/{{commitsUrlFormat}}/{{currentTag}}))
+    {{~/if}}
+  {{~/if}}
+
+  {{~! commit count }}
+  {{~#if (gt commits.length 0)}}
+    ({{commits.length}}
+    commit{{#unless (eq commits.length 1)}}s{{/unless}})
+  {{~/if}}
+{{~/if}}

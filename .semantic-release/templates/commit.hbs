@@ -1,0 +1,24 @@
+*
+{{#if commit.scope}}**{{commit.scope}}:** {{/if}}{{#if
+  commit.subject
+}}{{commit.subject}}{{else}}{{commit.header}}{{/if}}
+
+{{~! commit link }}
+{{#if @root.linkReferences~}}
+  ([{{hash}}]({{@root.repository}}/{{@root.commit}}/{{hash}}))
+{{~else}}
+  {{~#if @root.repository}}
+    ([{{hash}}]({{@root.repository}}/{{@root.commit}}/{{hash}}))
+  {{~/if}}
+{{~/if}}
+
+{{~! commit references }}
+{{~#if references~}}
+  {{~#each references}}
+    {{#if
+      @root.linkReferences
+    }}([{{this.issue}}]({{@root.repository}}/{{@root.issue}}/{{this.issue}})){{else}}{{this.issue}}{{/if}}{{/each}}
+{{~/if}}
+
+{{~! commit author }}
+{{~#if commit.author.name}} by @{{commit.author.name}}{{/if}}
