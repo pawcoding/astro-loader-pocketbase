@@ -21,16 +21,15 @@ jobs:
     steps:
       # Checkout repository
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
 
       # Setup Node
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          cache: "npm"
 
       # Enable corepack
       - name: ⚙️ Enable corepack
@@ -80,7 +79,7 @@ jobs:
       - name: 🚀 Create release
         if: github.repository == 'pawcoding/astro-loader-pocketbase'
         id: release
-        uses: cycjimmy/semantic-release-action@v4
+        uses: cycjimmy/semantic-release-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -88,11 +87,10 @@ jobs:
       # Update project on website
       - name: 🖥️ Update website
         if: github.repository == 'pawcoding/astro-loader-pocketbase' && steps.release.outputs.new_release_published == 'true' && !steps.release.outputs.new_release_channel  && steps.release.outputs.new_release_patch_version == '0'
-        uses: pawcoding/update-project-action@v0.0.2
+        uses: pawcoding/update-project-action@v0.0.4
         with:
           pocketbase-url: ${{ vars.PB_URL }}
           collection-id: ${{ vars.PB_COLLECTION }}
           record-id: ${{ vars.PB_RECORD }}
         env:
-          PB_EMAIL: ${{ secrets.PB_EMAIL }}
-          PB_PASSWORD: ${{ secrets.PB_PASSWORD }}
+          PB_TOKEN: ${{ secrets.PB_TOKEN }}
