@@ -1,3 +1,7 @@
+import {
+  pocketBaseErrorResponse,
+  pocketBaseListResponse
+} from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
@@ -77,18 +81,21 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
       }
 
       // Get the reason for the error
-      const reason = await collectionRequest
-        .json()
-        .then((data) => data.message);
-      const errorMessage = `Fetching data failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+      const errorResponse = pocketBaseErrorResponse.parse(
+        await collectionRequest.json()
+      );
+      const errorMessage = `Fetching data failed with status code ${collectionRequest.status}.\nReason: ${errorResponse.message}`;
       throw new Error(errorMessage);
     }
 
     // Get the data from the response
-    const response = await collectionRequest.json();
+    const response = pocketBaseListResponse.parse(
+      await collectionRequest.json()
+    );
 
     // Return current chunk
-    await chunkLoaded(response.items);
+    // oxlint-disable-next-line no-unsafe-type-assertion
+    await chunkLoaded(response.items as Array<TEntry>);
 
     // Update the page and total pages
     page = response.page;

@@ -1,22 +1,35 @@
+import { z } from "astro/zod";
+
 /**
- * Base interface for all PocketBase entries.
+ * Base schema for all PocketBase entries.
  */
-interface PocketBaseBaseEntry {
+export const pocketBaseBaseEntry = z.object({
   /**
    * ID of the entry.
    */
-  id: string;
+  id: z.string(),
   /**
    * ID of the collection the entry belongs to.
    */
-  collectionId: string;
+  collectionId: z.string(),
   /**
    * Name of the collection the entry belongs to.
    */
-  collectionName: string;
-}
+  collectionName: z.string()
+});
+
+/**
+ * Base interface for all PocketBase entries.
+ */
+export type PocketBaseBaseEntry = z.infer<typeof pocketBaseBaseEntry>;
+
+/**
+ * Schema for a PocketBase entry.
+ */
+export const pocketBaseEntry = pocketBaseBaseEntry.passthrough();
+// export const pocketBaseEntry = pocketBaseBaseEntry.catchall(z.unknown());
 
 /**
  * Type for a PocketBase entry.
  */
-export type PocketBaseEntry = PocketBaseBaseEntry & Record<string, unknown>;
+export type PocketBaseEntry = z.infer<typeof pocketBaseEntry>;
