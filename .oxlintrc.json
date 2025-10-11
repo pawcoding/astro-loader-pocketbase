@@ -15,6 +15,8 @@
   },
   "rules": {
     // Correctness (in addition to the default rules)
+    "typescript/restrict-template-expressions": "off",
+    "typescript/unbound-method": "off",
     "promise/no-new-statics": "error",
     "promise/valid-params": "error",
     // Perf
@@ -219,6 +221,13 @@
         "eslint/max-lines": "off",
         "eslint/max-lines-per-function": "off",
         "eslint/max-nested-callbacks": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-type-assertion": "off",
+        "typescript/unbound-method": "off",
         // Vitest specific rules
         "vitest/no-import-node-test": "warn",
         "vitest/prefer-to-be-falsy": "warn",
