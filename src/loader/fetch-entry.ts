@@ -1,4 +1,6 @@
+import { pocketbaseErrorResponseSchema } from "../types/pocketbase-api-responses.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
+import { pocketBaseEntrySchema } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
@@ -52,13 +54,21 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
     }
 
     // Get the reason for the error
-    const reason = await entryRequest.json().then((data) => data.message);
-    const errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.\nReason: ${reason}`;
+    let errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.`;
+    try {
+      const errorData = (await entryRequest.json()) as unknown;
+      const parsedError = pocketbaseErrorResponseSchema.parse(errorData);
+      errorMessage += `\nReason: ${parsedError.message}`;
+    } catch {
+      // If parsing fails, just use the basic error message
+    }
     throw new Error(errorMessage);
   }
 
   // Get the data from the response
-  const response = await entryRequest.json();
-
-  return response;
+  const responseData = (await entryRequest.json()) as unknown;
+  // Parse and validate as PocketBaseEntry, then cast to TEntry (which extends PocketBaseEntry)
+  // This is safe because TEntry is constrained to extend PocketBaseEntry, and we've validated the core fields
+  // oxlint-disable-next-line no-unsafe-type-assertion
+  return pocketBaseEntrySchema.parse(responseData) as TEntry;
 }

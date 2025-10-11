@@ -55,27 +55,27 @@ describe("getRemoteSchema", () => {
 
     assert(result, "Schema is not defined.");
 
-    // Delete unstable properties
-    // @ts-expect-error - created is not typed
-    delete result.created;
-    // @ts-expect-error - updated is not typed
-    delete result.updated;
+    // Delete unstable properties (now properly typed with passthrough)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (result as any).created;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (result as any).updated;
     for (const field of result.fields) {
-      // @ts-expect-error - id is not typed
-      delete field.id;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (field as any).id;
     }
 
-    // Delete email templates
-    // @ts-expect-error - authAlert is not typed
-    delete result.authAlert;
-    // @ts-expect-error - otp is not typed
-    delete result.otp;
-    // @ts-expect-error - verificationTemplate is not typed
-    delete result.verificationTemplate;
-    // @ts-expect-error - resetPasswordTemplate is not typed
-    delete result.resetPasswordTemplate;
-    // @ts-expect-error - confirmEmailChangeTemplate is not typed
-    delete result.confirmEmailChangeTemplate;
+    // Delete email templates (now properly typed with passthrough)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (result as any).authAlert;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (result as any).otp;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (result as any).verificationTemplate;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (result as any).resetPasswordTemplate;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (result as any).confirmEmailChangeTemplate;
 
     expect(result).toMatchSnapshot();
   });
