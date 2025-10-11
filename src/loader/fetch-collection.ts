@@ -1,4 +1,9 @@
+import {
+  pocketbaseErrorResponseSchema,
+  pocketbaseListResponseSchema
+} from "../types/pocketbase-api-responses.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
+import { pocketBaseEntrySchema } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
@@ -77,22 +82,32 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
       }
 
       // Get the reason for the error
-      const reason = await collectionRequest
-        .json()
-        .then((data) => data.message);
-      const errorMessage = `Fetching data failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+      let errorMessage = `Fetching data failed with status code ${collectionRequest.status}.`;
+      try {
+        const errorData = (await collectionRequest.json()) as unknown;
+        const parsedError = pocketbaseErrorResponseSchema.parse(errorData);
+        errorMessage += `\nReason: ${parsedError.message}`;
+      } catch {
+        // If parsing fails, just use the status code message
+      }
       throw new Error(errorMessage);
     }
 
     // Get the data from the response
-    const response = await collectionRequest.json();
+    const responseData = (await collectionRequest.json()) as unknown;
+    const parsedResponse = pocketbaseListResponseSchema.parse(responseData);
 
-    // Return current chunk
-    await chunkLoaded(response.items);
+    // Return current chunk - items are validated as PocketBaseEntry which extends to TEntry
+    // This is safe because TEntry is constrained to extend PocketBaseEntry, and we've validated the core fields
+    // oxlint-disable-next-line no-unsafe-type-assertion
+    const validatedItems = parsedResponse.items.map((item) =>
+      pocketBaseEntrySchema.parse(item)
+    ) as Array<TEntry>;
+    await chunkLoaded(validatedItems);
 
     // Update the page and total pages
-    page = response.page;
-    totalPages = response.totalPages;
+    page = parsedResponse.page;
+    totalPages = parsedResponse.totalPages;
   } while (!collectionFilter?.perPage && page < totalPages);
 }
 

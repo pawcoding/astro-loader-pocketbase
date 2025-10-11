@@ -1,5 +1,7 @@
+import { pocketbaseErrorResponseSchema } from "../types/pocketbase-api-responses.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import { pocketBaseCollection } from "../types/pocketbase-schema.type";
 
 /**
  * Fetches the schema for the specified collection from the PocketBase instance.
@@ -26,13 +28,23 @@ export async function getRemoteSchema(
 
   // If the request was not successful, try another method
   if (!schemaRequest.ok) {
-    const reason = await schemaRequest.json().then((data) => data.message);
-    const errorMessage = `Fetching schema from ${options.collectionName} failed with status code ${schemaRequest.status}.\nReason: ${reason}`;
-    console.error(errorMessage);
+    try {
+      const errorData = (await schemaRequest.json()) as unknown;
+      const parsedError = pocketbaseErrorResponseSchema.parse(errorData);
+      const errorMessage = `Fetching schema from ${options.collectionName} failed with status code ${schemaRequest.status}.\nReason: ${parsedError.message}`;
+      console.error(errorMessage);
+    } catch {
+      // If parsing fails, just log the status code
+      console.error(
+        `Fetching schema from ${options.collectionName} failed with status code ${schemaRequest.status}.`
+      );
+    }
 
     return undefined;
   }
 
   // Get the schema from the response
-  return schemaRequest.json();
+  const schemaData = (await schemaRequest.json()) as unknown;
+  // Parse and validate the schema using the PocketBase collection schema
+  return pocketBaseCollection.parse(schemaData);
 }

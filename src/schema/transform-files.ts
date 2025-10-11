@@ -1,3 +1,4 @@
+import { z } from "astro/zod";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseSchemaEntry } from "../types/pocketbase-schema.type";
 
@@ -18,9 +19,9 @@ export function transformFiles(
     const fieldName = field.name;
 
     if (field.maxSelect === 1) {
-      const fileName = entry[fieldName] as string | undefined;
-      // Check if a file name is present
-      if (!fileName) {
+      // Validate and parse the file name as a string or undefined
+      const fileNameResult = z.string().optional().safeParse(entry[fieldName]);
+      if (!fileNameResult.success || !fileNameResult.data) {
         continue;
       }
 
@@ -29,17 +30,20 @@ export function transformFiles(
         baseUrl,
         entry.collectionName,
         entry.id,
-        fileName
+        fileNameResult.data
       );
     } else {
-      const fileNames = entry[fieldName] as Array<string> | undefined;
-      // Check if file names are present
-      if (!fileNames) {
+      // Validate and parse the file names as an array of strings or undefined
+      const fileNamesResult = z
+        .array(z.string())
+        .optional()
+        .safeParse(entry[fieldName]);
+      if (!fileNamesResult.success || !fileNamesResult.data) {
         continue;
       }
 
       // Transform all file names to file URLs
-      entry[fieldName] = fileNames.map((file) =>
+      entry[fieldName] = fileNamesResult.data.map((file) =>
         transformFileUrl(baseUrl, entry.collectionName, entry.id, file)
       );
     }

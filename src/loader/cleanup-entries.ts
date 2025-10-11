@@ -1,4 +1,9 @@
 import type { LoaderContext } from "astro/loaders";
+import { z } from "astro/zod";
+import {
+  pocketbaseErrorResponseSchema,
+  pocketbaseMinimalListResponseSchema
+} from "../types/pocketbase-api-responses.type";
 import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 
 /**
@@ -67,10 +72,14 @@ export async function cleanupEntries(
           );
         }
       } else {
-        const reason = await collectionRequest
-          .json()
-          .then((data) => data.message);
-        const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+        let errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.`;
+        try {
+          const errorData = (await collectionRequest.json()) as unknown;
+          const parsedError = pocketbaseErrorResponseSchema.parse(errorData);
+          errorMessage += `\nReason: ${parsedError.message}`;
+        } catch {
+          // If parsing fails, just use the status code message
+        }
         context.logger.error(errorMessage);
       }
 
@@ -81,23 +90,32 @@ export async function cleanupEntries(
     }
 
     // Get the data from the response
-    const response = await collectionRequest.json();
+    const responseData = (await collectionRequest.json()) as unknown;
+    // Use minimal schema here since we only request the id field
+    const parsedResponse =
+      pocketbaseMinimalListResponseSchema.parse(responseData);
 
     // Add the ids to the set
-    for (const item of response.items) {
-      entries.add(item.id);
+    for (const item of parsedResponse.items) {
+      const itemId = z.string().parse(z.record(z.unknown()).parse(item).id);
+      entries.add(itemId);
     }
 
     // Update the page and total pages
-    page = response.page;
-    totalPages = response.totalPages;
+    page = parsedResponse.page;
+    totalPages = parsedResponse.totalPages;
   } while (page < totalPages);
 
   let cleanedUp = 0;
 
   // Create a mapping from PocketBase IDs to store keys for proper cleanup
   const storedIds = new Map<string, string>(
-    context.store.values().map((entry) => [entry.data.id as string, entry.id])
+    context.store
+      .values()
+      .map((entry) => [
+        z.string().parse(z.record(z.unknown()).parse(entry.data).id),
+        entry.id
+      ])
   );
 
   // Check which PocketBase IDs are missing from the server response

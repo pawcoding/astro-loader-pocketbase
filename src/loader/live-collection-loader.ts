@@ -28,7 +28,10 @@ export async function liveCollectionLoader<TEntry extends PocketBaseEntry>(
       collectionFilter
     );
   } catch (error) {
-    return { error: error as Error };
+    // Convert unknown error to Error instance
+    return {
+      error: error instanceof Error ? error : new Error(String(error))
+    };
   }
 
   return {
