@@ -34,5 +34,5 @@ export async function getRemoteSchema(
   }
 
   // Get the schema from the response
-  return await schemaRequest.json();
+  return schemaRequest.json();
 }

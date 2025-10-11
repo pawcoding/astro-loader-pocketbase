@@ -11,10 +11,12 @@ describe("readLocalSchema", () => {
   const mockSchema = [
     {
       name: "users",
+      type: "base",
       fields: []
     },
     {
       name: "messages",
+      type: "base",
       fields: []
     }
   ];

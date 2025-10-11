@@ -46,5 +46,5 @@ export async function getSuperuserToken(
   }
 
   // Return the token
-  return await loginRequest.json().then((data) => data.token);
+  return loginRequest.json().then((data) => data.token);
 }
