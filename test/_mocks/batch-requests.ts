@@ -24,7 +24,7 @@ export async function sendBatchRequest(
 
   assert(batchRequest.status === 200, "Failed to send batch request.");
 
-  return await batchRequest.json();
+  return batchRequest.json();
 }
 
 async function enableBatchApi(

@@ -18,6 +18,7 @@ export function transformFiles(
     const fieldName = field.name;
 
     if (field.maxSelect === 1) {
+      // oxlint-disable-next-line no-unsafe-type-assertion
       const fileName = entry[fieldName] as string | undefined;
       // Check if a file name is present
       if (!fileName) {
@@ -32,6 +33,7 @@ export function transformFiles(
         fileName
       );
     } else {
+      // oxlint-disable-next-line no-unsafe-type-assertion
       const fileNames = entry[fieldName] as Array<string> | undefined;
       // Check if file names are present
       if (!fileNames) {

@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import { pocketBaseDatabase } from "../types/pocketbase-schema.type";
 
 /**
  * Reads the local PocketBase schema file and returns the schema for the specified collection.
@@ -17,15 +18,16 @@ export async function readLocalSchema(
   try {
     // Read the schema file
     const schemaFile = await fs.readFile(realPath, "utf-8");
-    const database: Array<PocketBaseCollection> = JSON.parse(schemaFile);
+
+    const fileContent = pocketBaseDatabase.safeParse(JSON.parse(schemaFile));
 
     // Check if the database file is valid
-    if (!database || !Array.isArray(database)) {
+    if (!fileContent.success) {
       throw new Error("Invalid schema file");
     }
 
     // Find and return the schema for the collection
-    const schema = database.find(
+    const schema = fileContent.data.find(
       (collection) => collection.name === collectionName
     );
 
