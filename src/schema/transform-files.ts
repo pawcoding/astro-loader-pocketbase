@@ -1,3 +1,4 @@
+import { z } from "astro/zod";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseSchemaEntry } from "../types/pocketbase-schema.type";
 
@@ -18,8 +19,7 @@ export function transformFiles(
     const fieldName = field.name;
 
     if (field.maxSelect === 1) {
-      // oxlint-disable-next-line no-unsafe-type-assertion
-      const fileName = entry[fieldName] as string | undefined;
+      const fileName = z.optional(z.string()).parse(entry[fieldName]);
       // Check if a file name is present
       if (!fileName) {
         continue;
@@ -33,8 +33,7 @@ export function transformFiles(
         fileName
       );
     } else {
-      // oxlint-disable-next-line no-unsafe-type-assertion
-      const fileNames = entry[fieldName] as Array<string> | undefined;
+      const fileNames = z.optional(z.array(z.string())).parse(entry[fieldName]);
       // Check if file names are present
       if (!fileNames) {
         continue;
