@@ -18,7 +18,6 @@ export async function readLocalSchema(
   try {
     // Read the schema file
     const schemaFile = await fs.readFile(realPath, "utf-8");
-
     const fileContent = pocketBaseDatabase.safeParse(JSON.parse(schemaFile));
 
     // Check if the database file is valid

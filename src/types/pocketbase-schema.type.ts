@@ -8,7 +8,7 @@ export const pocketBaseSchemaEntry = z.object({
    * Flag to indicate if the field is hidden.
    * Hidden fields are not returned in the API response.
    */
-  hidden: z.boolean(),
+  hidden: z.optional(z.boolean()),
   /**
    * Name of the field.
    */

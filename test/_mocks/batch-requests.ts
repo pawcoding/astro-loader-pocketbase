@@ -9,7 +9,6 @@ export async function sendBatchRequest(
   }>,
   options: PocketBaseLoaderBaseOptions,
   superuserToken: string
-  // oxlint-disable-next-line no-explicit-any
 ): Promise<any> {
   await enableBatchApi(options, superuserToken);
 

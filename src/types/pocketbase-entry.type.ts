@@ -27,7 +27,6 @@ export type PocketBaseBaseEntry = z.infer<typeof pocketBaseBaseEntry>;
  * Schema for a PocketBase entry.
  */
 export const pocketBaseEntry = pocketBaseBaseEntry.passthrough();
-// export const pocketBaseEntry = pocketBaseBaseEntry.catchall(z.unknown());
 
 /**
  * Type for a PocketBase entry.

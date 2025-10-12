@@ -1,8 +1,9 @@
 import { assert } from "console";
 import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import type { PocketBaseSchemaEntry } from "../../src/types/pocketbase-schema.type";
 
 export async function insertCollection(
-  fields: Array<Record<string, unknown>>,
+  fields: Array<PocketBaseSchemaEntry>,
   options: PocketBaseLoaderOptions,
   superuserToken: string
 ): Promise<void> {

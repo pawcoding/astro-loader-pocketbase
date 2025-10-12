@@ -228,7 +228,7 @@
         "typescript/no-unsafe-return": "off",
         "typescript/no-unsafe-member-access": "off",
         "typescript/no-unsafe-type-assertion": "off",
-        "typescript/unbound-method": "off",
+        "typescript/no-explicit-any": "off",
         // Vitest specific rules
         "vitest/no-import-node-test": "warn",
         "vitest/prefer-to-be-falsy": "warn",
