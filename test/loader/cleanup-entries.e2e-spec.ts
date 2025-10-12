@@ -180,7 +180,7 @@ describe("cleanupEntries", () => {
   test("should not cleanup entries if all are up-to-date", async () => {
     const entry = await insertEntry(
       {
-        email: "cleanup@test.de",
+        email: `cleanup+${randomUUID()}@test.de`,
         password: "test1234",
         passwordConfirm: "test1234",
         name: "Cleanup Test"
