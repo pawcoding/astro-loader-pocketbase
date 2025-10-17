@@ -27,7 +27,7 @@ jobs:
 
       # Setup Node
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
 
@@ -80,6 +80,8 @@ jobs:
         if: github.repository == 'pawcoding/astro-loader-pocketbase'
         id: release
         uses: cycjimmy/semantic-release-action@v5
+        with:
+          semantic_version: 25
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
