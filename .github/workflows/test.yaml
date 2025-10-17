@@ -1,11 +1,15 @@
 name: 🧪 Test code
-# Run this on every push except master and next
+
 on:
+  # Run this on every push except master and next
   push:
     branches:
       - "**"
       - "!master"
       - "!next"
+  # Run this every week to make sure the latest PocketBase version still works
+  schedule:
+    - cron: "0 4 * * 6"
 
 env:
   HUSKY: 0
