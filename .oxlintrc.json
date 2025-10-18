@@ -117,6 +117,7 @@
     "eslint/no-throw-literal": "error",
     "eslint/require-await": "warn",
     "eslint/symbol-description": "error",
+    "typescript/ban-ts-comment": "warn",
     "typescript/no-unsafe-argument": "error",
     "typescript/no-unsafe-assignment": "error",
     "typescript/no-unsafe-call": "error",

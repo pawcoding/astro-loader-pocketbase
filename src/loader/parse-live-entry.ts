@@ -56,7 +56,6 @@ export function parseLiveEntry<TEntry extends PocketBaseEntry>(
   return {
     id: entry.id,
     data: entry,
-    // @ts-expect-error - Docs say this is possible
     rendered: {
       html: content
     },
