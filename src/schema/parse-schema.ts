@@ -77,8 +77,7 @@ export function parseSchema(
         }
 
         // Create an enum for the select values
-        // @ts-expect-error - Zod complains because the values are not known at compile time and thus the array is not static.
-        const values = z.enum(field.values);
+        const values = z.enum(field.values as [string, ...Array<string>]);
 
         // Parse the field type based on the number of values it can have
         fieldType = parseSingleOrMultipleValues(field, values);

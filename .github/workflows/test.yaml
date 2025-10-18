@@ -1,11 +1,15 @@
 name: 🧪 Test code
-# Run this on every push except master and next
+
 on:
+  # Run this on every push except master and next
   push:
     branches:
       - "**"
       - "!master"
       - "!next"
+  # Run this every week to make sure the latest PocketBase version still works
+  schedule:
+    - cron: "0 4 * * 6"
 
 env:
   HUSKY: 0
@@ -28,7 +32,7 @@ jobs:
 
       # Setup Node
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
 
