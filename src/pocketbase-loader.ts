@@ -45,7 +45,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       const token = await tokenPromise;
 
       // Generate the schema for the collection according to the API
-      return await generateSchema(options, token);
+      return generateSchema(options, token);
     }
   };
 }
@@ -78,7 +78,7 @@ export function experimentalPocketbaseLiveLoader<
       const token = await tokenPromise;
 
       // Load entries from the collection
-      return await liveCollectionLoader(filter, options, token);
+      return liveCollectionLoader<TEntry>(filter, options, token);
     },
     loadEntry: async ({
       filter
@@ -86,7 +86,7 @@ export function experimentalPocketbaseLiveLoader<
       const token = await tokenPromise;
 
       // Load a single entry from the collection
-      return await liveEntryLoader(filter.id, options, token);
+      return liveEntryLoader<TEntry>(filter.id, options, token);
     }
   };
 }

@@ -20,7 +20,6 @@ export async function liveCollectionLoader<TEntry extends PocketBaseEntry>(
   try {
     await fetchCollection<TEntry>(
       options,
-      // oxlint-disable-next-line require-await
       async (chunk) => {
         entries.push(...chunk.map((entry) => parseLiveEntry(entry, options)));
       },
@@ -28,7 +27,7 @@ export async function liveCollectionLoader<TEntry extends PocketBaseEntry>(
       collectionFilter
     );
   } catch (error) {
-    return { error: error as Error };
+    return { error: error instanceof Error ? error : new Error(String(error)) };
   }
 
   return {
