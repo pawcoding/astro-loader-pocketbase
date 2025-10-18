@@ -1,3 +1,8 @@
+import {
+  LiveCollectionError,
+  LiveEntryNotFoundError
+} from "astro/content/runtime";
+import { PocketBaseAuthenticationError } from "../types/errors";
 import { pocketBaseErrorResponse } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import { pocketBaseEntry } from "../types/pocketbase-entry.type";
@@ -45,20 +50,30 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
         options.superuserCredentials &&
         "impersonateToken" in options.superuserCredentials
       ) {
-        throw new Error("The given impersonate token is not valid.");
+        throw new PocketBaseAuthenticationError(
+          options.collectionName,
+          "The given impersonate token is not valid."
+        );
       } else {
-        throw new Error(
+        throw new PocketBaseAuthenticationError(
+          options.collectionName,
           "The entry is not accessible without superuser rights. Please provide superuser credentials in the config."
         );
       }
+    }
+
+    if (entryRequest.status === 404) {
+      throw new LiveEntryNotFoundError(options.collectionName, id);
     }
 
     // Get the reason for the error
     const errorResponse = pocketBaseErrorResponse.parse(
       await entryRequest.json()
     );
-    const errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.\nReason: ${errorResponse.message}`;
-    throw new Error(errorMessage);
+    throw new LiveCollectionError(
+      options.collectionName,
+      errorResponse.message
+    );
   }
 
   // Get the data from the response

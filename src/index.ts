@@ -2,6 +2,7 @@ import {
   experimentalPocketbaseLiveLoader,
   pocketbaseLoader
 } from "./pocketbase-loader";
+import { PocketBaseAuthenticationError } from "./types/errors";
 import type {
   ExperimentalPocketBaseLiveLoaderCollectionFilter,
   ExperimentalPocketBaseLiveLoaderEntryFilter
@@ -11,7 +12,11 @@ import type {
   PocketBaseLoaderOptions
 } from "./types/pocketbase-loader-options.type";
 
-export { experimentalPocketbaseLiveLoader, pocketbaseLoader };
+export {
+  experimentalPocketbaseLiveLoader,
+  PocketBaseAuthenticationError,
+  pocketbaseLoader
+};
 export type {
   ExperimentalPocketBaseLiveLoaderCollectionFilter,
   ExperimentalPocketBaseLiveLoaderEntryFilter,

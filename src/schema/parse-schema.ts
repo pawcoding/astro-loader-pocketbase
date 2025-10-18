@@ -78,6 +78,7 @@ export function parseSchema(
         }
 
         // Create an enum for the select values
+        // oxlint-disable-next-line no-unsafe-type-assertion
         const values = z.enum(field.values as [string, ...Array<string>]);
 
         // Parse the field type based on the number of values it can have
