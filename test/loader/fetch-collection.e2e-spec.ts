@@ -1,3 +1,7 @@
+import {
+  LiveCollectionError,
+  LiveEntryNotFoundError
+} from "astro/content/runtime";
 import { randomUUID } from "crypto";
 import {
   afterEach,
@@ -10,6 +14,7 @@ import {
   vi
 } from "vitest";
 import { fetchCollection } from "../../src/loader/fetch-collection";
+import { PocketBaseAuthenticationError } from "../../src/types/errors";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
 import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { checkE2eConnection } from "../_mocks/check-e2e-connection";
@@ -204,7 +209,7 @@ describe("fetchCollection", () => {
         undefined
       );
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(PocketBaseAuthenticationError);
     });
 
     test("should throw error if collection is missing", async () => {
@@ -220,7 +225,7 @@ describe("fetchCollection", () => {
         undefined
       );
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(LiveEntryNotFoundError);
     });
 
     test("should throw error invalid filter", async () => {
@@ -236,7 +241,7 @@ describe("fetchCollection", () => {
         undefined
       );
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(LiveCollectionError);
     });
   });
 

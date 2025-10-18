@@ -1,4 +1,5 @@
 import type { LiveDataCollection, LiveDataEntry } from "astro";
+import type { LiveCollectionError } from "astro/content/runtime";
 import type { LiveLoader, Loader } from "astro/loaders";
 import type { ZodSchema } from "astro/zod";
 import { liveCollectionLoader } from "./loader/live-collection-loader";
@@ -65,7 +66,8 @@ export function experimentalPocketbaseLiveLoader<
 ): LiveLoader<
   TEntry,
   ExperimentalPocketBaseLiveLoaderEntryFilter,
-  ExperimentalPocketBaseLiveLoaderCollectionFilter
+  ExperimentalPocketBaseLiveLoaderCollectionFilter,
+  LiveCollectionError
 > {
   // Create shared promise for the superuser token, which can be reused
   const tokenPromise = createTokenPromise(options);
@@ -74,7 +76,9 @@ export function experimentalPocketbaseLiveLoader<
     name: "pocketbase-live-loader",
     loadCollection: async ({
       filter
-    }): Promise<LiveDataCollection<TEntry> | { error: Error }> => {
+    }): Promise<
+      LiveDataCollection<TEntry> | { error: LiveCollectionError }
+    > => {
       const token = await tokenPromise;
 
       // Load entries from the collection
@@ -82,7 +86,7 @@ export function experimentalPocketbaseLiveLoader<
     },
     loadEntry: async ({
       filter
-    }): Promise<LiveDataEntry<TEntry> | { error: Error }> => {
+    }): Promise<LiveDataEntry<TEntry> | { error: LiveCollectionError }> => {
       const token = await tokenPromise;
 
       // Load a single entry from the collection
