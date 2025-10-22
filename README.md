@@ -172,7 +172,9 @@ const blog = defineCollection({
 });
 ```
 
-_It's recommended to use an [impersonate token (API token)](https://pocketbase.io/docs/authentication/#api-keys) instead of the email and password, as this is more secure and can be easily revoked._
+> [!TIP]
+> It's recommended to use an [impersonate token (API token)](https://pocketbase.io/docs/authentication/#api-keys) instead of the email and password, as this is more secure and can be easily revoked.
+> This also prevents the loader from hitting some rate limits with PocketBase, since the default is 2 authentication requests per 3 second interval.
 
 Under the hood, the loader will use the [PocketBase API](https://pocketbase.io/docs/api-collections/#view-collection) to fetch the schema of your collection and generate types with Zod based on that schema.
 
