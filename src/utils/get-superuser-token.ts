@@ -35,6 +35,23 @@ export async function getSuperuserToken(
 
   // If the login request was not successful, print the error message and return undefined
   if (!loginRequest.ok) {
+    if (loginRequest.status === 429) {
+      const info =
+        "A rate limit was hit while trying to authenticate with PocketBase. Consider using an `impersonateToken` as credentials to avoid this issue.";
+      if (logger) {
+        logger.info(info);
+      } else {
+        console.info(info);
+      }
+
+      // Random wait between 3 (default rate limit interval) and 8 seconds
+      const retryAfter = Math.random() * 5 + 3;
+      // oxlint-disable-next-line promise/avoid-new
+      await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+
+      return getSuperuserToken(url, superuserCredentials, logger);
+    }
+
     const reason = await loginRequest.json().then((data) => data.message);
     const errorMessage = `The given email / password for ${url} was not correct. Astro can't generate type definitions automatically and may not have access to all resources.\nReason: ${reason}`;
     if (logger) {
