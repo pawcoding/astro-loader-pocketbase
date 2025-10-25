@@ -1,10 +1,8 @@
 import { LiveEntryNotFoundError } from "astro/content/runtime";
 import { randomUUID } from "crypto";
-import { assert, beforeAll, beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, inject, test } from "vitest";
 import { fetchEntry } from "../../src/loader/fetch-entry";
 import { PocketBaseAuthenticationError } from "../../src/types/errors";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
-import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
@@ -12,27 +10,7 @@ import { insertEntry } from "../_mocks/insert-entry";
 
 describe("fetchEntry", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
-  let superuserToken: string;
-
-  beforeAll(async () => {
-    await checkE2eConnection();
-  });
-
-  beforeEach(async () => {
-    assert(options.superuserCredentials, "Superuser credentials are not set.");
-    assert(
-      !("impersonateToken" in options.superuserCredentials),
-      "Impersonate token should not be used in tests."
-    );
-
-    const token = await getSuperuserToken(
-      options.url,
-      options.superuserCredentials
-    );
-
-    assert(token, "Superuser token is not available.");
-    superuserToken = token;
-  });
+  const superuserToken = inject("superuserToken");
 
   test("should fetch entry without errors", async () => {
     const testOptions = {

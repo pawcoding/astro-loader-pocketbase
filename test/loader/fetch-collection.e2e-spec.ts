@@ -3,20 +3,10 @@ import {
   LiveEntryNotFoundError
 } from "astro/content/runtime";
 import { randomUUID } from "crypto";
-import {
-  assert,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  test,
-  vi
-} from "vitest";
+import { beforeEach, describe, expect, inject, test, vi } from "vitest";
 import { fetchCollection } from "../../src/loader/fetch-collection";
 import { PocketBaseAuthenticationError } from "../../src/types/errors";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
-import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
@@ -26,29 +16,11 @@ const DAY = 24 * 60 * 60 * 1000;
 
 describe("fetchCollection", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
-  let superuserToken: string;
+  const superuserToken = inject("superuserToken");
   let chunkLoadedMock: ReturnType<typeof vi.fn>;
-
-  beforeAll(async () => {
-    await checkE2eConnection();
-  });
 
   beforeEach(async () => {
     chunkLoadedMock = vi.fn().mockResolvedValue(undefined);
-
-    assert(options.superuserCredentials, "Superuser credentials are not set.");
-    assert(
-      !("impersonateToken" in options.superuserCredentials),
-      "Impersonate token should not be used in tests."
-    );
-
-    const token = await getSuperuserToken(
-      options.url,
-      options.superuserCredentials
-    );
-
-    assert(token, "Superuser token is not available.");
-    superuserToken = token;
   });
 
   test("should fetch entries without errors", async () => {
@@ -58,7 +30,12 @@ describe("fetchCollection", () => {
   });
 
   test("should handle empty response gracefully", async () => {
-    const testOptions = { ...options, collectionName: "users" };
+    const testOptions = {
+      ...options,
+      collectionName: randomUUID().replaceAll("-", "")
+    };
+
+    await insertCollection([], testOptions, superuserToken);
 
     await fetchCollection(
       testOptions,

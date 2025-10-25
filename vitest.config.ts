@@ -8,6 +8,7 @@ export default defineConfig({
       include: ["src/**/*.ts"],
       exclude: ["src/types/**/*.ts", "src/index.ts", "src/pocketbase-loader.ts"]
     },
-    restoreMocks: true
+    restoreMocks: true,
+    globalSetup: "./test/global-setup.ts"
   }
 });
