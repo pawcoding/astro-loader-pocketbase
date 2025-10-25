@@ -309,6 +309,17 @@ const blogLive = defineLiveCollection({
 });
 ```
 
+### Error handling
+
+The live content loader follows Astro's standard error handling conventions for live collections. For more information on how to handle errors in your components, see the [Astro documentation on error handling](https://docs.astro.build/en/reference/experimental-flags/live-content-collections/#error-handling).
+
+| Error                           | When it's returned                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `PocketBaseAuthenticationError` | Authentication or authorization fails (missing credentials or invalid token)                                  |
+| `LiveEntryNotFoundError`        | The requested entry doesn't exist or doesn't match the applied filters                                        |
+| `LiveCollectionValidationError` | The data returned by PocketBase doesn't match the Zod schema or the `updatedField` doesn't contain valid data |
+| `LiveCollectionError`           | Any other error occurs (network errors, invalid filter syntax, PocketBase server errors, etc.)                |
+
 ### Caveats
 
 Live content loaders do not (yet 🤞🏼) support zod schemas and thus schema generation and entry transformation.
