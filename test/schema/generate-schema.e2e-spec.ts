@@ -1,5 +1,5 @@
 import type { ZodObject, ZodSchema } from "astro/zod";
-import { afterEach, assert, beforeAll, describe, expect, it, vi } from "vitest";
+import { assert, beforeAll, describe, expect, it, vi } from "vitest";
 import type { PocketBaseLoaderOptions } from "../../src";
 import { generateSchema } from "../../src/schema/generate-schema";
 import { transformFileUrl } from "../../src/schema/transform-files";
@@ -27,10 +27,6 @@ describe("generateSchema", () => {
     assert(superuserToken, "Superuser token should not be undefined");
 
     token = superuserToken;
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   describe("load and parse schema", () => {

@@ -7,6 +7,7 @@ export default defineConfig({
     coverage: {
       include: ["src/**/*.ts"],
       exclude: ["src/types/**/*.ts", "src/index.ts", "src/pocketbase-loader.ts"]
-    }
+    },
+    restoreMocks: true
   }
 });

@@ -1,5 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import packageJson from "../../package.json";
 import { cleanupEntries } from "../../src/loader/cleanup-entries";
 import { handleRealtimeUpdates } from "../../src/loader/handle-realtime-updates";
@@ -27,10 +27,6 @@ describe("loader", async () => {
       "last-modified",
       new Date().toISOString().replace("T", " ")
     );
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   test('should not refresh if shouldRefresh returns "skip"', async () => {

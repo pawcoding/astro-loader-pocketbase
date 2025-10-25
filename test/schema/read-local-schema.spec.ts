@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { readLocalSchema } from "../../src/schema/read-local-schema";
 
 vi.mock("fs/promises");
@@ -20,10 +20,6 @@ describe("readLocalSchema", () => {
       fields: []
     }
   ];
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
 
   test("should return the schema for the specified collection", async () => {
     vi.spyOn(path, "join").mockReturnValue(localSchemaPath);
