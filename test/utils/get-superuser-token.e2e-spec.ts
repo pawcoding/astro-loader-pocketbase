@@ -57,9 +57,14 @@ describe("getSuperuserToken", () => {
     vi.useFakeTimers({
       toFake: ["setTimeout"]
     });
-    vi.spyOn(global, "fetch").mockResolvedValueOnce(
-      new Response(undefined, { status: 429 })
-    );
+    vi.spyOn(global, "fetch")
+      .mockResolvedValueOnce(new Response(undefined, { status: 429 }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ token: "test-token" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        })
+      );
 
     const promise = getSuperuserToken(
       options.url,
