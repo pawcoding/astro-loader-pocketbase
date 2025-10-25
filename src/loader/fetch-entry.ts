@@ -1,4 +1,6 @@
+import { pocketBaseErrorResponse } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
+import { pocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
@@ -52,13 +54,15 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
     }
 
     // Get the reason for the error
-    const reason = await entryRequest.json().then((data) => data.message);
-    const errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.\nReason: ${reason}`;
+    const errorResponse = pocketBaseErrorResponse.parse(
+      await entryRequest.json()
+    );
+    const errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.\nReason: ${errorResponse.message}`;
     throw new Error(errorMessage);
   }
 
   // Get the data from the response
-  const response = await entryRequest.json();
-
-  return response;
+  const response = pocketBaseEntry.parse(await entryRequest.json());
+  // oxlint-disable-next-line no-unsafe-type-assertion
+  return response as TEntry;
 }

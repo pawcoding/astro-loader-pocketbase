@@ -16,6 +16,6 @@ export async function liveEntryLoader<TEntry extends PocketBaseEntry>(
     const entry = await fetchEntry<TEntry>(id, options, token);
     return parseLiveEntry(entry, options);
   } catch (error) {
-    return { error: error as Error };
+    return { error: error instanceof Error ? error : new Error(String(error)) };
   }
 }

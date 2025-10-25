@@ -1,4 +1,3 @@
-// oxlint-disable no-explicit-any
 // oxlint-disable explicit-module-boundary-types
 import type { DataStore } from "astro/loaders";
 
