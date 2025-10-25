@@ -1,4 +1,5 @@
 import type { LiveDataCollection, LiveDataEntry } from "astro";
+import type { LiveCollectionError } from "astro/content/runtime";
 import type { LiveLoader, Loader } from "astro/loaders";
 import type { ZodSchema } from "astro/zod";
 import { liveCollectionLoader } from "./loader/live-collection-loader";
@@ -45,7 +46,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       const token = await tokenPromise;
 
       // Generate the schema for the collection according to the API
-      return await generateSchema(options, token);
+      return generateSchema(options, token);
     }
   };
 }
@@ -65,7 +66,8 @@ export function experimentalPocketbaseLiveLoader<
 ): LiveLoader<
   TEntry,
   ExperimentalPocketBaseLiveLoaderEntryFilter,
-  ExperimentalPocketBaseLiveLoaderCollectionFilter
+  ExperimentalPocketBaseLiveLoaderCollectionFilter,
+  LiveCollectionError
 > {
   // Create shared promise for the superuser token, which can be reused
   const tokenPromise = createTokenPromise(options);
@@ -74,19 +76,21 @@ export function experimentalPocketbaseLiveLoader<
     name: "pocketbase-live-loader",
     loadCollection: async ({
       filter
-    }): Promise<LiveDataCollection<TEntry> | { error: Error }> => {
+    }): Promise<
+      LiveDataCollection<TEntry> | { error: LiveCollectionError }
+    > => {
       const token = await tokenPromise;
 
       // Load entries from the collection
-      return await liveCollectionLoader(filter, options, token);
+      return liveCollectionLoader<TEntry>(filter, options, token);
     },
     loadEntry: async ({
       filter
-    }): Promise<LiveDataEntry<TEntry> | { error: Error }> => {
+    }): Promise<LiveDataEntry<TEntry> | { error: LiveCollectionError }> => {
       const token = await tokenPromise;
 
       // Load a single entry from the collection
-      return await liveEntryLoader(filter.id, options, token);
+      return liveEntryLoader<TEntry>(filter.id, options, token);
     }
   };
 }

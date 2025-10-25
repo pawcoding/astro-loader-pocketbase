@@ -1,4 +1,11 @@
 import type { LoaderContext } from "astro/loaders";
+import { z } from "astro/zod";
+import {
+  pocketBaseErrorResponse,
+  pocketBaseListResponse
+} from "../types/pocketbase-api-response.type";
+import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
+import { pocketBaseBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 
 /**
@@ -67,10 +74,10 @@ export async function cleanupEntries(
           );
         }
       } else {
-        const reason = await collectionRequest
-          .json()
-          .then((data) => data.message);
-        const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
+        const errorResponse = pocketBaseErrorResponse.parse(
+          await collectionRequest.json()
+        );
+        const errorMessage = `Fetching ids failed with status code ${collectionRequest.status}.\nReason: ${errorResponse.message}`;
         context.logger.error(errorMessage);
       }
 
@@ -81,7 +88,9 @@ export async function cleanupEntries(
     }
 
     // Get the data from the response
-    const response = await collectionRequest.json();
+    const response = cleanUpEntriesResponse.parse(
+      await collectionRequest.json()
+    );
 
     // Add the ids to the set
     for (const item of response.items) {
@@ -97,7 +106,10 @@ export async function cleanupEntries(
 
   // Create a mapping from PocketBase IDs to store keys for proper cleanup
   const storedIds = new Map<string, string>(
-    context.store.values().map((entry) => [entry.data.id as string, entry.id])
+    context.store
+      .values()
+      // oxlint-disable-next-line no-unsafe-type-assertion
+      .map((entry) => [(entry.data as PocketBaseEntry).id, entry.id])
   );
 
   // Check which PocketBase IDs are missing from the server response
@@ -114,3 +126,12 @@ export async function cleanupEntries(
     context.logger.info(`Cleaned up ${cleanedUp} old entries.`);
   }
 }
+
+/**
+ * The response schema for cleaning up entries.
+ */
+const cleanUpEntriesResponse = pocketBaseListResponse
+  .omit({ items: true })
+  .extend({
+    items: z.array(pocketBaseBaseEntry.pick({ id: true }))
+  });

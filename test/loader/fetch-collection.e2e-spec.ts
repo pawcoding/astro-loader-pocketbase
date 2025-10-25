@@ -1,18 +1,12 @@
-import { randomUUID } from "crypto";
 import {
-  afterEach,
-  assert,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  test,
-  vi
-} from "vitest";
+  LiveCollectionError,
+  LiveEntryNotFoundError
+} from "astro/content/runtime";
+import { randomUUID } from "crypto";
+import { beforeEach, describe, expect, inject, test, vi } from "vitest";
 import { fetchCollection } from "../../src/loader/fetch-collection";
+import { PocketBaseAuthenticationError } from "../../src/types/errors";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
-import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
@@ -22,33 +16,11 @@ const DAY = 24 * 60 * 60 * 1000;
 
 describe("fetchCollection", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
-  let superuserToken: string;
+  const superuserToken = inject("superuserToken");
   let chunkLoadedMock: ReturnType<typeof vi.fn>;
-
-  beforeAll(async () => {
-    await checkE2eConnection();
-  });
 
   beforeEach(async () => {
     chunkLoadedMock = vi.fn().mockResolvedValue(undefined);
-
-    assert(options.superuserCredentials, "Superuser credentials are not set.");
-    assert(
-      !("impersonateToken" in options.superuserCredentials),
-      "Impersonate token should not be used in tests."
-    );
-
-    const token = await getSuperuserToken(
-      options.url,
-      options.superuserCredentials
-    );
-
-    assert(token, "Superuser token is not available.");
-    superuserToken = token;
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   test("should fetch entries without errors", async () => {
@@ -58,7 +30,12 @@ describe("fetchCollection", () => {
   });
 
   test("should handle empty response gracefully", async () => {
-    const testOptions = { ...options, collectionName: "users" };
+    const testOptions = {
+      ...options,
+      collectionName: randomUUID().replaceAll("-", "")
+    };
+
+    await insertCollection([], testOptions, superuserToken);
 
     await fetchCollection(
       testOptions,
@@ -87,7 +64,6 @@ describe("fetchCollection", () => {
 
     await fetchCollection(
       testOptions,
-      // oxlint-disable-next-line require-await
       async (entries) => {
         totalEntries += entries.length;
       },
@@ -136,7 +112,6 @@ describe("fetchCollection", () => {
 
     await fetchCollection(
       testOptions,
-      // oxlint-disable-next-line require-await
       async (entries) => {
         totalEntries += entries.length;
       },
@@ -206,7 +181,7 @@ describe("fetchCollection", () => {
         undefined
       );
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(PocketBaseAuthenticationError);
     });
 
     test("should throw error if collection is missing", async () => {
@@ -222,7 +197,7 @@ describe("fetchCollection", () => {
         undefined
       );
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(LiveEntryNotFoundError);
     });
 
     test("should throw error invalid filter", async () => {
@@ -238,7 +213,7 @@ describe("fetchCollection", () => {
         undefined
       );
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(LiveCollectionError);
     });
   });
 
@@ -315,7 +290,6 @@ describe("fetchCollection", () => {
 
       await fetchCollection(
         testOptions,
-        // oxlint-disable-next-line require-await
         async (entries) => {
           totalEntries += entries.length;
         },
@@ -354,7 +328,6 @@ describe("fetchCollection", () => {
       const results: Array<PocketBaseEntry> = [];
       await fetchCollection(
         testOptions,
-        // oxlint-disable-next-line require-await
         async (entries) => {
           results.push(...entries);
         },
@@ -412,7 +385,6 @@ describe("fetchCollection", () => {
       const results: Array<PocketBaseEntry> = [];
       await fetchCollection(
         testOptions,
-        // oxlint-disable-next-line require-await
         async (entries) => {
           results.push(...entries);
         },
@@ -462,7 +434,6 @@ describe("fetchCollection", () => {
       const results: Array<PocketBaseEntry> = [];
       await fetchCollection(
         testOptions,
-        // oxlint-disable-next-line require-await
         async (entries) => {
           results.push(...entries);
         },
@@ -510,7 +481,6 @@ describe("fetchCollection", () => {
       const results: Array<PocketBaseEntry> = [];
       await fetchCollection(
         testOptions,
-        // oxlint-disable-next-line require-await
         async (entries) => {
           results.push(...entries);
         },

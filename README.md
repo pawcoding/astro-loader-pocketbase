@@ -172,7 +172,9 @@ const blog = defineCollection({
 });
 ```
 
-_It's recommended to use an [impersonate token (API token)](https://pocketbase.io/docs/authentication/#api-keys) instead of the email and password, as this is more secure and can be easily revoked._
+> [!TIP]
+> It's recommended to use an [impersonate token (API token)](https://pocketbase.io/docs/authentication/#api-keys) instead of the email and password, as this is more secure and can be easily revoked.
+> This also prevents the loader from hitting some rate limits with PocketBase, since the default is 2 authentication requests per 3 second interval.
 
 Under the hood, the loader will use the [PocketBase API](https://pocketbase.io/docs/api-collections/#view-collection) to fetch the schema of your collection and generate types with Zod based on that schema.
 
@@ -306,6 +308,17 @@ const blogLive = defineLiveCollection({
   })
 });
 ```
+
+### Error handling
+
+The live content loader follows Astro's standard error handling conventions for live collections. For more information on how to handle errors in your components, see the [Astro documentation on error handling](https://docs.astro.build/en/reference/experimental-flags/live-content-collections/#error-handling).
+
+| Error                           | When it's returned                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `PocketBaseAuthenticationError` | Authentication or authorization fails (missing credentials or invalid token)                                  |
+| `LiveEntryNotFoundError`        | The requested entry doesn't exist or doesn't match the applied filters                                        |
+| `LiveCollectionValidationError` | The data returned by PocketBase doesn't match the Zod schema or the `updatedField` doesn't contain valid data |
+| `LiveCollectionError`           | Any other error occurs (network errors, invalid filter syntax, PocketBase server errors, etc.)                |
 
 ### Caveats
 

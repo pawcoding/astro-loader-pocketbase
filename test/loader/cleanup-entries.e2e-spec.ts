@@ -1,17 +1,7 @@
 import type { LoaderContext } from "astro/loaders";
 import { randomUUID } from "crypto";
-import {
-  assert,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  test,
-  vi
-} from "vitest";
+import { beforeEach, describe, expect, inject, test, vi } from "vitest";
 import { cleanupEntries } from "../../src/loader/cleanup-entries";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
-import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderContext } from "../_mocks/create-loader-context";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
@@ -23,28 +13,10 @@ import { insertEntries, insertEntry } from "../_mocks/insert-entry";
 describe("cleanupEntries", () => {
   const options = createLoaderOptions({ collectionName: "users" });
   let context: LoaderContext;
-  let superuserToken: string;
-
-  beforeAll(async () => {
-    await checkE2eConnection();
-  });
+  const superuserToken = inject("superuserToken");
 
   beforeEach(async () => {
     context = createLoaderContext();
-
-    assert(options.superuserCredentials, "Superuser credentials are not set.");
-    assert(
-      !("impersonateToken" in options.superuserCredentials),
-      "Impersonate token should not be used in tests."
-    );
-
-    const token = await getSuperuserToken(
-      options.url,
-      options.superuserCredentials
-    );
-
-    assert(token, "Superuser token is not available.");
-    superuserToken = token;
   });
 
   test("should log error if collection is not accessible without superuser rights", async () => {
@@ -180,7 +152,7 @@ describe("cleanupEntries", () => {
   test("should not cleanup entries if all are up-to-date", async () => {
     const entry = await insertEntry(
       {
-        email: "cleanup@test.de",
+        email: `cleanup+${randomUUID()}@test.de`,
         password: "test1234",
         passwordConfirm: "test1234",
         name: "Cleanup Test"

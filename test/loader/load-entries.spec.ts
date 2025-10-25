@@ -1,5 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { loadEntries } from "../../src/loader/load-entries";
 import { createLoaderContext } from "../_mocks/create-loader-context";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
@@ -16,10 +16,6 @@ describe("loadEntries", async () => {
 
   beforeEach(() => {
     context = createLoaderContext();
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   test("should call fetchCollection and parseEntry for each entry", async () => {

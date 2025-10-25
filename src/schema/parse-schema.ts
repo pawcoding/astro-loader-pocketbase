@@ -46,6 +46,7 @@ export function parseSchema(
     let fieldType;
 
     // Determine the field type and create the corresponding Zod type
+    // oxlint-disable-next-line switch-exhaustiveness-check
     switch (field.type) {
       case "number":
         fieldType = z.number();
@@ -77,8 +78,8 @@ export function parseSchema(
         }
 
         // Create an enum for the select values
-        // @ts-expect-error - Zod complains because the values are not known at compile time and thus the array is not static.
-        const values = z.enum(field.values);
+        // oxlint-disable-next-line no-unsafe-type-assertion
+        const values = z.enum(field.values as [string, ...Array<string>]);
 
         // Parse the field type based on the number of values it can have
         fieldType = parseSingleOrMultipleValues(field, values);

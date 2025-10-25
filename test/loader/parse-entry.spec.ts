@@ -1,5 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { parseEntry } from "../../src/loader/parse-entry";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
 import { createLoaderContext } from "../_mocks/create-loader-context";
@@ -13,10 +13,6 @@ describe("parseEntry", () => {
   beforeEach(() => {
     context = createLoaderContext();
     entry = createPocketbaseEntry();
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   test("should use default ID if no custom ID field is provided", async () => {

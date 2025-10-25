@@ -1,9 +1,8 @@
+import { LiveEntryNotFoundError } from "astro/content/runtime";
 import { randomUUID } from "crypto";
-import { assert, beforeAll, beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, inject, test } from "vitest";
 import { fetchEntry } from "../../src/loader/fetch-entry";
-import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
-import { checkE2eConnection } from "../_mocks/check-e2e-connection";
+import { PocketBaseAuthenticationError } from "../../src/types/errors";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
@@ -11,27 +10,7 @@ import { insertEntry } from "../_mocks/insert-entry";
 
 describe("fetchEntry", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
-  let superuserToken: string;
-
-  beforeAll(async () => {
-    await checkE2eConnection();
-  });
-
-  beforeEach(async () => {
-    assert(options.superuserCredentials, "Superuser credentials are not set.");
-    assert(
-      !("impersonateToken" in options.superuserCredentials),
-      "Impersonate token should not be used in tests."
-    );
-
-    const token = await getSuperuserToken(
-      options.url,
-      options.superuserCredentials
-    );
-
-    assert(token, "Superuser token is not available.");
-    superuserToken = token;
-  });
+  const superuserToken = inject("superuserToken");
 
   test("should fetch entry without errors", async () => {
     const testOptions = {
@@ -51,7 +30,7 @@ describe("fetchEntry", () => {
       superuserToken
     );
 
-    const entry = await fetchEntry<PocketBaseEntry>(
+    const entry = await fetchEntry(
       insertedEntry.id,
       testOptions,
       superuserToken
@@ -82,15 +61,9 @@ describe("fetchEntry", () => {
         superuserToken
       );
 
-      const promise = fetchEntry<PocketBaseEntry>(
-        insertedEntry.id,
-        testOptions,
-        undefined
-      );
+      const promise = fetchEntry(insertedEntry.id, testOptions, undefined);
 
-      await expect(promise).rejects.toThrow(
-        "not accessible without superuser rights"
-      );
+      await expect(promise).rejects.toThrow(PocketBaseAuthenticationError);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -107,13 +80,9 @@ describe("fetchEntry", () => {
         superuserToken
       );
 
-      const promise = fetchEntry<PocketBaseEntry>(
-        "nonexistent123",
-        testOptions,
-        superuserToken
-      );
+      const promise = fetchEntry("nonexistent123", testOptions, superuserToken);
 
-      await expect(promise).rejects.toThrow('Fetching entry "nonexistent123"');
+      await expect(promise).rejects.toThrow(LiveEntryNotFoundError);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -124,13 +93,9 @@ describe("fetchEntry", () => {
         collectionName: "invalidCollection"
       };
 
-      const promise = fetchEntry<PocketBaseEntry>(
-        "any-id",
-        invalidOptions,
-        superuserToken
-      );
+      const promise = fetchEntry("any-id", invalidOptions, superuserToken);
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(LiveEntryNotFoundError);
     });
 
     test("should handle invalid impersonate token", async () => {
@@ -154,15 +119,9 @@ describe("fetchEntry", () => {
         superuserToken
       );
 
-      const promise = fetchEntry<PocketBaseEntry>(
-        insertedEntry.id,
-        testOptions,
-        undefined
-      );
+      const promise = fetchEntry(insertedEntry.id, testOptions, undefined);
 
-      await expect(promise).rejects.toThrow(
-        "The given impersonate token is not valid"
-      );
+      await expect(promise).rejects.toThrow(PocketBaseAuthenticationError);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -196,11 +155,7 @@ describe("fetchEntry", () => {
         superuserToken
       );
 
-      const result = await fetchEntry<PocketBaseEntry>(
-        entry.id,
-        testOptions,
-        superuserToken
-      );
+      const result = await fetchEntry(entry.id, testOptions, superuserToken);
 
       // Description should not be included
       delete entry["description"];
@@ -233,11 +188,7 @@ describe("fetchEntry", () => {
         superuserToken
       );
 
-      const result = await fetchEntry<PocketBaseEntry>(
-        entry.id,
-        testOptions,
-        superuserToken
-      );
+      const result = await fetchEntry(entry.id, testOptions, superuserToken);
 
       expect(result).toEqual(entry);
 
