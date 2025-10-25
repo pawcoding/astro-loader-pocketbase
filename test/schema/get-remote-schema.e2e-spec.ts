@@ -1,30 +1,10 @@
-import { assert, beforeAll, describe, expect, it } from "vitest";
+import { assert, describe, expect, inject, it } from "vitest";
 import { getRemoteSchema } from "../../src/schema/get-remote-schema";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
-import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 
 describe("getRemoteSchema", () => {
   const options = createLoaderOptions();
-  let token: string;
-
-  beforeAll(async () => {
-    await checkE2eConnection();
-
-    assert(options.superuserCredentials, "Superuser credentials are not set.");
-    assert(
-      !("impersonateToken" in options.superuserCredentials),
-      "Impersonate token should not be used in tests."
-    );
-
-    const superuserToken = await getSuperuserToken(
-      options.url,
-      options.superuserCredentials
-    );
-    assert(superuserToken, "Superuser token should not be undefined");
-
-    token = superuserToken;
-  });
+  const token = inject("superuserToken");
 
   it("should return undefined if superuser token is invalid", async () => {
     const result = await getRemoteSchema(options, "invalid-token");
