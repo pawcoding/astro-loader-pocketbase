@@ -1,6 +1,8 @@
+import { LiveEntryNotFoundError } from "astro/content/runtime";
 import { randomUUID } from "crypto";
 import { assert, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { fetchEntry } from "../../src/loader/fetch-entry";
+import { PocketBaseAuthenticationError } from "../../src/types/errors";
 import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
@@ -83,9 +85,7 @@ describe("fetchEntry", () => {
 
       const promise = fetchEntry(insertedEntry.id, testOptions, undefined);
 
-      await expect(promise).rejects.toThrow(
-        "not accessible without superuser rights"
-      );
+      await expect(promise).rejects.toThrow(PocketBaseAuthenticationError);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -104,7 +104,7 @@ describe("fetchEntry", () => {
 
       const promise = fetchEntry("nonexistent123", testOptions, superuserToken);
 
-      await expect(promise).rejects.toThrow('Fetching entry "nonexistent123"');
+      await expect(promise).rejects.toThrow(LiveEntryNotFoundError);
 
       await deleteCollection(testOptions, superuserToken);
     });
@@ -117,7 +117,7 @@ describe("fetchEntry", () => {
 
       const promise = fetchEntry("any-id", invalidOptions, superuserToken);
 
-      await expect(promise).rejects.toThrow();
+      await expect(promise).rejects.toThrow(LiveEntryNotFoundError);
     });
 
     test("should handle invalid impersonate token", async () => {
@@ -143,9 +143,7 @@ describe("fetchEntry", () => {
 
       const promise = fetchEntry(insertedEntry.id, testOptions, undefined);
 
-      await expect(promise).rejects.toThrow(
-        "The given impersonate token is not valid"
-      );
+      await expect(promise).rejects.toThrow(PocketBaseAuthenticationError);
 
       await deleteCollection(testOptions, superuserToken);
     });

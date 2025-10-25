@@ -1,3 +1,4 @@
+import { LiveCollectionError } from "astro/content/runtime";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { liveCollectionLoader } from "../../src/loader/live-collection-loader";
 import { createLiveLoaderOptions } from "../_mocks/create-live-loader-options";
@@ -112,7 +113,10 @@ describe("liveCollectionLoader", async () => {
 
   describe("error handling", () => {
     test("should return error when fetchCollection throws", async () => {
-      const error = new Error("Failed to fetch collection");
+      const error = new LiveCollectionError(
+        options.collectionName,
+        "Failed to fetch collection"
+      );
       fcm.fetchCollection = vi.fn().mockRejectedValue(error);
 
       const result = await liveCollectionLoader(
