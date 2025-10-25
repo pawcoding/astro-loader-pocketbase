@@ -1,5 +1,5 @@
 import { LiveCollectionError } from "astro/content/runtime";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { liveCollectionLoader } from "../../src/loader/live-collection-loader";
 import { createLiveLoaderOptions } from "../_mocks/create-live-loader-options";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
@@ -14,10 +14,6 @@ describe("liveCollectionLoader", async () => {
 
   beforeEach(() => {
     plem.parseLiveEntry = vi.fn().mockImplementation((e) => e);
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   test("should return live data collection with parsed entries", async () => {

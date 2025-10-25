@@ -4,7 +4,6 @@ import {
 } from "astro/content/runtime";
 import { randomUUID } from "crypto";
 import {
-  afterEach,
   assert,
   beforeAll,
   beforeEach,
@@ -50,10 +49,6 @@ describe("fetchCollection", () => {
 
     assert(token, "Superuser token is not available.");
     superuserToken = token;
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   test("should fetch entries without errors", async () => {
