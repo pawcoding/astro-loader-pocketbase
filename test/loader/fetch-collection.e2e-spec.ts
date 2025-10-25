@@ -30,7 +30,12 @@ describe("fetchCollection", () => {
   });
 
   test("should handle empty response gracefully", async () => {
-    const testOptions = { ...options, collectionName: "users" };
+    const testOptions = {
+      ...options,
+      collectionName: randomUUID().replaceAll("-", "")
+    };
+
+    await insertCollection([], testOptions, superuserToken);
 
     await fetchCollection(
       testOptions,
