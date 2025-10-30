@@ -1,6 +1,7 @@
 import { assert } from "vitest";
 import type { TestProject } from "vitest/node";
 import { getSuperuserToken } from "../src/utils/get-superuser-token";
+import { enableBatchApi } from "./_mocks/batch-requests";
 import { checkE2eConnection } from "./_mocks/check-e2e-connection";
 import { createLoaderOptions } from "./_mocks/create-loader-options";
 
@@ -38,6 +39,9 @@ export async function setup(project: TestProject): Promise<void> {
 
   // Provide superuser token to tests
   project.provide("superuserToken", token);
+
+  // Enable batch API for e2e tests
+  await enableBatchApi(options, token);
 }
 
 declare module "vitest" {

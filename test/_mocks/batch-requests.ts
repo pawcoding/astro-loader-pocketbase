@@ -10,8 +10,6 @@ export async function sendBatchRequest(
   options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<any> {
-  await enableBatchApi(options, superuserToken);
-
   const batchRequest = await fetch(new URL(`api/batch`, options.url), {
     method: "POST",
     headers: {
@@ -26,7 +24,7 @@ export async function sendBatchRequest(
   return batchRequest.json();
 }
 
-async function enableBatchApi(
+export async function enableBatchApi(
   options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<void> {
