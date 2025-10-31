@@ -156,7 +156,7 @@ async function generateExpandSchema(
     }
 
     const deeperFields =
-      fields.length > 1 ? [fields.slice(1).join(".")] : undefined;
+      fields.length > 1 ? fields.slice(1).join(".") : undefined;
     const schema = await generateSchema(
       {
         ...options,

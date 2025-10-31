@@ -110,6 +110,33 @@ describe("liveCollectionLoader", async () => {
     expect(plem.parseLiveEntry).not.toHaveBeenCalled();
   });
 
+  test("should pass expand option to fetchCollection", async () => {
+    const expandOptions = {
+      ...options,
+      experimental: {
+        expand: "author,category"
+      }
+    };
+
+    fcm.fetchCollection = vi.fn().mockImplementation(async (_, chunkLoaded) => {
+      await chunkLoaded([]);
+    });
+
+    const result = await liveCollectionLoader(
+      undefined,
+      expandOptions,
+      "superuser-token"
+    );
+
+    expect("error" in result).toBeFalsy();
+    expect(fcm.fetchCollection).toHaveBeenCalledWith(
+      expandOptions,
+      expect.any(Function),
+      "superuser-token",
+      undefined
+    );
+  });
+
   describe("error handling", () => {
     test("should return error when fetchCollection throws", async () => {
       const error = new Error("Failed to fetch collection");

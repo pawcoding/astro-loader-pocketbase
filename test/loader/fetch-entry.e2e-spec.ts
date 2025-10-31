@@ -244,4 +244,83 @@ describe("fetchEntry", () => {
       await deleteCollection(testOptions, superuserToken);
     });
   });
+
+  describe("expand option", () => {
+    test("should handle expand option in request", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", "")
+      };
+
+      await insertCollection(
+        [{ name: "title", type: "text" }],
+        testOptions,
+        superuserToken
+      );
+
+      const entry = await insertEntry(
+        { title: "Test Entry" },
+        testOptions,
+        superuserToken
+      );
+
+      // Use expand option (even though this collection has no relations)
+      const expandOptions = {
+        ...testOptions,
+        experimental: {
+          expand: "someField"
+        }
+      };
+
+      const result = await fetchEntry<PocketBaseEntry>(
+        entry.id,
+        expandOptions,
+        superuserToken
+      );
+
+      // Verify the entry is fetched successfully with expand parameter
+      expect(result.id).toBe(entry.id);
+      expect(result.title).toBe("Test Entry");
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+
+    test("should not throw error for invalid expand parameter (PocketBase silently ignores it)", async () => {
+      const testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", "")
+      };
+
+      await insertCollection(
+        [{ name: "title", type: "text" }],
+        testOptions,
+        superuserToken
+      );
+
+      const entry = await insertEntry(
+        { title: "Test" },
+        testOptions,
+        superuserToken
+      );
+
+      const expandOptions = {
+        ...testOptions,
+        experimental: {
+          expand: "nonExistentField"
+        }
+      };
+
+      const result = await fetchEntry<PocketBaseEntry>(
+        entry.id,
+        expandOptions,
+        superuserToken
+      );
+
+      // PocketBase doesn't throw an error for invalid expand, it just ignores it
+      expect(result).toBeDefined();
+      expect(result.id).toBe(entry.id);
+
+      await deleteCollection(testOptions, superuserToken);
+    });
+  });
 });

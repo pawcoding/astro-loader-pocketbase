@@ -49,6 +49,31 @@ describe("liveEntryLoader", async () => {
     expect(result).toEqual(entry);
   });
 
+  test("should pass expand option to fetchEntry", async () => {
+    const entry = createPocketbaseEntry();
+    const expandOptions = {
+      ...options,
+      experimental: {
+        expand: "author,tags"
+      }
+    };
+
+    fem.fetchEntry = vi.fn().mockResolvedValue(entry);
+
+    const result = await liveEntryLoader(
+      entry.id,
+      expandOptions,
+      "superuser-token"
+    );
+
+    expect(fem.fetchEntry).toHaveBeenCalledWith(
+      entry.id,
+      expandOptions,
+      "superuser-token"
+    );
+    expect("error" in result).toBeFalsy();
+  });
+
   describe("error handling", () => {
     test("should return error when fetchEntry throws", async () => {
       const error = new Error("Failed to fetch entry");

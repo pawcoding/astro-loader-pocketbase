@@ -151,7 +151,7 @@ function buildSearchParams(
 
   // Add expand parameter if specified
   if (loaderOptions.experimental?.expand) {
-    searchParams.set("expand", loaderOptions.experimental.expand.join(","));
+    searchParams.set("expand", loaderOptions.experimental.expand);
   }
 
   return searchParams;

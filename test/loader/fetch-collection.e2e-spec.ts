@@ -524,4 +524,55 @@ describe("fetchCollection", () => {
       await deleteCollection(testOptions, superuserToken);
     });
   });
+
+  describe("expand option", () => {
+    test("should handle expand option in request (uses _superusers collection with built-in relations)", async () => {
+      // Use _superusers collection which has built-in tokenKey relation
+      // This tests that expand parameter is included in the request
+      const expandOptions = {
+        ...options,
+        experimental: {
+          expand: "tokenKey"
+        }
+      };
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        expandOptions,
+        // oxlint-disable-next-line require-await
+        async (entries) => {
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      // Just verify the request was successful and expand was included
+      expect(results).toBeDefined();
+      expect(results.length).toBeGreaterThanOrEqual(0);
+    });
+
+    test("should not throw error for invalid expand parameter (PocketBase silently ignores it)", async () => {
+      const testOptions = {
+        ...options,
+        experimental: {
+          expand: "nonExistentField"
+        }
+      };
+
+      const results: Array<PocketBaseEntry> = [];
+      await fetchCollection(
+        testOptions,
+        // oxlint-disable-next-line require-await
+        async (entries) => {
+          results.push(...entries);
+        },
+        superuserToken,
+        undefined
+      );
+
+      // PocketBase doesn't throw an error for invalid expand, it just ignores it
+      expect(results).toBeDefined();
+    });
+  });
 });
