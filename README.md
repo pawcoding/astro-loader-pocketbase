@@ -291,6 +291,36 @@ const entries2 = await getLiveCollection("blogLive", {
 By default, the loader will fetch all entries in the collection.
 But you can also specify additional options, such as filters (will be added to the global filters), sorting, and pagination.
 
+### Expanding relation fields (Experimental)
+
+> [!WARNING]
+> The `expand` option is experimental and may have edge cases, especially regarding schema generation and caching.
+
+The live loader supports expanding relation fields using the `experimental.expand` option.
+This allows you to include related records in the API response.
+
+```ts
+const blogLive = defineLiveCollection({
+  loader: experimentalPocketbaseLiveLoader({
+    url: "https://<your-pocketbase-url>",
+    collectionName: "posts",
+    experimental: {
+      expand: "author,category"
+    }
+  })
+});
+```
+
+The `expand` parameter is a comma-separated string of relation field names to expand.
+You can use dot notation for nested relations (e.g., `"author.profile,category"`).
+Invalid expand parameters will simply be ignored by PocketBase.
+
+For more information on the expand syntax, check out the [PocketBase documentation](https://pocketbase.io/docs/collections/#expand-relation-fields).
+
+> [!NOTE]
+> The expand option is currently only recommended for use with the live loader.
+> For the build-time loader, using separate collections is more efficient due to caching considerations.
+
 ### Using cache hints
 
 The loader automatically adds cache hints for each entry / collection.
