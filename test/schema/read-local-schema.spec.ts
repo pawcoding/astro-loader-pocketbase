@@ -1,20 +1,24 @@
+import type { z } from "astro/zod";
 import fs from "fs/promises";
 import path from "path";
 import { describe, expect, test, vi } from "vitest";
 import { readLocalSchema } from "../../src/schema/read-local-schema";
+import type { pocketBaseDatabase } from "../../src/types/pocketbase-schema.type";
 
 vi.mock("fs/promises");
 
 describe("readLocalSchema", () => {
   const localSchemaPath = "test/pb_schema.json";
   const collectionName = "users";
-  const mockSchema = [
+  const mockSchema: z.infer<typeof pocketBaseDatabase> = [
     {
+      id: "user_collection_id",
       name: "users",
       type: "base",
       fields: []
     },
     {
+      id: "message_collection_id",
       name: "messages",
       type: "base",
       fields: []

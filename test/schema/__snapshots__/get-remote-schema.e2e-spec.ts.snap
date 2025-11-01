@@ -67,6 +67,7 @@ exports[`getRemoteSchema > should return schema if fetch request is successful 1
       "type": "autodate",
     },
   ],
+  "id": "_pb_users_auth_",
   "name": "users",
   "type": "auth",
 }
