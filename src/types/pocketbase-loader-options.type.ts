@@ -156,4 +156,33 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
  * @experimental Live content collections are still experimental
  */
 export type ExperimentalPocketBaseLiveLoaderOptions =
-  PocketBaseLoaderBaseOptions;
+  PocketBaseLoaderBaseOptions & {
+    /**
+     * Experimental options for the live loader.
+     *
+     * @experimental All of these options are experimental and may change in the future.
+     */
+    experimental?: {
+      /**
+       * Specify relations to auto expand in the API response.
+       * This can be an array of relation field names to expand.
+       * Supports dot notation for nested relations up to 6 levels deep.
+       *
+       * Note: This option is not compatible with the `fields` option.
+       *
+       * Example:
+       * ```ts
+       * // Using array format:
+       * expand: ['author', 'category']
+       *
+       * // Nested relations:
+       * expand: ['author.profile', 'category.parent']
+       * ```
+       *
+       * @see {@link https://pocketbase.io/docs/working-with-relations/#expanding-relations PocketBase documentation} for valid syntax
+       *
+       * @experimental This feature is experimental and may change in the future
+       */
+      expand?: Array<string>;
+    };
+  };

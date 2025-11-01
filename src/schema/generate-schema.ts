@@ -84,7 +84,11 @@ export async function generateSchema(
   // Combine the basic schema with the parsed fields
   const schema = z.object({
     ...BASIC_SCHEMA,
-    ...fields
+    ...fields,
+    // Add expand field for live types only mode to support expanded relations
+    ...(options.experimental?.liveTypesOnly && {
+      expand: z.optional(z.unknown())
+    })
   });
 
   // Get all file fields

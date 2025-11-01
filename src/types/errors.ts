@@ -17,3 +17,21 @@ export class PocketBaseAuthenticationError extends LiveCollectionError {
     );
   }
 }
+
+/**
+ * Error thrown when there is a configuration issue with the loader.
+ */
+export class PocketBaseConfigurationError extends LiveCollectionError {
+  constructor(collection: string, message: string) {
+    super(collection, message);
+    this.name = "PocketBaseConfigurationError";
+  }
+
+  static is(error: unknown): error is PocketBaseConfigurationError {
+    // This is similar to the original implementation in Astro itself.
+    return (
+      // oxlint-disable-next-line no-unsafe-type-assertion
+      !!error && (error as Error)?.name === "PocketBaseConfigurationError"
+    );
+  }
+}

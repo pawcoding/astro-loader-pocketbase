@@ -6,8 +6,12 @@ import { PocketBaseAuthenticationError } from "../types/errors";
 import { pocketBaseErrorResponse } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import { pocketBaseEntry } from "../types/pocketbase-entry.type";
-import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type {
+  ExperimentalPocketBaseLiveLoaderOptions,
+  PocketBaseLoaderOptions
+} from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
+import { formatExpand } from "../utils/format-expand";
 import { formatFields } from "../utils/format-fields";
 
 /**
@@ -15,7 +19,7 @@ import { formatFields } from "../utils/format-fields";
  */
 export async function fetchEntry<TEntry extends PocketBaseEntry>(
   id: string,
-  options: ExperimentalPocketBaseLiveLoaderOptions,
+  options: PocketBaseLoaderOptions | ExperimentalPocketBaseLiveLoaderOptions,
   token: string | undefined
 ): Promise<TEntry> {
   // Build the URL for the entry endpoint
@@ -29,6 +33,17 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
   const combinedFields = combineFieldsForRequest(fieldsArray, options);
   if (combinedFields) {
     entryUrl.searchParams.set("fields", combinedFields.join(","));
+  }
+
+  // Add expand parameter if specified in experimental options
+  if (options.experimental && "expand" in options.experimental) {
+    const expandString = formatExpand(
+      options.experimental.expand,
+      options.collectionName
+    );
+    if (expandString) {
+      entryUrl.searchParams.set("expand", expandString);
+    }
   }
 
   // Create the headers for the request to append the token (if available)
