@@ -17,10 +17,7 @@ export async function loader(
   context.logger.label = `pocketbase-loader:${options.collectionName}`;
 
   // Check if the collection should be refreshed.
-  const refresh = shouldRefresh(
-    context.refreshContextData,
-    options.collectionName
-  );
+  const refresh = shouldRefresh(context.refreshContextData, options);
   if (refresh === "skip") {
     return;
   }
