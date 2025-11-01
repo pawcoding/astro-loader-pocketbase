@@ -1,3 +1,4 @@
+import { LiveCollectionValidationError } from "astro/content/runtime";
 import { beforeEach, describe, expect, test } from "vitest";
 import { parseLiveEntry } from "../../src/loader/parse-live-entry";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
@@ -110,7 +111,7 @@ describe("parseLiveEntry", () => {
       });
     });
 
-    test("should not include lastModified cache hint when entry has invalid updated field", () => {
+    test("should throw when entry has invalid updated field", () => {
       const entryWithInvalidDate = createPocketbaseEntry({
         id: "test-entry-invalid-date",
         updated: "invalid-date"
@@ -120,13 +121,9 @@ describe("parseLiveEntry", () => {
         updatedField: "updated"
       });
 
-      const result = parseLiveEntry(entryWithInvalidDate, options);
-
-      expect(result).toMatchObject({
-        cacheHint: {
-          lastModified: undefined
-        }
-      });
+      expect(() => parseLiveEntry(entryWithInvalidDate, options)).toThrow(
+        LiveCollectionValidationError
+      );
     });
   });
 });

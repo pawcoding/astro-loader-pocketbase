@@ -9,10 +9,7 @@ export async function sendBatchRequest(
   }>,
   options: PocketBaseLoaderBaseOptions,
   superuserToken: string
-  // oxlint-disable-next-line no-explicit-any
 ): Promise<any> {
-  await enableBatchApi(options, superuserToken);
-
   const batchRequest = await fetch(new URL(`api/batch`, options.url), {
     method: "POST",
     headers: {
@@ -24,10 +21,10 @@ export async function sendBatchRequest(
 
   assert(batchRequest.status === 200, "Failed to send batch request.");
 
-  return await batchRequest.json();
+  return batchRequest.json();
 }
 
-async function enableBatchApi(
+export async function enableBatchApi(
   options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<void> {

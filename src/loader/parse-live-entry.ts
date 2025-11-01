@@ -1,4 +1,6 @@
 import type { LiveDataEntry } from "astro";
+import { LiveCollectionValidationError } from "astro/content/runtime";
+import { z } from "astro/zod";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 
@@ -17,18 +19,15 @@ export function parseLiveEntry<TEntry extends PocketBaseEntry>(
   // use it as the last modified date cache hint
   if (options.updatedField && entry[options.updatedField]) {
     const value = `${entry[options.updatedField]}`;
-    try {
-      const date = new Date(value);
-      if (isNaN(date.getTime())) {
-        throw new TypeError("Invalid date");
-      }
-
-      lastModified = date;
-    } catch {
-      console.warn(
-        `Entry ${entry.id} of collection ${options.collectionName} has an invalid date in ${options.updatedField}: ${value}`
+    const date = z.coerce.date().safeParse(value);
+    if (!date.success) {
+      throw new LiveCollectionValidationError(
+        options.collectionName,
+        entry.id,
+        date.error
       );
     }
+    lastModified = date.data;
   }
 
   if (!options.contentFields) {
@@ -56,7 +55,6 @@ export function parseLiveEntry<TEntry extends PocketBaseEntry>(
   return {
     id: entry.id,
     data: entry,
-    // @ts-expect-error - Docs say this is possible
     rendered: {
       html: content
     },

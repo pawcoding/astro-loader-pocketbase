@@ -1,4 +1,11 @@
+import {
+  LiveCollectionError,
+  LiveEntryNotFoundError
+} from "astro/content/runtime";
+import { PocketBaseAuthenticationError } from "../types/errors";
+import { pocketBaseErrorResponse } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
+import { pocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
@@ -43,22 +50,34 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
         options.superuserCredentials &&
         "impersonateToken" in options.superuserCredentials
       ) {
-        throw new Error("The given impersonate token is not valid.");
+        throw new PocketBaseAuthenticationError(
+          options.collectionName,
+          "The given impersonate token is not valid."
+        );
       } else {
-        throw new Error(
+        throw new PocketBaseAuthenticationError(
+          options.collectionName,
           "The entry is not accessible without superuser rights. Please provide superuser credentials in the config."
         );
       }
     }
 
+    if (entryRequest.status === 404) {
+      throw new LiveEntryNotFoundError(options.collectionName, id);
+    }
+
     // Get the reason for the error
-    const reason = await entryRequest.json().then((data) => data.message);
-    const errorMessage = `Fetching entry "${id}" from collection "${options.collectionName}" failed.\nReason: ${reason}`;
-    throw new Error(errorMessage);
+    const errorResponse = pocketBaseErrorResponse.parse(
+      await entryRequest.json()
+    );
+    throw new LiveCollectionError(
+      options.collectionName,
+      errorResponse.message
+    );
   }
 
   // Get the data from the response
-  const response = await entryRequest.json();
-
-  return response;
+  const response = pocketBaseEntry.parse(await entryRequest.json());
+  // oxlint-disable-next-line no-unsafe-type-assertion
+  return response as TEntry;
 }

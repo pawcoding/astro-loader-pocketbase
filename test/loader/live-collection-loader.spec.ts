@@ -1,4 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { LiveCollectionError } from "astro/content/runtime";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { liveCollectionLoader } from "../../src/loader/live-collection-loader";
 import { createLiveLoaderOptions } from "../_mocks/create-live-loader-options";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
@@ -13,10 +14,6 @@ describe("liveCollectionLoader", async () => {
 
   beforeEach(() => {
     plem.parseLiveEntry = vi.fn().mockImplementation((e) => e);
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
   });
 
   test("should return live data collection with parsed entries", async () => {
@@ -112,7 +109,10 @@ describe("liveCollectionLoader", async () => {
 
   describe("error handling", () => {
     test("should return error when fetchCollection throws", async () => {
-      const error = new Error("Failed to fetch collection");
+      const error = new LiveCollectionError(
+        options.collectionName,
+        "Failed to fetch collection"
+      );
       fcm.fetchCollection = vi.fn().mockRejectedValue(error);
 
       const result = await liveCollectionLoader(

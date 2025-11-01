@@ -1,3 +1,12 @@
+import {
+  LiveCollectionError,
+  LiveEntryNotFoundError
+} from "astro/content/runtime";
+import { PocketBaseAuthenticationError } from "../types/errors";
+import {
+  pocketBaseErrorResponse,
+  pocketBaseListResponse
+} from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
@@ -68,27 +77,42 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
           options.superuserCredentials &&
           "impersonateToken" in options.superuserCredentials
         ) {
-          throw new Error("The given impersonate token is not valid.");
+          throw new PocketBaseAuthenticationError(
+            options.collectionName,
+            "The given impersonate token is not valid."
+          );
         } else {
-          throw new Error(
+          throw new PocketBaseAuthenticationError(
+            options.collectionName,
             "The collection is not accessible without superuser rights. Please provide superuser credentials in the config."
           );
         }
       }
 
+      if (collectionRequest.status === 404) {
+        throw new LiveEntryNotFoundError(options.collectionName, {
+          ...collectionFilter
+        });
+      }
+
       // Get the reason for the error
-      const reason = await collectionRequest
-        .json()
-        .then((data) => data.message);
-      const errorMessage = `Fetching data failed with status code ${collectionRequest.status}.\nReason: ${reason}`;
-      throw new Error(errorMessage);
+      const errorResponse = pocketBaseErrorResponse.parse(
+        await collectionRequest.json()
+      );
+      throw new LiveCollectionError(
+        options.collectionName,
+        errorResponse.message
+      );
     }
 
     // Get the data from the response
-    const response = await collectionRequest.json();
+    const response = pocketBaseListResponse.parse(
+      await collectionRequest.json()
+    );
 
     // Return current chunk
-    await chunkLoaded(response.items);
+    // oxlint-disable-next-line no-unsafe-type-assertion
+    await chunkLoaded(response.items as Array<TEntry>);
 
     // Update the page and total pages
     page = response.page;

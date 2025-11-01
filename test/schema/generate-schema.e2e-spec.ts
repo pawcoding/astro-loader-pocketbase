@@ -1,37 +1,13 @@
 import type { ZodObject, ZodSchema } from "astro/zod";
-import { afterEach, assert, beforeAll, describe, expect, it, vi } from "vitest";
+import { describe, expect, inject, it, vi } from "vitest";
 import type { PocketBaseLoaderOptions } from "../../src";
 import { generateSchema } from "../../src/schema/generate-schema";
 import { transformFileUrl } from "../../src/schema/transform-files";
-import { getSuperuserToken } from "../../src/utils/get-superuser-token";
-import { checkE2eConnection } from "../_mocks/check-e2e-connection";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 
 describe("generateSchema", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
-  let token: string;
-
-  beforeAll(async () => {
-    await checkE2eConnection();
-
-    assert(options.superuserCredentials, "Superuser credentials are not set.");
-    assert(
-      !("impersonateToken" in options.superuserCredentials),
-      "Impersonate token should not be used in tests."
-    );
-
-    const superuserToken = await getSuperuserToken(
-      options.url,
-      options.superuserCredentials
-    );
-    assert(superuserToken, "Superuser token should not be undefined");
-
-    token = superuserToken;
-  });
-
-  afterEach(() => {
-    vi.resetAllMocks();
-  });
+  const token = inject("superuserToken");
 
   describe("load and parse schema", () => {
     it("should return basic schema if no schema is available", async () => {
