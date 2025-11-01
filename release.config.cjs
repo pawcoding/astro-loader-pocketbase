@@ -1,12 +1,28 @@
 const branch = process.env.GITHUB_REF_NAME;
+const customTag = process.env.CUSTOM_TAG;
 
 const assetsToUpdate = ["package.json", "package-lock.json"];
 if (branch === "master") {
   assetsToUpdate.push("CHANGELOG.md");
 }
 
+// Build branches array dynamically
+const branches = [
+  "master",
+  { name: "next", channel: "next", prerelease: true }
+];
+
+// If custom tag is provided (manual trigger), add it as a prerelease branch
+if (customTag) {
+  branches.push({
+    name: branch,
+    channel: customTag,
+    prerelease: true
+  });
+}
+
 const config = {
-  branches: ["master", { name: "next", channel: "next", prerelease: true }],
+  branches: branches,
   plugins: [
     [
       "@semantic-release/commit-analyzer",
