@@ -1,3 +1,15 @@
+# [2.9.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.8.1...v2.9.0) (2025-11-01)
+
+
+### Bug Fixes
+
+* **superuser-token:** retry authentication after hitting rate limit ([842c3e4](https://github.com/pawcoding/astro-loader-pocketbase/commit/842c3e44c705f7018c8afa9c2714513f4cbe9962)), closes [#70](https://github.com/pawcoding/astro-loader-pocketbase/issues/70)
+
+
+### Features
+
+* **live-loader:** throw typed errors ([a7f533b](https://github.com/pawcoding/astro-loader-pocketbase/commit/a7f533bd3297545583f38116bc853c9c467ffce3))
+
 ## [2.8.1](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.8.0...v2.8.1) (2025-09-20)
 
 # [2.8.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.7.1...v2.8.0) (2025-08-30)
