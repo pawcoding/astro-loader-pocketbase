@@ -1,11 +1,11 @@
 import { assert } from "vitest";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
-import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../../src/types/pocketbase-loader-options.type";
 import { sendBatchRequest } from "./batch-requests";
 
 export async function insertEntries(
   data: Array<Record<string, unknown>>,
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<Array<PocketBaseEntry>> {
   const requests = data.map((entry) => ({
@@ -34,7 +34,7 @@ export async function insertEntries(
 
 export async function insertEntry(
   data: Record<string, unknown>,
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<PocketBaseEntry> {
   const insertRequest = await fetch(

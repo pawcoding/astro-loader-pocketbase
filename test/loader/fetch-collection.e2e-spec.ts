@@ -3,7 +3,16 @@ import {
   LiveEntryNotFoundError
 } from "astro/content/runtime";
 import { randomUUID } from "crypto";
-import { beforeEach, describe, expect, inject, test, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  inject,
+  test,
+  vi
+} from "vitest";
+import type { ExperimentalPocketBaseLiveLoaderOptions } from "../../src";
 import { fetchCollection } from "../../src/loader/fetch-collection";
 import { PocketBaseAuthenticationError } from "../../src/types/errors";
 import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
@@ -492,6 +501,129 @@ describe("fetchCollection", () => {
       expect(results[0]).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);
+    });
+  });
+
+  describe("expand parameter", () => {
+    let testOptions: ExperimentalPocketBaseLiveLoaderOptions;
+    let relationOptions: ExperimentalPocketBaseLiveLoaderOptions;
+    let relationCollectionId: string;
+
+    beforeEach(async () => {
+      testOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", ""),
+        experimental: {
+          expand: ["singleRelation"]
+        }
+      };
+      relationOptions = {
+        ...options,
+        collectionName: randomUUID().replaceAll("-", ""),
+        experimental: {}
+      };
+
+      relationCollectionId = await insertCollection(
+        [],
+        relationOptions,
+        superuserToken
+      );
+    });
+
+    afterEach(async () => {
+      await deleteCollection(testOptions, superuserToken);
+      await deleteCollection(relationOptions, superuserToken);
+    });
+
+    test("should expand single relation", async () => {
+      await insertCollection(
+        [
+          {
+            type: "relation",
+            name: "singleRelation",
+            collectionId: relationCollectionId,
+            maxSelect: 1
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const relationEntry = await insertEntry(
+        {},
+        relationOptions,
+        superuserToken
+      );
+      const entry = await insertEntry(
+        {
+          singleRelation: relationEntry.id
+        },
+        testOptions,
+        superuserToken
+      );
+
+      const result: Array<Record<string, any>> = [];
+      await fetchCollection(
+        testOptions,
+        async (e) => {
+          result.push(...e);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(entry.id);
+      expect(result[0].expand.singleRelation.id).toBe(relationEntry.id);
+    });
+
+    test("should expand multi relation", async () => {
+      await insertCollection(
+        [
+          {
+            type: "relation",
+            name: "multiRelation",
+            collectionId: relationCollectionId,
+            maxSelect: 2
+          }
+        ],
+        testOptions,
+        superuserToken
+      );
+
+      const relationEntries = await insertEntries(
+        [{}, {}],
+        relationOptions,
+        superuserToken
+      );
+      const relationIds = relationEntries.map((entry) => entry.id);
+      const entry = await insertEntry(
+        {
+          multiRelation: relationIds
+        },
+        testOptions,
+        superuserToken
+      );
+
+      const result: Array<Record<string, any>> = [];
+      await fetchCollection(
+        { ...testOptions, experimental: { expand: ["multiRelation"] } },
+        async (e) => {
+          result.push(...e);
+        },
+        superuserToken,
+        undefined
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(entry.id);
+
+      const multiRelation = (
+        result[0].expand as { multiRelation: Array<{ id: string }> }
+      ).multiRelation;
+      expect(multiRelation).toBeInstanceOf(Array);
+      expect(multiRelation).toHaveLength(2);
+      expect(multiRelation.map((entry) => entry.id)).toEqual(relationIds);
     });
   });
 });
