@@ -31,3 +31,6 @@ pnpm-debug.log*
 .prettierignore
 .gitignore
 .nvmrc
+
+# semantic-release templates (handlebars)
+.semantic-release/templates/
