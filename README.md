@@ -309,6 +309,50 @@ const blogLive = defineLiveCollection({
 });
 ```
 
+### Expanding relations
+
+The live loader supports expanding relation fields directly in the API request, which will include the related records in the response.
+This is useful when you need to access related data without making additional requests.
+
+```ts
+const blogLive = defineLiveCollection({
+  loader: experimentalPocketbaseLiveLoader({
+    ...options,
+    experimental: {
+      // Expand single relation field
+      expand: ["author"]
+
+      // Expand multiple relation fields
+      expand: ["author", "category"]
+
+      // Expand nested relations (up to 6 levels deep)
+      expand: ["author.profile", "category.parent"]
+    }
+  })
+});
+```
+
+When you fetch entries with expanded relations, the related records will be available in the `expand` property:
+
+```ts
+const entry = await getLiveEntry("blogLive", { id: "<entry-id>" });
+
+// Access expanded relation data
+console.log(entry.expand.author.name);
+console.log(entry.expand.category.name);
+
+// Access nested expanded relations
+console.log(entry.expand.author.expand.profile.bio);
+```
+
+> [!NOTE]
+> The expand parameter:
+>
+> - Supports up to 6 levels of nested relations (enforced by PocketBase)
+> - Must use separate array entries for each field (e.g., `["author", "category"]` not `["author,category"]`)
+> - Is not compatible with the `fields` option (yet)
+> - Does not support schema generation (yet) - expanded data will have `unknown | undefined` types
+
 ### Error handling
 
 The live content loader follows Astro's standard error handling conventions for live collections. For more information on how to handle errors in your components, see the [Astro documentation on error handling](https://docs.astro.build/en/reference/experimental-flags/live-content-collections/#error-handling).
