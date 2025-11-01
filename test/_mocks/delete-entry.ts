@@ -1,10 +1,10 @@
 import { assert } from "vitest";
-import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../../src/types/pocketbase-loader-options.type";
 import { sendBatchRequest } from "./batch-requests";
 
 export async function deleteEntries(
   entryIds: Array<string>,
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<void> {
   const requests = entryIds.map((entryId) => ({
@@ -26,7 +26,7 @@ export async function deleteEntries(
 
 export async function deleteEntry(
   entryId: string,
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<void> {
   const deleteRequest = await fetch(

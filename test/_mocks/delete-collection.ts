@@ -1,8 +1,8 @@
 import { assert } from "vitest";
-import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../../src/types/pocketbase-loader-options.type";
 
 export async function deleteCollection(
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<void> {
   const deleteRequest = await fetch(

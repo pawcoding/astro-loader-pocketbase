@@ -9,8 +9,12 @@ import {
 } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
-import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
+import type {
+  ExperimentalPocketBaseLiveLoaderOptions,
+  PocketBaseLoaderOptions
+} from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
+import { formatExpand } from "../utils/format-expand";
 import { formatFields } from "../utils/format-fields";
 
 /**
@@ -28,7 +32,7 @@ export type CollectionFilter = {
  * Fetches entries from a PocketBase collection, optionally filtering by modification date and supporting pagination.
  */
 export async function fetchCollection<TEntry extends PocketBaseEntry>(
-  options: PocketBaseLoaderBaseOptions,
+  options: PocketBaseLoaderOptions | ExperimentalPocketBaseLiveLoaderOptions,
   chunkLoaded: (entries: Array<TEntry>) => Promise<void>,
   token: string | undefined,
   collectionFilter: CollectionFilter | undefined
@@ -124,7 +128,9 @@ export async function fetchCollection<TEntry extends PocketBaseEntry>(
  * Build search parameters for the PocketBase collection request.
  */
 function buildSearchParams(
-  loaderOptions: PocketBaseLoaderBaseOptions,
+  loaderOptions:
+    | PocketBaseLoaderOptions
+    | ExperimentalPocketBaseLiveLoaderOptions,
   combinedFields: Array<string> | undefined,
   collectionFilter: CollectionFilter
 ): URLSearchParams {
@@ -171,6 +177,16 @@ function buildSearchParams(
   // Add fields parameter if specified
   if (combinedFields) {
     searchParams.set("fields", combinedFields.join(","));
+  }
+
+  if (loaderOptions.experimental && "expand" in loaderOptions.experimental) {
+    const expandString = formatExpand(
+      loaderOptions.experimental.expand,
+      loaderOptions.collectionName
+    );
+    if (expandString) {
+      searchParams.set("expand", expandString);
+    }
   }
 
   return searchParams;
