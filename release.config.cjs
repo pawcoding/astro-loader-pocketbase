@@ -17,7 +17,7 @@ if (customTag) {
   branches.push({
     name: branch,
     channel: customTag,
-    prerelease: true
+    prerelease: customTag
   });
 }
 
