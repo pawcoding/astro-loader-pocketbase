@@ -2,6 +2,7 @@ import {
   experimentalPocketbaseLiveLoader,
   pocketbaseLoader
 } from "./pocketbase-loader";
+import { transformFileUrl } from "./schema/transform-files";
 import { PocketBaseAuthenticationError } from "./types/errors";
 import type {
   ExperimentalPocketBaseLiveLoaderCollectionFilter,
@@ -15,7 +16,8 @@ import type {
 export {
   experimentalPocketbaseLiveLoader,
   PocketBaseAuthenticationError,
-  pocketbaseLoader
+  pocketbaseLoader,
+  transformFileUrl
 };
 export type {
   ExperimentalPocketBaseLiveLoaderCollectionFilter,
