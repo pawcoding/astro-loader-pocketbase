@@ -1,3 +1,10 @@
+# [2.10.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.9.0...v2.10.0) (2025-11-22)
+
+
+### Features
+
+* export `transformFileUrl` via public API ([b1a7c66](https://github.com/pawcoding/astro-loader-pocketbase/commit/b1a7c6677e773a28e7fb27be3536db6a5d0b2a32))
+
 # [2.9.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.8.1...v2.9.0) (2025-11-01)
 
 
