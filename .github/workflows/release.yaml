@@ -5,6 +5,12 @@ on:
     branches:
       - master
       - next
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag name for RC release (e.g., rc, beta, alpha)"
+        required: true
+        type: string
 
 env:
   HUSKY: 0
@@ -84,6 +90,7 @@ jobs:
           semantic_version: 25
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          CUSTOM_TAG: ${{ inputs.tag }}
 
       # Update project on website
       - name: 🖥️ Update website

@@ -3,6 +3,7 @@ import {
   LiveEntryNotFoundError
 } from "astro/content/runtime";
 import { randomUUID } from "crypto";
+import type { Mock } from "vitest";
 import { beforeEach, describe, expect, inject, test, vi } from "vitest";
 import { fetchCollection } from "../../src/loader/fetch-collection";
 import { PocketBaseAuthenticationError } from "../../src/types/errors";
@@ -17,7 +18,7 @@ const DAY = 24 * 60 * 60 * 1000;
 describe("fetchCollection", () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
   const superuserToken = inject("superuserToken");
-  let chunkLoadedMock: ReturnType<typeof vi.fn>;
+  let chunkLoadedMock: Mock<(_: Array<PocketBaseEntry>) => Promise<void>>;
 
   beforeEach(async () => {
     chunkLoadedMock = vi.fn().mockResolvedValue(undefined);
