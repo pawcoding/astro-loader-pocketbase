@@ -27,8 +27,8 @@
     "src"
   ],
   "scripts": {
-    "format": "npx prettier . --write --cache",
-    "format:check": "npx prettier . --check --cache",
+    "format": "npx prettier . --write --cache --cache-location=./.prettier-cache --experimental-cli",
+    "format:check": "npx prettier . --check --cache --cache-location=./.prettier-cache --experimental-cli",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "prepare": "husky",

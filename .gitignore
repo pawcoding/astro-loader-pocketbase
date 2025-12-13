@@ -1,6 +1,7 @@
 # build output
 dist/
 .eslintcache
+.prettier-cache
 coverage/
 
 # generated types
