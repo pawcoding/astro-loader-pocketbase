@@ -213,7 +213,7 @@ This manual schema will **always override the automatic type generation**.
 | `filter`               | `string`                                                              |          | Custom filter to use when fetching entries. Used to filter the entries by specific conditions.                                     |
 | `superuserCredentials` | `{ email: string, password: string } \| { impersonateToken: string }` |          | The email and password or impersonate token of a superuser of the PocketBase instance. This is used for automatic type generation. |
 | `localSchema`          | `string`                                                              |          | The path to a local schema file. This is used for automatic type generation.                                                       |
-| `jsonSchemas`          | `Record<string, z.ZodSchema>`                                         |          | A record of Zod schemas to use for type generation of `json` fields.                                                               |
+| `jsonSchemas`          | `Record<string, ZodType>`                                             |          | A record of Zod schemas to use for type generation of `json` fields.                                                               |
 
 ## Experimental live content loader
 

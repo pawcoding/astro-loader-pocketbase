@@ -1,4 +1,4 @@
-import type { ZodObject, ZodSchema } from "astro/zod";
+import type { ZodObject, ZodType } from "astro/zod";
 import { describe, expect, inject, it, vi } from "vitest";
 import type { PocketBaseLoaderOptions } from "../../src";
 import { generateSchema } from "../../src/schema/generate-schema";
@@ -18,7 +18,7 @@ describe("generateSchema", () => {
           localSchema: undefined
         },
         undefined
-      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+      )) as ZodObject<Record<string, ZodType>>;
 
       expect(result.shape).toHaveProperty("id");
       expect(result.shape).toHaveProperty("collectionId");
@@ -27,7 +27,7 @@ describe("generateSchema", () => {
 
     it("should return schema from remote if superuser token is provided", async () => {
       const result = (await generateSchema(options, token)) as ZodObject<
-        Record<string, ZodSchema<unknown>>
+        Record<string, ZodType>
       >;
 
       expect(Object.keys(result.shape)).toEqual([
@@ -52,7 +52,7 @@ describe("generateSchema", () => {
           localSchema: "test/_mocks/superuser_schema.json"
         },
         undefined
-      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+      )) as ZodObject<Record<string, ZodType>>;
 
       expect(Object.keys(result.shape)).toEqual([
         "id",
@@ -207,7 +207,7 @@ describe("generateSchema", () => {
           fields: "email,verified"
         },
         token
-      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+      )) as ZodObject<Record<string, ZodType>>;
 
       // Should always include basic schema fields
       expect(Object.keys(result.shape)).toEqual([
@@ -226,7 +226,7 @@ describe("generateSchema", () => {
           fields: ["email", "emailVisibility", "created"]
         },
         token
-      )) as ZodObject<Record<string, ZodSchema<unknown>>>;
+      )) as ZodObject<Record<string, ZodType>>;
 
       // Should always include basic schema fields
       expect(Object.keys(result.shape)).toEqual([
@@ -241,7 +241,7 @@ describe("generateSchema", () => {
 
     it("should include all fields when no fields option is provided", async () => {
       const result = (await generateSchema(options, token)) as ZodObject<
-        Record<string, ZodSchema<unknown>>
+        Record<string, ZodType>
       >;
 
       // Should include all available fields
@@ -269,7 +269,7 @@ describe("generateSchema", () => {
       };
 
       const result = (await generateSchema(testOptions, token)) as ZodObject<
-        Record<string, ZodSchema<unknown>>
+        Record<string, ZodType>
       >;
 
       // Should include extra fields

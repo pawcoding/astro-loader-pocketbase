@@ -1,7 +1,7 @@
 import type { LiveDataCollection, LiveDataEntry } from "astro";
 import type { LiveCollectionError } from "astro/content/runtime";
 import type { LiveLoader, Loader } from "astro/loaders";
-import type { ZodSchema } from "astro/zod";
+import type { ZodType } from "astro/zod";
 import { liveCollectionLoader } from "./loader/live-collection-loader";
 import { liveEntryLoader } from "./loader/live-entry-loader";
 import { loader } from "./loader/loader";
@@ -42,7 +42,7 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       // Load the entries from the collection
       await loader(context, options, token);
     },
-    schema: async (): Promise<ZodSchema> => {
+    schema: async (): Promise<ZodType> => {
       const token = await tokenPromise;
 
       // Generate the schema for the collection according to the API

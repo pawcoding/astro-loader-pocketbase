@@ -1,4 +1,4 @@
-import type { z } from "astro/zod";
+import type { ZodType } from "astro/zod";
 
 /**
  * Options for both build time and live collection loader
@@ -125,7 +125,7 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
    *
    * Note that this will only be used for fields of type `json`.
    */
-  jsonSchemas?: Record<string, z.ZodSchema>;
+  jsonSchemas?: Record<string, ZodType>;
   /**
    * Experimental options for the loader.
    *
