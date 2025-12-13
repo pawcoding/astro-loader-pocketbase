@@ -15,6 +15,7 @@ This package is a simple loader to load data from a PocketBase database into Ast
 
 | Loader | Astro | PocketBase |
 | ------ | ----- | ---------- |
+| 3.0.0  | 6.0.0 | >= 0.23.0  |
 | 2.0.0  | 5.0.0 | >= 0.23.0  |
 | 1.0.0  | 5.0.0 | <= 0.22.0  |
 
