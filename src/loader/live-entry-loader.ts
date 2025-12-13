@@ -1,7 +1,7 @@
 import type { LiveDataEntry } from "astro";
 import { LiveCollectionError } from "astro/content/runtime";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
-import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type { PocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { fetchEntry } from "./fetch-entry";
 import { parseLiveEntry } from "./parse-live-entry";
 
@@ -10,7 +10,7 @@ import { parseLiveEntry } from "./parse-live-entry";
  */
 export async function liveEntryLoader<TEntry extends PocketBaseEntry>(
   id: string,
-  options: ExperimentalPocketBaseLiveLoaderOptions,
+  options: PocketBaseLiveLoaderOptions,
   token: string | undefined
 ): Promise<LiveDataEntry<TEntry> | { error: LiveCollectionError }> {
   try {

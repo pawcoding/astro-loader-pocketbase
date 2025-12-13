@@ -135,8 +135,6 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
     /**
      * Whether to only create types for the live loader.
      * This will not load any data, but only generate types that can be used with the live loader.
-     *
-     * @experimental Live content collections are still experimental
      */
     liveTypesOnly?: boolean;
   };
@@ -144,8 +142,5 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
 
 /**
  * Options for the PocketBase live loader.
- *
- * @experimental Live content collections are still experimental
  */
-export type ExperimentalPocketBaseLiveLoaderOptions =
-  PocketBaseLoaderBaseOptions;
+export type PocketBaseLiveLoaderOptions = PocketBaseLoaderBaseOptions;

@@ -8,7 +8,7 @@ import {
   pocketBaseListResponse
 } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
-import type { ExperimentalPocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
+import type { PocketBaseLiveLoaderCollectionFilter } from "../types/pocketbase-live-loader-filter.type";
 import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
@@ -22,7 +22,7 @@ export type CollectionFilter = {
    * If not provided, all entries will be fetched.
    */
   lastModified?: string;
-} & ExperimentalPocketBaseLiveLoaderCollectionFilter;
+} & PocketBaseLiveLoaderCollectionFilter;
 
 /**
  * Fetches entries from a PocketBase collection, optionally filtering by modification date and supporting pagination.

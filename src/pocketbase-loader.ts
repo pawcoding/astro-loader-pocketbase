@@ -8,11 +8,11 @@ import { generateSchema } from "./schema/generate-schema";
 import { generateType } from "./schema/generate-type";
 import type { PocketBaseEntry } from "./types/pocketbase-entry.type";
 import type {
-  ExperimentalPocketBaseLiveLoaderCollectionFilter,
-  ExperimentalPocketBaseLiveLoaderEntryFilter
+  PocketBaseLiveLoaderCollectionFilter,
+  PocketBaseLiveLoaderEntryFilter
 } from "./types/pocketbase-live-loader-filter.type";
 import type {
-  ExperimentalPocketBaseLiveLoaderOptions,
+  PocketBaseLiveLoaderOptions,
   PocketBaseLoaderOptions
 } from "./types/pocketbase-loader-options.type";
 import { createTokenPromise } from "./utils/create-token-promise";
@@ -61,20 +61,15 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions) {
 
 /**
  * Live loader for collections stored in PocketBase.
- * This loader is currently experimental and may change in any future release.
  *
- * @param options Options for the live loader. See {@link ExperimentalPocketBaseLiveLoaderOptions} for more details.
- *
- * @experimental Live content collections are still experimental
+ * @param options Options for the live loader. See {@link PocketBaseLiveLoaderOptions} for more details.
  */
-export function experimentalPocketbaseLiveLoader<
-  TEntry extends PocketBaseEntry
->(
-  options: ExperimentalPocketBaseLiveLoaderOptions
+export function pocketbaseLiveLoader<TEntry extends PocketBaseEntry>(
+  options: PocketBaseLiveLoaderOptions
 ): LiveLoader<
   TEntry,
-  ExperimentalPocketBaseLiveLoaderEntryFilter,
-  ExperimentalPocketBaseLiveLoaderCollectionFilter,
+  PocketBaseLiveLoaderEntryFilter,
+  PocketBaseLiveLoaderCollectionFilter,
   LiveCollectionError
 > {
   // Create shared promise for the superuser token, which can be reused
