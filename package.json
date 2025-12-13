@@ -43,26 +43,26 @@
     "typecheck": "npx tsc --noEmit"
   },
   "devDependencies": {
-    "@commitlint/cli": "20.1.0",
-    "@commitlint/config-conventional": "20.0.0",
+    "@commitlint/cli": "20.2.0",
+    "@commitlint/config-conventional": "20.2.0",
     "@types/node": "24.10.1",
-    "@vitest/coverage-v8": "4.0.13",
-    "astro": "5.16.0",
+    "@vitest/coverage-v8": "4.0.15",
+    "astro": "5.16.5",
     "globals": "16.5.0",
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
-    "oxlint": "1.29.0",
-    "oxlint-tsgolint": "^0.8.0",
-    "prettier": "3.6.2",
+    "oxlint": "1.32.0",
+    "oxlint-tsgolint": "0.8.6",
+    "prettier": "3.7.4",
     "prettier-plugin-organize-imports": "4.3.0",
-    "prettier-plugin-packagejson": "2.5.19",
+    "prettier-plugin-packagejson": "2.5.20",
     "typescript": "5.9.3",
-    "vitest": "4.0.13"
+    "vitest": "4.0.15"
   },
   "peerDependencies": {
     "astro": "^5.10.0"
   },
-  "packageManager": "npm@11.6.3",
+  "packageManager": "npm@11.7.0",
   "publishConfig": {
     "access": "public",
     "provenance": true

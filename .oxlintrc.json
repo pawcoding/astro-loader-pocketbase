@@ -118,6 +118,7 @@
     "eslint/no-redeclare": "error",
     "eslint/no-self-compare": "error",
     "eslint/no-throw-literal": "error",
+    "eslint/no-useless-return": "warn",
     "eslint/symbol-description": "error",
     "typescript/ban-ts-comment": "warn",
     "typescript/no-deprecated": "warn",
