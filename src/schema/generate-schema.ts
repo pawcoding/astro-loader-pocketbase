@@ -1,4 +1,3 @@
-import type { ZodType } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
@@ -33,10 +32,11 @@ const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
  * @param token The superuser token to authenticate the request.
  */
+// oxlint-disable-next-line explicit-module-boundary-types
 export async function generateSchema(
   options: PocketBaseLoaderOptions,
   token: string | undefined
-): Promise<ZodType> {
+) {
   let collection: PocketBaseCollection | undefined;
 
   if (token) {

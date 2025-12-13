@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generateType > should generate typescript type for complex entry 1`] = `
+"export type Entry = {
+    age: number;
+    isAdult: boolean;
+    birthday: Date;
+    location: {
+        lon: number;
+        lat: number;
+    };
+    sex: "male" | "female";
+    name: string;
+    avatars: string[];
+    nickname?: string | undefined;
+};"
+`;
