@@ -71,7 +71,6 @@ export async function generateSchema(
   // Parse the schema with optional field filtering
   const fields = parseSchema(collection, options.jsonSchemas, {
     hasSuperuserRights,
-    improveTypes: options.improveTypes,
     fieldsToInclude,
     experimentalLiveTypesOnly: options.experimental?.liveTypesOnly
   });

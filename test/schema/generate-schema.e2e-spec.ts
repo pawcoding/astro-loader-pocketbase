@@ -301,7 +301,9 @@ describe("generateSchema", () => {
       email: "test@pawcode.de",
       created: new Date("2001-12-06"),
       updated: new Date(),
-      avatar: "file.jpg"
+      avatar: "file.jpg",
+      emailVisibility: true,
+      verified: false
     };
 
     expect(schema.parse(entry)).toEqual({
