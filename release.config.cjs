@@ -1,5 +1,6 @@
 const branch = process.env.GITHUB_REF_NAME;
 const customTag = process.env.CUSTOM_TAG;
+const dryRun = process.env.DRY_RUN;
 
 const assetsToUpdate = ["package.json", "package-lock.json"];
 if (branch === "master") {
@@ -54,7 +55,7 @@ const plugins = [
   [
     "@semantic-release/npm",
     {
-      npmPublish: true
+      npmPublish: !dryRun
     }
   ],
   [
