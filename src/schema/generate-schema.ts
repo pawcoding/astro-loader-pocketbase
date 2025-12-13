@@ -12,11 +12,11 @@ import { transformFiles } from "./transform-files";
 /**
  * Basic schema for every PocketBase collection.
  */
-const BASIC_SCHEMA = {
+const BASIC_SCHEMA = z.object({
   id: z.string(),
   collectionId: z.string(),
   collectionName: z.string()
-};
+});
 
 /**
  * Types of fields that can be used as an ID.
@@ -60,7 +60,7 @@ export async function generateSchema(
       `No schema available for "${options.collectionName}". Only basic types are available. Please check your configuration and provide a valid schema file or superuser credentials.`
     );
     // Return the basic schema since every collection has at least these fields
-    return z.object(BASIC_SCHEMA);
+    return BASIC_SCHEMA;
   }
 
   // Get fields to include from options
@@ -82,7 +82,7 @@ export async function generateSchema(
 
   // Combine the basic schema with the parsed fields
   const schema = z.object({
-    ...BASIC_SCHEMA,
+    ...BASIC_SCHEMA.shape,
     ...fields
   });
 
