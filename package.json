@@ -27,8 +27,8 @@
     "src"
   ],
   "scripts": {
-    "format": "npx prettier . --write --cache --cache-location=./.prettier-cache --experimental-cli",
-    "format:check": "npx prettier . --check --cache --cache-location=./.prettier-cache --experimental-cli",
+    "format": "prettier . --write --cache --cache-location=./.prettier-cache --experimental-cli",
+    "format:check": "prettier . --check --cache --cache-location=./.prettier-cache --experimental-cli",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "prepare": "husky",
@@ -40,7 +40,7 @@
     "test:unit": "vitest run $(find test -name '*.spec.ts')",
     "test:unit:watch": "vitest watch $(find test -name '*.spec.ts')",
     "test:watch": "vitest watch",
-    "typecheck": "npx tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@commitlint/cli": "20.2.0",
