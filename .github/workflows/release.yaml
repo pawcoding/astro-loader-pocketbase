@@ -46,7 +46,7 @@ jobs:
         run: npm ci
 
       # Lint code
-      - name: 🧹 Lint code
+      - name: 🧹 Lint code (includes type-check)
         run: npm run lint
 
       # Check format
@@ -54,6 +54,8 @@ jobs:
         run: npm run format:check
 
       # Type check
+      #   Still included for now, since the oxlint built-in typecheck uses TypeScript v7.
+      #   This one uses the TypeScript version actually specified in the project.
       - name: 🧪 Type check
         run: npm run typecheck
 
