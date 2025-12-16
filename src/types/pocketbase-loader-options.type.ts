@@ -1,4 +1,4 @@
-import type { z } from "astro/zod";
+import type { ZodType } from "astro/zod";
 
 /**
  * Options for both build time and live collection loader
@@ -125,15 +125,7 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
    *
    * Note that this will only be used for fields of type `json`.
    */
-  jsonSchemas?: Record<string, z.ZodSchema>;
-  /**
-   * Whether to improve the types of the generated schema.
-   * With this option enabled, the schema will not include `undefined` as possible value for number and boolean fields and mark them as required.
-   *
-   * Why do we need this option?
-   * The PocketBase API does always return at least `0` or `false` as the default values, even though the fields are not marked as required in the schema.
-   */
-  improveTypes?: boolean;
+  jsonSchemas?: Record<string, ZodType>;
   /**
    * Experimental options for the loader.
    *
@@ -143,8 +135,6 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
     /**
      * Whether to only create types for the live loader.
      * This will not load any data, but only generate types that can be used with the live loader.
-     *
-     * @experimental Live content collections are still experimental
      */
     liveTypesOnly?: boolean;
   };
@@ -152,8 +142,5 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
 
 /**
  * Options for the PocketBase live loader.
- *
- * @experimental Live content collections are still experimental
  */
-export type ExperimentalPocketBaseLiveLoaderOptions =
-  PocketBaseLoaderBaseOptions;
+export type PocketBaseLiveLoaderOptions = PocketBaseLoaderBaseOptions;
