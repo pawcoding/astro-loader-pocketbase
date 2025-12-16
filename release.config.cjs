@@ -29,6 +29,7 @@ const plugins = [
     {
       preset: "angular",
       releaseRules: [
+        { breaking: true, release: "major" },
         { type: "docs", scope: "README", release: "patch" },
         { type: "build", scope: "deps", release: "patch" },
         { type: "refactor", release: "patch" },
