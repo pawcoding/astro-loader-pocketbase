@@ -1,0 +1,77 @@
+name: 📝 Changelog Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  HUSKY: 0
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Checkout repository with full history for semantic-release
+      # This checks out the PR merge commit to analyze what would be released
+      - name: 📥 Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+
+      # Run semantic-release in dry-run mode
+      # This analyzes commits from the base branch to the PR head
+      - name: 🔮 Generate changelog preview
+        id: changelog
+        uses: cycjimmy/semantic-release-action@v5
+        with:
+          semantic_version: 25
+          dry_run: true
+          ci: false
+          unset_gha_env: true
+          branches: |
+            [
+              'master',
+              '${{ github.head_ref }}'
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: "true"
+
+      # Create or update PR comment with changelog
+      - name: 💬 Post changelog preview
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: steps.changelog.outputs.new_release_version != ''
+        with:
+          header: changelog-preview
+          message: |
+            ## 📝 Changelog Preview
+
+            ${{ steps.changelog.outputs.new_release_notes }}
+
+      # Post comment if no release will be triggered
+      - name: 💬 Post no release message
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: steps.changelog.outputs.new_release_version == ''
+        with:
+          header: changelog-preview
+          message: |
+            ## 📝 Changelog Preview
+
+            ℹ️ This PR will **not** trigger a new release.
+
+            To trigger a release, ensure your commits follow the [Conventional Commits](https://www.conventionalcommits.org/) format with types that trigger releases (e.g., `feat:`, `fix:`, `refactor:`, etc.).
+
+      # Post comment if semantic-release fails
+      - name: 💬 Post error message
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: failure() && steps.changelog.conclusion == 'failure'
+        with:
+          header: changelog-preview
+          message: |
+            ## 📝 Changelog Preview
+
+            ⚠️ Failed to generate changelog preview. Please check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
