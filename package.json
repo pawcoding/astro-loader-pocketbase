@@ -1,6 +1,6 @@
 {
   "name": "astro-loader-pocketbase",
-  "version": "2.10.1",
+  "version": "3.0.0-astro-v6.1",
   "description": "A content loader for Astro that uses the PocketBase API",
   "keywords": [
     "astro",
