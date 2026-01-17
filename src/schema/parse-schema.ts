@@ -6,7 +6,6 @@ import type {
 
 export interface ParseSchemaOptions {
   hasSuperuserRights: boolean;
-  improveTypes?: boolean;
   fieldsToInclude?: Array<string>;
   experimentalLiveTypesOnly?: boolean;
 }
@@ -43,7 +42,7 @@ export function parseSchema(
       continue;
     }
 
-    let fieldType;
+    let fieldType: z.ZodType;
 
     // Determine the field type and create the corresponding Zod type
     // oxlint-disable-next-line switch-exhaustiveness-check
@@ -113,9 +112,9 @@ export function parseSchema(
       field.required ||
       // `onCreate autodate` fields are always set
       (field.type === "autodate" && field.onCreate) ||
-      // Improve number and boolean types by providing default values
-      (options.improveTypes &&
-        (field.type === "number" || field.type === "bool"));
+      // number and bool fields are always set
+      field.type === "number" ||
+      field.type === "bool";
 
     // If the field is not required, mark it as optional
     if (!isRequired) {

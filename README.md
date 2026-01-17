@@ -15,6 +15,7 @@ This package is a simple loader to load data from a PocketBase database into Ast
 
 | Loader | Astro | PocketBase |
 | ------ | ----- | ---------- |
+| 3.0.0  | 6.0.0 | >= 0.23.0  |
 | 2.0.0  | 5.0.0 | >= 0.23.0  |
 | 1.0.0  | 5.0.0 | <= 0.22.0  |
 
@@ -42,7 +43,7 @@ If you want to update your deployed site with new entries, you need to rebuild i
 <sub>When running the dev server, you can trigger a reload by using `s + enter`.</sub>
 
 > [!TIP]
-> If you need live data on your production site, you can use the experimental live content loader described below.
+> If you need live data on your production site, you can use the live content loader described below.
 
 ## Incremental builds
 
@@ -201,23 +202,6 @@ When superuser credentials are provided, the loader will **always use the remote
 If you don't want to use the automatic type generation, you can also [provide your own schema manually](https://docs.astro.build/en/guides/content-collections/#defining-the-collection-schema).
 This manual schema will **always override the automatic type generation**.
 
-### Improved types
-
-By default PocketBase reports `number` and `boolean` fields as not required, even though the API will always return `0` and `false` respectively if no value is set.
-This means that the loader will add `undefined` to the type of these fields.
-If you want to enforce that these fields are always present, you can set the `improveTypes` option to `true`.
-
-```ts
-const blog = defineCollection({
-  loader: pocketbaseLoader({
-    ...options,
-    improveTypes: true
-  })
-});
-```
-
-This will remove `undefined` from the type of these fields and mark them as required.
-
 ## All options
 
 | Option                 | Type                                                                  | Required | Description                                                                                                                        |
@@ -230,16 +214,9 @@ This will remove `undefined` from the type of these fields and mark them as requ
 | `filter`               | `string`                                                              |          | Custom filter to use when fetching entries. Used to filter the entries by specific conditions.                                     |
 | `superuserCredentials` | `{ email: string, password: string } \| { impersonateToken: string }` |          | The email and password or impersonate token of a superuser of the PocketBase instance. This is used for automatic type generation. |
 | `localSchema`          | `string`                                                              |          | The path to a local schema file. This is used for automatic type generation.                                                       |
-| `jsonSchemas`          | `Record<string, z.ZodSchema>`                                         |          | A record of Zod schemas to use for type generation of `json` fields.                                                               |
-| `improveTypes`         | `boolean`                                                             |          | Whether to improve the types of `number` and `boolean` fields, removing `undefined` from them.                                     |
+| `jsonSchemas`          | `Record<string, ZodType>`                                             |          | A record of Zod schemas to use for type generation of `json` fields.                                                               |
 
-## Experimental live content loader
-
-> [!WARNING]
-> Live content collections are still experimental and may change in the future.
-> This means that this packages live content loader is also experimental and may include breaking changes with every release.
-
-For more information on how to enable and use live content collections, please refer to the [Astro documentation](https://docs.astro.build/en/reference/experimental-flags/live-content-collections/).
+## Live content loader
 
 ### General usage
 
@@ -249,7 +226,7 @@ The options for this packages loader are similar to the regular PocketBase loade
 
 ```ts
 const blogLive = defineLiveCollection({
-  loader: experimentalPocketbaseLiveLoader({
+  loader: pocketbaseLiveLoader({
     url: "https://<your-pocketbase-url>",
     collectionName: "<collection-in-pocketbase>"
   })
@@ -302,7 +279,7 @@ If you also want to use the `lastModified` hint, just tell the loader which fiel
 
 ```ts
 const blogLive = defineLiveCollection({
-  loader: experimentalPocketbaseLiveLoader({
+  loader: pocketbaseLiveLoader({
     ...options,
     updatedField: "<field-in-collection>"
   })
@@ -311,7 +288,7 @@ const blogLive = defineLiveCollection({
 
 ### Error handling
 
-The live content loader follows Astro's standard error handling conventions for live collections. For more information on how to handle errors in your components, see the [Astro documentation on error handling](https://docs.astro.build/en/reference/experimental-flags/live-content-collections/#error-handling).
+The live content loader follows Astro's standard error handling conventions for live collections. For more information on how to handle errors in your components, see the [Astro documentation on error handling](https://docs.astro.build/en/reference/content-loader-reference/#error-handling-in-live-loaders).
 
 | Error                           | When it's returned                                                                                            |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -340,10 +317,7 @@ const blogTypes = defineCollection({
 });
 
 const blogLive = defineLiveCollection({
-  loader:
-    experimentalPocketbaseLiveLoader<CollectionEntry<"blogTypes">["data"]>(
-      options
-    )
+  loader: pocketbaseLiveLoader<CollectionEntry<"blogTypes">["data"]>(options)
 });
 ```
 

@@ -1,18 +1,18 @@
 import type { LiveDataCollection, LiveDataEntry } from "astro";
 import type { LiveCollectionError } from "astro/content/runtime";
-import type { LiveLoader, Loader } from "astro/loaders";
-import type { ZodSchema } from "astro/zod";
+import type { LiveLoader, Loader, LoaderContext } from "astro/loaders";
 import { liveCollectionLoader } from "./loader/live-collection-loader";
 import { liveEntryLoader } from "./loader/live-entry-loader";
 import { loader } from "./loader/loader";
 import { generateSchema } from "./schema/generate-schema";
+import { generateType } from "./schema/generate-type";
 import type { PocketBaseEntry } from "./types/pocketbase-entry.type";
 import type {
-  ExperimentalPocketBaseLiveLoaderCollectionFilter,
-  ExperimentalPocketBaseLiveLoaderEntryFilter
+  PocketBaseLiveLoaderCollectionFilter,
+  PocketBaseLiveLoaderEntryFilter
 } from "./types/pocketbase-live-loader-filter.type";
 import type {
-  ExperimentalPocketBaseLiveLoaderOptions,
+  PocketBaseLiveLoaderOptions,
   PocketBaseLoaderOptions
 } from "./types/pocketbase-loader-options.type";
 import { createTokenPromise } from "./utils/create-token-promise";
@@ -22,13 +22,14 @@ import { createTokenPromise } from "./utils/create-token-promise";
  *
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
  */
-export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
+// oxlint-disable-next-line explicit-module-boundary-types
+export function pocketbaseLoader(options: PocketBaseLoaderOptions) {
   // Create shared promise for the superuser token, which can be reused
   const tokenPromise = createTokenPromise(options);
 
   return {
     name: "pocketbase-loader",
-    load: async (context): Promise<void> => {
+    load: async (context: LoaderContext): Promise<void> => {
       if (options.experimental?.liveTypesOnly) {
         context.logger.label = `pocketbase-loader:${options.collectionName}`;
         context.logger.info(
@@ -42,31 +43,33 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions): Loader {
       // Load the entries from the collection
       await loader(context, options, token);
     },
-    schema: async (): Promise<ZodSchema> => {
+    // oxlint-disable-next-line explicit-module-boundary-types
+    createSchema: async () => {
       const token = await tokenPromise;
 
       // Generate the schema for the collection according to the API
-      return generateSchema(options, token);
+      const schema = await generateSchema(options, token);
+      const types = generateType(schema);
+
+      return {
+        schema,
+        types
+      };
     }
-  };
+  } satisfies Loader;
 }
 
 /**
  * Live loader for collections stored in PocketBase.
- * This loader is currently experimental and may change in any future release.
  *
- * @param options Options for the live loader. See {@link ExperimentalPocketBaseLiveLoaderOptions} for more details.
- *
- * @experimental Live content collections are still experimental
+ * @param options Options for the live loader. See {@link PocketBaseLiveLoaderOptions} for more details.
  */
-export function experimentalPocketbaseLiveLoader<
-  TEntry extends PocketBaseEntry
->(
-  options: ExperimentalPocketBaseLiveLoaderOptions
+export function pocketbaseLiveLoader<TEntry extends PocketBaseEntry>(
+  options: PocketBaseLiveLoaderOptions
 ): LiveLoader<
   TEntry,
-  ExperimentalPocketBaseLiveLoaderEntryFilter,
-  ExperimentalPocketBaseLiveLoaderCollectionFilter,
+  PocketBaseLiveLoaderEntryFilter,
+  PocketBaseLiveLoaderCollectionFilter,
   LiveCollectionError
 > {
   // Create shared promise for the superuser token, which can be reused

@@ -1,9 +1,7 @@
 /**
  * Filter for a single entry
- *
- * @experimental Live content collections are still experimental
  */
-export interface ExperimentalPocketBaseLiveLoaderEntryFilter {
+export interface PocketBaseLiveLoaderEntryFilter {
   /**
    * Id of the entry.
    */
@@ -12,13 +10,11 @@ export interface ExperimentalPocketBaseLiveLoaderEntryFilter {
 
 /**
  * Filter for a collection of entries.
- *
- * @experimental Live content collections are still experimental
  */
-export interface ExperimentalPocketBaseLiveLoaderCollectionFilter {
+export interface PocketBaseLiveLoaderCollectionFilter {
   /**
    * Additional filter to apply to the collection.
-   * This will be added to the filter supplied in the {@link ExperimentalPocketBaseLiveLoaderOptions}.
+   * This will be added to the filter supplied in the {@link PocketBaseLiveLoaderOptions}.
    *
    * Example:
    * ```ts

@@ -42,7 +42,7 @@ test/                    # Test files
 # Format code (required before commit)
 npm run format
 
-# Lint code (oxlint)
+# Lint code (oxlint, includes type-checking)
 npm run lint:fix
 
 # Type checking (required before commit)
@@ -67,7 +67,7 @@ npm run test:e2e
 Before any commit, the following MUST pass:
 
 1. `npm run format` - Code formatting
-2. `npm run lint:fix` - Linting with oxlint
+2. `npm run lint:fix` - Linting with oxlint (and type-checking at the same time)
 3. `npm run typecheck` - TypeScript type checking
 
 These are enforced by husky pre-commit hooks and lint-staged configuration.

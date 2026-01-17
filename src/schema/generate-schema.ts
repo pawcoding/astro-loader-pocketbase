@@ -1,4 +1,3 @@
-import type { ZodSchema } from "astro/zod";
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
@@ -13,11 +12,11 @@ import { transformFiles } from "./transform-files";
 /**
  * Basic schema for every PocketBase collection.
  */
-const BASIC_SCHEMA = {
+const BASIC_SCHEMA = z.object({
   id: z.string(),
   collectionId: z.string(),
   collectionName: z.string()
-};
+});
 
 /**
  * Types of fields that can be used as an ID.
@@ -33,10 +32,11 @@ const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
  * @param token The superuser token to authenticate the request.
  */
+// oxlint-disable-next-line explicit-module-boundary-types
 export async function generateSchema(
   options: PocketBaseLoaderOptions,
   token: string | undefined
-): Promise<ZodSchema> {
+) {
   let collection: PocketBaseCollection | undefined;
 
   if (token) {
@@ -60,7 +60,7 @@ export async function generateSchema(
       `No schema available for "${options.collectionName}". Only basic types are available. Please check your configuration and provide a valid schema file or superuser credentials.`
     );
     // Return the basic schema since every collection has at least these fields
-    return z.object(BASIC_SCHEMA);
+    return BASIC_SCHEMA;
   }
 
   // Get fields to include from options
@@ -71,7 +71,6 @@ export async function generateSchema(
   // Parse the schema with optional field filtering
   const fields = parseSchema(collection, options.jsonSchemas, {
     hasSuperuserRights,
-    improveTypes: options.improveTypes,
     fieldsToInclude,
     experimentalLiveTypesOnly: options.experimental?.liveTypesOnly
   });
@@ -83,7 +82,7 @@ export async function generateSchema(
 
   // Combine the basic schema with the parsed fields
   const schema = z.object({
-    ...BASIC_SCHEMA,
+    ...BASIC_SCHEMA.shape,
     ...fields
   });
 

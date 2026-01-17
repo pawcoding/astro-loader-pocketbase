@@ -5,7 +5,7 @@ import {
   pocketBaseListResponse
 } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
-import { pocketBaseBaseEntry } from "../types/pocketbase-entry.type";
+import { pocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-options.type";
 
 /**
@@ -133,5 +133,5 @@ export async function cleanupEntries(
 const cleanUpEntriesResponse = pocketBaseListResponse
   .omit({ items: true })
   .extend({
-    items: z.array(pocketBaseBaseEntry.pick({ id: true }))
+    items: z.array(pocketBaseEntry.pick({ id: true }))
   });
