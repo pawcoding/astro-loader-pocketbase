@@ -90,6 +90,9 @@ jobs:
         uses: cycjimmy/semantic-release-action@v5
         with:
           semantic_version: 25
+          extra_plugins: |
+            conventional-changelog-conventionalcommits
+            @semantic-release/changelog
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           CUSTOM_TAG: ${{ inputs.tag }}

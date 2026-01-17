@@ -43,12 +43,22 @@ const plugins = [
   [
     "@semantic-release/release-notes-generator",
     {
-      preset: "angular",
+      preset: "conventionalcommits",
       parserOpts: {
         noteKeywords: ["BREAKING CHANGE", "BREAKING CHANGES"]
       },
-      writerOpts: {
-        commitsSort: ["subject", "scope"]
+      presetConfig: {
+        types: [
+          { type: "feat", section: "🚀 Features" },
+          { type: "fix", section: "🩹 Bug Fixes" },
+          { type: "perf", section: "⚡ Performance Improvements" },
+          { type: "revert", section: "↩️ Reverts" },
+          { type: "docs", section: "📖 Documentation" },
+          { type: "refactor", section: "🛠️ Code Refactoring" },
+          { type: "test", section: "🧪 Tests" },
+          { type: "build", scope: "deps", section: "🏗 Dependency updates" },
+          { type: "build", hidden: true }
+        ]
       }
     }
   ],
