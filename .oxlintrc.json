@@ -195,6 +195,8 @@
     "typescript/consistent-type-imports": "error",
     "typescript/no-empty-interface": "error",
     "typescript/prefer-for-of": "error",
+    // Too many false positives, disabled for now until oxlint improves the rule
+    // "typescript/prefer-optional-chain": "warn",
     "typescript/prefer-reduce-type-parameter": "warn",
     "unicorn/catch-error-name": "warn",
     "unicorn/consistent-date-clone": "warn",
