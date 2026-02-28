@@ -3,8 +3,9 @@
 // For a full list of overridable settings, and general information on folder-specific settings,
 // see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
+  "formatter": "language_server",
   "lsp": {
-    "oxc": {
+    "oxlint": {
       "initialization_options": {
         "options": {
           "run": "onType",
@@ -14,6 +15,11 @@
           "typeAware": true,
           "flags": {}
         }
+      }
+    },
+    "oxfmt": {
+      "initialization_options": {
+        "configPath": ".oxfmtrc.json"
       }
     }
   }

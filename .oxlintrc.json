@@ -215,7 +215,16 @@
     "unicorn/prefer-structured-clone": "error",
     "unicorn/require-array-join-separator": "error",
     "unicorn/switch-case-braces": ["error", "avoid"],
-    "unicorn/throw-new-error": "error"
+    "unicorn/throw-new-error": "error",
+    // Nursery
+    "typescript/consistent-return": "warn",
+    "typescript/consistent-type-exports": "warn",
+    "typescript/dot-notation": "warn",
+    "typescript/no-unnecessary-condition": "warn",
+    "typescript/no-useless-default-assignment": "warn",
+    "typescript/prefer-find": "warn",
+    "typescript/prefer-optional-chain": "warn",
+    "typescript/strict-void-return": "warn"
   },
   "overrides": [
     {
@@ -232,6 +241,7 @@
         "typescript/no-unsafe-member-access": "off",
         "typescript/no-unsafe-type-assertion": "off",
         "typescript/no-explicit-any": "off",
+        "typescript/strict-void-return": "off",
         // Vitest specific rules
         "vitest/no-import-node-test": "warn",
         "vitest/prefer-to-be-falsy": "warn",

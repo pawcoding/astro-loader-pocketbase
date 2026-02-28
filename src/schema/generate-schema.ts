@@ -182,11 +182,7 @@ function checkUpdatedField(
     const updatedField = collection.fields.find(
       (field) => field.name === options.updatedField
     );
-    if (
-      !updatedField ||
-      updatedField.type !== "autodate" ||
-      !updatedField.onUpdate
-    ) {
+    if (updatedField?.type !== "autodate" || !updatedField.onUpdate) {
       console.warn(
         `The field "${options.updatedField}" is not of type "autodate" with the value "Update" or "Create/Update".\nMake sure that the field is automatically updated when the entry is updated!`
       );

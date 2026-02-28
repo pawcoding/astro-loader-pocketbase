@@ -1,8 +1,8 @@
+import { randomUUID } from "crypto";
 import {
   LiveCollectionError,
   LiveEntryNotFoundError
 } from "astro/content/runtime";
-import { randomUUID } from "crypto";
 import type { Mock } from "vitest";
 import { beforeEach, describe, expect, inject, test, vi } from "vitest";
 import { fetchCollection } from "../../src/loader/fetch-collection";
@@ -396,7 +396,7 @@ describe("fetchCollection", () => {
       expect(results).toHaveLength(1);
 
       // Description should not be included
-      delete entry["description"];
+      delete entry.description;
       expect(results[0]).toMatchObject(entry);
 
       await deleteCollection(testOptions, superuserToken);

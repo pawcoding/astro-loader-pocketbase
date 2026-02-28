@@ -1,5 +1,5 @@
-import type { LoaderContext } from "astro/loaders";
 import { randomUUID } from "crypto";
+import type { LoaderContext } from "astro/loaders";
 import { beforeEach, describe, expect, inject, test, vi } from "vitest";
 import { cleanupEntries } from "../../src/loader/cleanup-entries";
 import { createLoaderContext } from "../_mocks/create-loader-context";

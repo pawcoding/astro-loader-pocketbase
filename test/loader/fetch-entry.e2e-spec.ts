@@ -1,5 +1,5 @@
-import { LiveEntryNotFoundError } from "astro/content/runtime";
 import { randomUUID } from "crypto";
+import { LiveEntryNotFoundError } from "astro/content/runtime";
 import { describe, expect, inject, test } from "vitest";
 import { fetchEntry } from "../../src/loader/fetch-entry";
 import { PocketBaseAuthenticationError } from "../../src/types/errors";
@@ -158,7 +158,7 @@ describe("fetchEntry", () => {
       const result = await fetchEntry(entry.id, testOptions, superuserToken);
 
       // Description should not be included
-      delete entry["description"];
+      delete entry.description;
       expect(result).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);
