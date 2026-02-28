@@ -13,22 +13,26 @@
   "bugs": {
     "url": "https://github.com/pawcoding/astro-loader-pocketbase/issues"
   },
+  "license": "MIT",
+  "author": "Luis Wolf <development@pawcode.de> (https://pawcode.de)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pawcoding/astro-loader-pocketbase.git"
   },
-  "license": "MIT",
-  "author": "Luis Wolf <development@pawcode.de> (https://pawcode.de)",
+  "files": [
+    "src"
+  ],
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": [
-    "src"
-  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
-    "format": "npx prettier . --write --cache --cache-location=./.prettier-cache --experimental-cli",
-    "format:check": "npx prettier . --check --cache --cache-location=./.prettier-cache --experimental-cli",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "prepare": "husky",
@@ -51,20 +55,14 @@
     "globals": "17.3.0",
     "husky": "9.1.7",
     "lint-staged": "16.3.0",
+    "oxfmt": "0.35.0",
     "oxlint": "1.50.0",
     "oxlint-tsgolint": "0.15.0",
-    "prettier": "3.8.1",
-    "prettier-plugin-organize-imports": "4.3.0",
-    "prettier-plugin-packagejson": "3.0.0",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   },
   "peerDependencies": {
     "astro": "^5.10.0"
   },
-  "packageManager": "npm@11.11.0",
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  }
+  "packageManager": "npm@11.11.0"
 }

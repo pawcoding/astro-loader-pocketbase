@@ -1,8 +1,8 @@
+import { randomUUID } from "crypto";
 import {
   LiveCollectionError,
   LiveEntryNotFoundError
 } from "astro/content/runtime";
-import { randomUUID } from "crypto";
 import type { Mock } from "vitest";
 import { beforeEach, describe, expect, inject, test, vi } from "vitest";
 import { fetchCollection } from "../../src/loader/fetch-collection";

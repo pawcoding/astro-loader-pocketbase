@@ -1,5 +1,5 @@
-import { LiveEntryNotFoundError } from "astro/content/runtime";
 import { randomUUID } from "crypto";
+import { LiveEntryNotFoundError } from "astro/content/runtime";
 import { describe, expect, inject, test } from "vitest";
 import { fetchEntry } from "../../src/loader/fetch-entry";
 import { PocketBaseAuthenticationError } from "../../src/types/errors";

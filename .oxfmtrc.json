@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "trailingComma": "none",
+  "printWidth": 80,
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "sortImports": {
+    "newlinesBetween": false
+  },
+  "ignorePatterns": [
+    "dist/",
+    "CHANGELOG.md",
+    ".astro/",
+    "node_modules/",
+    "npm-debug.log*",
+    ".env",
+    ".env.production",
+    ".DS_Store",
+    ".idea/",
+    ".husky/",
+    ".gitignore",
+    ".nvmrc"
+  ]
+}
