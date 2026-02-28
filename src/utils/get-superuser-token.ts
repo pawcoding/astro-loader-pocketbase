@@ -51,7 +51,9 @@ export async function getSuperuserToken(
       // Random wait between 3 (default rate limit interval) and 8 seconds
       const retryAfter = Math.random() * 5 + 3;
       // oxlint-disable-next-line promise/avoid-new
-      await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+      await new Promise((resolve) => {
+        setTimeout(resolve, retryAfter * 1000);
+      });
 
       return getSuperuserToken(url, superuserCredentials, logger);
     }

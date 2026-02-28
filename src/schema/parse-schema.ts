@@ -94,7 +94,7 @@ export function parseSchema(
         fieldType = parseSingleOrMultipleValues(field, z.string());
         break;
       case "json":
-        if (customSchemas && customSchemas[field.name]) {
+        if (customSchemas?.[field.name]) {
           // Use the user defined custom schema for the field
           fieldType = customSchemas[field.name];
         } else {

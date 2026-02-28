@@ -13,7 +13,7 @@ export class PocketBaseAuthenticationError extends LiveCollectionError {
     // This is similar to the original implementation in Astro itself.
     return (
       // oxlint-disable-next-line no-unsafe-type-assertion
-      !!error && (error as Error)?.name === "PocketBaseAuthenticationError"
+      !!error && (error as Error).name === "PocketBaseAuthenticationError"
     );
   }
 }

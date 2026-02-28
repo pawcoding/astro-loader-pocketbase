@@ -158,7 +158,7 @@ describe("fetchEntry", () => {
       const result = await fetchEntry(entry.id, testOptions, superuserToken);
 
       // Description should not be included
-      delete entry["description"];
+      delete entry.description;
       expect(result).toEqual(entry);
 
       await deleteCollection(testOptions, superuserToken);

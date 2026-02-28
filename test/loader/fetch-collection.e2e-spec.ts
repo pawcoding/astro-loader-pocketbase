@@ -396,7 +396,7 @@ describe("fetchCollection", () => {
       expect(results).toHaveLength(1);
 
       // Description should not be included
-      delete entry["description"];
+      delete entry.description;
       expect(results[0]).toMatchObject(entry);
 
       await deleteCollection(testOptions, superuserToken);
