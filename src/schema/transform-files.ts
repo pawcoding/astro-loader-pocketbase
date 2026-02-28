@@ -63,5 +63,5 @@ export function transformFileUrl(
   entryId: string,
   file: string
 ): string {
-  return `${base}/api/files/${collectionName}/${entryId}/${file}`;
+  return new URL(`api/files/${collectionName}/${entryId}/${file}`, base).href;
 }
