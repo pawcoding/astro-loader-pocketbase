@@ -8,7 +8,6 @@
  */
 export function slugify(input: string): string {
   return input
-    .toString()
     .toLowerCase()
     .replaceAll(/\s+/g, "-") // Replace spaces with -
     .replaceAll("ä", "ae") // Replace umlauts
