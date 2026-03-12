@@ -1,5 +1,7 @@
 {
   "oxc.typeAware": true,
   "oxc.unusedDisableDirectives": "warn",
-  "oxc.lint.run": "onType"
+  "oxc.lint.run": "onType",
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode"
 }

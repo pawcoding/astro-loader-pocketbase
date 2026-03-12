@@ -9,7 +9,7 @@ export function shouldRefresh(
 ): "refresh" | "skip" | "force" {
   // Check if the refresh was triggered by the `astro-integration-pocketbase`
   // and the correct metadata is provided.
-  if (!context || context.source !== "astro-integration-pocketbase") {
+  if (context?.source !== "astro-integration-pocketbase") {
     return "refresh";
   }
 

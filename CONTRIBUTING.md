@@ -29,7 +29,7 @@ Thank you for your interest in contributing to astro-loader-pocketbase! This gui
 
 Before making any changes, familiarize yourself with our code quality requirements:
 
-- **Formatting**: Run `npm run format` to format code with Prettier
+- **Formatting**: Run `npm run format` to format code with Oxfmt
 - **Linting**: Run `npm run lint:fix` to lint code with oxlint (and type-check at the same time)
 - **Type Checking**: Run `npm run typecheck` to check TypeScript types
 
