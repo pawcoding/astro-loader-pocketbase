@@ -20,6 +20,14 @@ export async function handleRealtimeUpdates(
     return false;
   }
 
+  // Check if a expand is set
+  if (options.experimental?.expand) {
+    // Updating an entry directly via realtime updates is not supported when using expand.
+    // This is because updates to a related entry cannot be tracked here.
+    // So all (updated) entries must be refreshed when a update is received.
+    return false;
+  }
+
   // Check if data was provided via the refresh context
   if (!context.refreshContextData?.data) {
     return false;

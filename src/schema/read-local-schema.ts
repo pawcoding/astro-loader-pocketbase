@@ -27,7 +27,8 @@ export async function readLocalSchema(
 
     // Find and return the schema for the collection
     const schema = fileContent.data.find(
-      (collection) => collection.name === collectionName
+      (collection) =>
+        collection.name === collectionName || collection.id === collectionName
     );
 
     if (!schema) {

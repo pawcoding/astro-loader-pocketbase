@@ -31,6 +31,11 @@ export async function fetchEntry<TEntry extends PocketBaseEntry>(
     entryUrl.searchParams.set("fields", combinedFields.join(","));
   }
 
+  // Include expanded fields if option is set
+  if (options.experimental?.expand) {
+    entryUrl.searchParams.set("expand", options.experimental.expand.join(","));
+  }
+
   // Create the headers for the request to append the token (if available)
   const entryHeaders = new Headers();
   if (token) {

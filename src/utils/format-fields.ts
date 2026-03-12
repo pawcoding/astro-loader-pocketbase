@@ -2,10 +2,9 @@ import type { PocketBaseLoaderBaseOptions } from "../types/pocketbase-loader-opt
 
 /**
  * Format fields option into an array and validate for expand usage.
- * Handles wildcard "*" and preserves excerpt field modifiers.
  *
  * @param fields The fields option (string or array)
- * @returns Formatted fields array, or undefined if no fields specified or "*" wildcard is used
+ * @returns Formatted fields array, or undefined if no fields specified
  */
 export function formatFields(
   fields: PocketBaseLoaderBaseOptions["fields"]
@@ -26,15 +25,9 @@ export function formatFields(
   const hasExpand = fieldList.some((field) => field.includes("expand"));
   if (hasExpand) {
     console.warn(
-      'The "expand" parameter is not currently supported by astro-loader-pocketbase and will be filtered out.'
+      'The "expand" parameter is currently experimental in astro-loader-pocketbase.'
     );
     fieldList = fieldList.filter((field) => !field.includes("expand"));
-  }
-
-  // Check for "*" wildcard - if found anywhere, include all fields
-  const hasWildcard = fieldList.some((field) => field === "*");
-  if (hasWildcard) {
-    return undefined;
   }
 
   return fieldList;
