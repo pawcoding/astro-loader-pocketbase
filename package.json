@@ -54,7 +54,7 @@
     "astro": "6.0.4",
     "globals": "17.4.0",
     "husky": "9.1.7",
-    "lint-staged": "16.3.3",
+    "lint-staged": "16.3.4",
     "oxfmt": "0.40.0",
     "oxlint": "1.55.0",
     "oxlint-tsgolint": "0.16.0",
