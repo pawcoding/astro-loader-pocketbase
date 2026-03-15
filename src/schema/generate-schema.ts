@@ -1,13 +1,15 @@
 import { z } from "astro/zod";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
-import type { PocketBaseCollection } from "../types/pocketbase-schema.type";
+import type {
+  PocketBaseCollection,
+  PocketBaseSchemaEntry
+} from "../types/pocketbase-schema.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { extractFieldNames } from "../utils/extract-field-names";
 import { formatFields } from "../utils/format-fields";
 import { getRemoteSchema } from "./get-remote-schema";
 import { parseSchema } from "./parse-schema";
 import { readLocalSchema } from "./read-local-schema";
-import { transformFiles } from "./transform-files";
 
 /**
  * Basic schema for every PocketBase collection.
@@ -23,6 +25,11 @@ const BASIC_SCHEMA = z.object({
  */
 const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
 
+export interface GenerateSchemaResult {
+  schema: z.ZodType;
+  fileFields: Array<PocketBaseSchemaEntry>;
+}
+
 /**
  * Generate a schema for the collection based on the collection's schema in PocketBase.
  * By default, a basic schema is returned if no other schema is available.
@@ -31,12 +38,12 @@ const VALID_ID_TYPES = ["text", "number", "email", "url", "date"];
  *
  * @param options Options for the loader. See {@link PocketBaseLoaderOptions} for more details.
  * @param token The superuser token to authenticate the request.
+ * @returns An object containing the schema and file fields information
  */
-// oxlint-disable-next-line explicit-module-boundary-types
 export async function generateSchema(
   options: PocketBaseLoaderOptions,
   token: string | undefined
-) {
+): Promise<GenerateSchemaResult> {
   let collection: PocketBaseCollection | undefined;
 
   if (token) {
@@ -60,7 +67,10 @@ export async function generateSchema(
       `No schema available for "${options.collectionName}". Only basic types are available. Please check your configuration and provide a valid schema file or superuser credentials.`
     );
     // Return the basic schema since every collection has at least these fields
-    return BASIC_SCHEMA;
+    return {
+      schema: BASIC_SCHEMA,
+      fileFields: []
+    };
   }
 
   // Get fields to include from options
@@ -86,20 +96,18 @@ export async function generateSchema(
     ...fields
   });
 
-  // Get all file fields
+  // Get all file fields (these will be transformed separately in the loader)
   const fileFields = collection.fields
     .filter((field) => field.type === "file")
     // Only show hidden fields if the user has superuser rights
     .filter((field) => !field.hidden || hasSuperuserRights);
 
-  if (fileFields.length === 0) {
-    return schema;
-  }
-
-  // Transform file names to file urls
-  return schema.transform((entry) =>
-    transformFiles(options.url, fileFields, entry)
-  );
+  // Return the untransformed schema along with file field information
+  // File transformation will be applied in the loader layer to maintain type compatibility
+  return {
+    schema,
+    fileFields
+  };
 }
 
 /**

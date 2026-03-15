@@ -1,4 +1,5 @@
 import type { ZodType } from "astro/zod";
+import type { PocketBaseSchemaEntry } from "./pocketbase-schema.type";
 
 /**
  * Options for both build time and live collection loader
@@ -138,9 +139,22 @@ export type PocketBaseLoaderOptions = PocketBaseLoaderBaseOptions & {
      */
     liveTypesOnly?: boolean;
   };
+  /**
+   * Internal: File fields metadata for transforming file names to URLs.
+   * This is set internally by the loader and should not be used directly.
+   * @internal
+   */
+  _fileFields?: Array<PocketBaseSchemaEntry>;
 };
 
 /**
  * Options for the PocketBase live loader.
  */
-export type PocketBaseLiveLoaderOptions = PocketBaseLoaderBaseOptions;
+export type PocketBaseLiveLoaderOptions = PocketBaseLoaderBaseOptions & {
+  /**
+   * Internal: File fields metadata for transforming file names to URLs.
+   * This is set internally by the loader and should not be used directly.
+   * @internal
+   */
+  _fileFields?: Array<PocketBaseSchemaEntry>;
+};

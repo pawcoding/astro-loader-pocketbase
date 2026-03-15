@@ -1,6 +1,7 @@
 import type { LiveDataEntry } from "astro";
 import { LiveCollectionValidationError } from "astro/content/runtime";
 import { z } from "astro/zod";
+import { transformFiles } from "../schema/transform-files";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 
@@ -8,9 +9,18 @@ import type { PocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-opt
  * Converts a PocketBase entry into a LiveDataEntry for Astro, extracting content and cache metadata.
  */
 export function parseLiveEntry<TEntry extends PocketBaseEntry>(
-  entry: TEntry,
+  entryParam: TEntry,
   options: PocketBaseLiveLoaderOptions
 ): LiveDataEntry<TEntry> {
+  // Apply file transformations if file fields exist
+  // File fields are stored in options by the createSchema function
+  const fileFields = options._fileFields;
+  // @ts-expect-error - transformFiles returns PocketBaseEntry which is assignable to TEntry constraint
+  const entry: TEntry =
+    fileFields && fileFields.length > 0
+      ? transformFiles(options.url, fileFields, entryParam)
+      : entryParam;
+
   // Build a cache tag
   const tag = `${options.collectionName}-${entry.id}`;
 

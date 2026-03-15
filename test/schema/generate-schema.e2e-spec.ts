@@ -2,7 +2,6 @@ import type { ZodObject, ZodType } from "astro/zod";
 import { describe, expect, inject, it, vi } from "vitest";
 import type { PocketBaseLoaderOptions } from "../../src";
 import { generateSchema } from "../../src/schema/generate-schema";
-import { transformFileUrl } from "../../src/schema/transform-files";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 
 describe("generateSchema", () => {
@@ -11,26 +10,26 @@ describe("generateSchema", () => {
 
   describe("load and parse schema", () => {
     it("should return basic schema if no schema is available", async () => {
-      const result = (await generateSchema(
+      const { schema: result } = await generateSchema(
         {
           ...options,
           superuserCredentials: undefined,
           localSchema: undefined
         },
         undefined
-      )) as ZodObject<Record<string, ZodType>>;
+      );
 
-      expect(result.shape).toHaveProperty("id");
-      expect(result.shape).toHaveProperty("collectionId");
-      expect(result.shape).toHaveProperty("collectionName");
+      const zodObject = result as ZodObject<Record<string, ZodType>>;
+      expect(zodObject.shape).toHaveProperty("id");
+      expect(zodObject.shape).toHaveProperty("collectionId");
+      expect(zodObject.shape).toHaveProperty("collectionName");
     });
 
     it("should return schema from remote if superuser token is provided", async () => {
-      const result = (await generateSchema(options, token)) as ZodObject<
-        Record<string, ZodType>
-      >;
+      const { schema: result } = await generateSchema(options, token);
 
-      expect(Object.keys(result.shape)).toEqual([
+      const zodObject = result as ZodObject<Record<string, ZodType>>;
+      expect(Object.keys(zodObject.shape)).toEqual([
         "id",
         "collectionId",
         "collectionName",
@@ -45,16 +44,17 @@ describe("generateSchema", () => {
     });
 
     it("should return schema from local file if path is provided", async () => {
-      const result = (await generateSchema(
+      const { schema: result } = await generateSchema(
         {
           ...options,
           superuserCredentials: undefined,
           localSchema: "test/_mocks/superuser_schema.json"
         },
         undefined
-      )) as ZodObject<Record<string, ZodType>>;
+      );
 
-      expect(Object.keys(result.shape)).toEqual([
+      const zodObject = result as ZodObject<Record<string, ZodType>>;
+      expect(Object.keys(zodObject.shape)).toEqual([
         "id",
         "collectionId",
         "collectionName",
@@ -201,16 +201,17 @@ describe("generateSchema", () => {
 
   describe("fields filtering", () => {
     it("should include only specified fields when fields option is provided as string", async () => {
-      const result = (await generateSchema(
+      const { schema: result } = await generateSchema(
         {
           ...options,
           fields: "email,verified"
         },
         token
-      )) as ZodObject<Record<string, ZodType>>;
+      );
 
+      const zodObject = result as ZodObject<Record<string, ZodType>>;
       // Should always include basic schema fields
-      expect(Object.keys(result.shape)).toEqual([
+      expect(Object.keys(zodObject.shape)).toEqual([
         "id",
         "collectionId",
         "collectionName",
@@ -220,16 +221,17 @@ describe("generateSchema", () => {
     });
 
     it("should include only specified fields when fields option is provided as array", async () => {
-      const result = (await generateSchema(
+      const { schema: result } = await generateSchema(
         {
           ...options,
           fields: ["email", "emailVisibility", "created"]
         },
         token
-      )) as ZodObject<Record<string, ZodType>>;
+      );
 
+      const zodObject = result as ZodObject<Record<string, ZodType>>;
       // Should always include basic schema fields
-      expect(Object.keys(result.shape)).toEqual([
+      expect(Object.keys(zodObject.shape)).toEqual([
         "id",
         "collectionId",
         "collectionName",
@@ -240,12 +242,11 @@ describe("generateSchema", () => {
     });
 
     it("should include all fields when no fields option is provided", async () => {
-      const result = (await generateSchema(options, token)) as ZodObject<
-        Record<string, ZodType>
-      >;
+      const { schema: result } = await generateSchema(options, token);
 
+      const zodObject = result as ZodObject<Record<string, ZodType>>;
       // Should include all available fields
-      expect(Object.keys(result.shape)).toEqual([
+      expect(Object.keys(zodObject.shape)).toEqual([
         "id",
         "collectionId",
         "collectionName",
@@ -268,12 +269,11 @@ describe("generateSchema", () => {
         fields: ["emailVisibility"]
       };
 
-      const result = (await generateSchema(testOptions, token)) as ZodObject<
-        Record<string, ZodType>
-      >;
+      const { schema: result } = await generateSchema(testOptions, token);
 
+      const zodObject = result as ZodObject<Record<string, ZodType>>;
       // Should include extra fields
-      expect(Object.keys(result.shape)).toEqual(
+      expect(Object.keys(zodObject.shape)).toEqual(
         expect.arrayContaining([
           "id",
           "collectionId",
@@ -284,14 +284,25 @@ describe("generateSchema", () => {
           "updated"
         ])
       );
-      expect(Object.keys(result.shape)).toHaveLength(7);
+      expect(Object.keys(zodObject.shape)).toHaveLength(7);
     });
   });
 
-  it("should return entry with transformed file fields", async () => {
+  it("should return file fields information for collections with file fields", async () => {
     const testOptions = { ...options, collectionName: "users" };
-    const schema = await generateSchema(testOptions, token);
+    const { schema, fileFields } = await generateSchema(testOptions, token);
 
+    // Schema should be returned without transform
+    const zodObject = schema as ZodObject<Record<string, ZodType>>;
+    expect(zodObject.shape).toHaveProperty("avatar");
+
+    // File fields should be identified
+    expect(fileFields).toHaveLength(1);
+    expect(fileFields[0].name).toBe("avatar");
+    expect(fileFields[0].type).toBe("file");
+
+    // Schema should accept file names (strings), not URLs
+    // Transformation happens in the loader layer
     const entry = {
       id: "123",
       collectionId: "456",
@@ -301,19 +312,16 @@ describe("generateSchema", () => {
       email: "test@pawcode.de",
       created: new Date("2001-12-06"),
       updated: new Date(),
-      avatar: "file.jpg",
+      avatar: "file.jpg", // File name, not URL
       emailVisibility: true,
       verified: false
     };
 
-    expect(schema.parse(entry)).toEqual({
+    // Schema parse should work with file names
+    const parsed = schema.parse(entry);
+    expect(parsed).toMatchObject({
       ...entry,
-      avatar: transformFileUrl(
-        testOptions.url,
-        testOptions.collectionName,
-        entry.id,
-        entry.avatar
-      )
+      avatar: "file.jpg" // Not transformed yet
     });
   });
 });

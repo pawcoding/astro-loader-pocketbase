@@ -2,27 +2,43 @@ import { z } from "astro/zod";
 import { describe, expect, test } from "vitest";
 import { generateType } from "../../src/schema/generate-type";
 
-describe("generateType with transform", () => {
-  test("should handle schema with transform (reproduces file field issue)", () => {
-    // This schema simulates what happens when file fields are present
-    // The generateSchema function applies a .transform() to convert file names to URLs
-    const schema = z
+describe("generateType", () => {
+  test("should handle schema without transform (file field scenario)", () => {
+    // After the fix, generateSchema no longer applies .transform()
+    // Instead, file transformation happens at the loader level
+    // This test verifies that schemas without transform work correctly
+    const schema = z.object({
+      id: z.string(),
+      name: z.string(),
+      avatar: z.string() // File field - will be transformed in loader, not in schema
+    });
+
+    // Should not throw an error anymore
+    const type = generateType(schema);
+
+    // Verify type generation works
+    expect(type).toBeTruthy();
+    expect(type).toContain("export type Entry");
+    expect(type).toContain("avatar");
+  });
+
+  test("should fail with schema that has transform (documenting the problem)", () => {
+    // This test documents the original problem - schemas with .transform()
+    // cannot be processed by zod-to-ts
+    const schemaWithTransform = z
       .object({
         id: z.string(),
         name: z.string(),
-        avatar: z.string() // This is a file field
+        avatar: z.string()
       })
       .transform((entry) => ({
         ...entry,
-        avatar: `https://example.com/files/${entry.avatar}` // Simulating transformFiles()
+        avatar: `https://example.com/files/${entry.avatar}`
       }));
 
-    // This should throw an error or produce incorrect types with zod-to-ts
-    expect(() => generateType(schema)).not.toThrow();
-    const type = generateType(schema);
-
-    // The type should still be generated, but we want to verify it works
-    expect(type).toBeTruthy();
-    expect(type).toContain("export type Entry");
+    // This will throw because zod-to-ts cannot handle transforms
+    expect(() => generateType(schemaWithTransform)).toThrow(
+      'Schemas of type "transform" cannot be represented in TypeScript'
+    );
   });
 });

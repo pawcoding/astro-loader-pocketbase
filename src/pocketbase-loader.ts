@@ -48,8 +48,12 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions) {
       const token = await tokenPromise;
 
       // Generate the schema for the collection according to the API
-      const schema = await generateSchema(options, token);
+      const { schema, fileFields } = await generateSchema(options, token);
       const types = generateType(schema);
+
+      // Store file fields in options for use during entry parsing
+      // This allows the loader to transform file names to URLs
+      options._fileFields = fileFields;
 
       return {
         schema,

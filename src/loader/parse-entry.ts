@@ -1,4 +1,5 @@
 import type { LoaderContext } from "astro/loaders";
+import { transformFiles } from "../schema/transform-files";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import type { PocketBaseLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { slugify } from "../utils/slugify";
@@ -14,10 +15,20 @@ import { slugify } from "../utils/slugify";
  *                      If multiple fields are used, they will be concatenated and wrapped in `<section>` elements.
  */
 export async function parseEntry(
-  entry: PocketBaseEntry,
+  entryParam: PocketBaseEntry,
   { generateDigest, parseData, store, logger }: LoaderContext,
-  { idField, contentFields, updatedField }: PocketBaseLoaderOptions
+  options: PocketBaseLoaderOptions
 ): Promise<void> {
+  // Apply file transformations if file fields exist
+  // File fields are stored in options by the createSchema function
+  const fileFields = options._fileFields;
+  const entry =
+    fileFields && fileFields.length > 0
+      ? transformFiles(options.url, fileFields, entryParam)
+      : entryParam;
+
+  const { idField, contentFields, updatedField } = options;
+
   let id = entry.id;
   if (idField) {
     // Get the custom ID of the entry if it exists
