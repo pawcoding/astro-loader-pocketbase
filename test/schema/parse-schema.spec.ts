@@ -13,8 +13,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -36,30 +35,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
-      });
-
-      const valid = {
-        age: 42
-      };
-
-      expect(z.object(schema).parse(valid)).toEqual(valid);
-      expect(z.object(schema).parse({})).toEqual({});
-    });
-
-    test("should parse optional number fields correctly with improved types", () => {
-      const collection: PocketBaseCollection = {
-        name: "numberCollection",
-        type: "base",
-        fields: [
-          { name: "age", type: "number", required: false, hidden: false }
-        ]
-      };
-
-      const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: true
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -82,8 +58,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -105,30 +80,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
-      });
-
-      const valid = {
-        isAdult: true
-      };
-
-      expect(z.object(schema).parse(valid)).toEqual(valid);
-      expect(z.object(schema).parse({})).toEqual({});
-    });
-
-    test("should parse optional boolean fields correctly with improved types", () => {
-      const collection: PocketBaseCollection = {
-        name: "booleanCollection",
-        type: "base",
-        fields: [
-          { name: "isAdult", type: "bool", required: false, hidden: false }
-        ]
-      };
-
-      const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: true
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -151,8 +103,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -176,8 +127,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -205,8 +155,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -235,8 +184,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -263,8 +211,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -292,8 +239,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -323,8 +269,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -353,8 +298,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -382,8 +326,7 @@ describe("parseSchema", () => {
 
       expect(() =>
         parseSchema(collection, undefined, {
-          hasSuperuserRights: false,
-          improveTypes: false
+          hasSuperuserRights: false
         })
       ).toThrow();
     });
@@ -405,8 +348,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -436,8 +378,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -466,8 +407,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -495,8 +435,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -523,8 +462,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -553,8 +491,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -582,8 +519,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -617,8 +553,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -654,8 +589,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, customSchemas, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -688,8 +622,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -721,8 +654,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -746,8 +678,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -767,8 +698,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -792,7 +722,6 @@ describe("parseSchema", () => {
 
       const schema = parseSchema(collection, undefined, {
         hasSuperuserRights: false,
-        improveTypes: false,
         experimentalLiveTypesOnly: true
       });
 
@@ -815,7 +744,6 @@ describe("parseSchema", () => {
 
       const schema = parseSchema(collection, undefined, {
         hasSuperuserRights: false,
-        improveTypes: false,
         experimentalLiveTypesOnly: true
       });
 
@@ -838,7 +766,6 @@ describe("parseSchema", () => {
 
       const schema = parseSchema(collection, undefined, {
         hasSuperuserRights: false,
-        improveTypes: false,
         experimentalLiveTypesOnly: false
       });
 
@@ -862,8 +789,7 @@ describe("parseSchema", () => {
       };
 
       const schema = parseSchema(collection, undefined, {
-        hasSuperuserRights: false,
-        improveTypes: false
+        hasSuperuserRights: false
       });
 
       const valid = {
@@ -890,7 +816,6 @@ describe("parseSchema", () => {
 
       const schema = parseSchema(collection, undefined, {
         hasSuperuserRights: false,
-        improveTypes: false,
         experimentalLiveTypesOnly: true
       });
 
@@ -931,7 +856,6 @@ describe("parseSchema", () => {
 
       const schema = parseSchema(collection, undefined, {
         hasSuperuserRights: false,
-        improveTypes: false,
         experimentalLiveTypesOnly: true
       });
 

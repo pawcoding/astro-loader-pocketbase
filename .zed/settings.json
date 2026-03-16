@@ -11,8 +11,6 @@
           "run": "onType",
           "configPath": null,
           "tsConfigPath": null,
-          "unusedDisableDirectives": "warn",
-          "typeAware": true,
           "flags": {}
         }
       }

@@ -6,7 +6,7 @@ import { PocketBaseAuthenticationError } from "../types/errors";
 import { pocketBaseErrorResponse } from "../types/pocketbase-api-response.type";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
 import { pocketBaseEntry } from "../types/pocketbase-entry.type";
-import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type { PocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 import { combineFieldsForRequest } from "../utils/combine-fields-for-request";
 import { formatFields } from "../utils/format-fields";
 
@@ -15,7 +15,7 @@ import { formatFields } from "../utils/format-fields";
  */
 export async function fetchEntry<TEntry extends PocketBaseEntry>(
   id: string,
-  options: ExperimentalPocketBaseLiveLoaderOptions,
+  options: PocketBaseLiveLoaderOptions,
   token: string | undefined
 ): Promise<TEntry> {
   // Build the URL for the entry endpoint

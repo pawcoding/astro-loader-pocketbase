@@ -2,13 +2,14 @@ import fs from "fs/promises";
 import path from "path";
 import { describe, expect, test, vi } from "vitest";
 import { readLocalSchema } from "../../src/schema/read-local-schema";
+import type { PocketBaseCollection } from "../../src/types/pocketbase-schema.type";
 
 vi.mock("fs/promises");
 
 describe("readLocalSchema", () => {
   const localSchemaPath = "test/pb_schema.json";
   const collectionName = "users";
-  const mockSchema = [
+  const mockSchema: Array<PocketBaseCollection> = [
     {
       name: "users",
       type: "base",
