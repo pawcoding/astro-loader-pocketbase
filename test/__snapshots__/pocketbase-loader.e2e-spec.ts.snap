@@ -14,6 +14,7 @@ exports[`pocketbaseLoader > createSchema function > should return valid schema f
     date_field?: Date | undefined;
     autodate_field: Date;
     select_field?: ("option1" | "option2") | undefined;
+    file_field?: string[] | undefined;
     json_field?: unknown | undefined;
     geopoint_field?: {
         lon: number;

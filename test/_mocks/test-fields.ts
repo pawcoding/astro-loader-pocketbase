@@ -15,8 +15,7 @@ export const fields = [
     values: ["option1", "option2"],
     maxSelect: 1
   },
-  // File fields currently throw an error in the schema generation, so we'll skip them for now
-  // { name: "file_field", type: "file" },
+  { name: "file_field", type: "file", maxSelect: 2 },
   // Relation fields do not have any special handling in the schema, so we'll skip them for now
   // { name: "relation_field", type: "relation" },
   { name: "json_field", type: "json" },
@@ -35,6 +34,7 @@ export const rawEntry: Entry = {
   date_field: new Date(),
   autodate_field: undefined,
   select_field: "option1",
+  file_field: undefined,
   json_field: {},
   geopoint_field: { lon: 0, lat: 0 }
 };

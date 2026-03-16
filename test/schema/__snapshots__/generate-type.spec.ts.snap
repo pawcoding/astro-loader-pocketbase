@@ -15,3 +15,14 @@ exports[`generateType > should generate typescript type for complex entry 1`] = 
     nickname?: string | undefined;
 };"
 `;
+
+exports[`generateType > should generate typescript type for transformed entry 1`] = `
+"export type Entry = {
+    age: number;
+    isAdult: boolean;
+    location: {
+        lon: number;
+        lat: number;
+    };
+};"
+`;

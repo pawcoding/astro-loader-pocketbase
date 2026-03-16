@@ -9,6 +9,7 @@ import {
   it,
   test
 } from "vitest";
+import { transformFileUrl } from "../src";
 import { pocketbaseLoader } from "../src/pocketbase-loader";
 import type { PocketBaseEntry } from "../src/types/pocketbase-entry.type";
 import type { PocketBaseLoaderOptions } from "../src/types/pocketbase-loader-options.type";
@@ -18,6 +19,7 @@ import { deleteCollection } from "./_mocks/delete-collection";
 import { insertCollection } from "./_mocks/insert-collection";
 import { insertEntry } from "./_mocks/insert-entry";
 import { fields, rawEntry } from "./_mocks/test-fields";
+import { uploadFile } from "./_mocks/upload-file";
 
 describe("pocketbaseLoader", () => {
   const superuserToken = inject("superuserToken");
@@ -105,7 +107,11 @@ describe("pocketbaseLoader", () => {
       const { schema, types } = await loader.createSchema();
 
       for (const field of fields) {
-        const jsonSchema = schema.toJSONSchema({ unrepresentable: "any" });
+        const schemaForJson = schema.type === "pipe" ? schema.in : schema;
+        const jsonSchema = schemaForJson.toJSONSchema({
+          // Date fields cannot be represented in JSON schema, so we set them to `any` to avoid errors
+          unrepresentable: "any"
+        });
         expect(jsonSchema.properties).toHaveProperty(field.name);
       }
 
@@ -113,30 +119,52 @@ describe("pocketbaseLoader", () => {
     });
 
     test("should parse entry with generated schema", async () => {
-      const entry = await insertEntry(rawEntry, testOptions, superuserToken);
+      let entry = await insertEntry(rawEntry, testOptions, superuserToken);
+      entry = await uploadFile(entry.id, testOptions, superuserToken);
+
+      const expected = structuredClone(entry);
       // @ts-expect-error - autodate_field is unknown
-      entry.autodate_field = new Date(entry.autodate_field);
+      expected.autodate_field = new Date(expected.autodate_field);
       // @ts-expect-error - date_field is unknown
-      entry.date_field = new Date(entry.date_field);
+      expected.date_field = new Date(expected.date_field);
+      expected.file_field = [
+        transformFileUrl(
+          testOptions.url,
+          testOptions.collectionName,
+          expected.id,
+          // @ts-expect-error - file_field is unknown
+          expected.file_field
+        )
+      ];
 
       const loader = pocketbaseLoader(testOptions);
       const { schema } = await loader.createSchema();
 
-      expect(() => schema.parse(entry)).not.toThrow();
+      expect(() => schema.parse(structuredClone(entry))).not.toThrow();
 
-      const result = schema.parse(entry) as PocketBaseEntry;
-      expect(result).toMatchObject(entry);
+      const result = schema.parse(structuredClone(entry)) as PocketBaseEntry;
+      expect(result).toMatchObject(expected);
     });
   });
 
   test("should load and parse entries", async () => {
     await insertCollection(fields, testOptions, superuserToken);
 
-    const entry = await insertEntry(rawEntry, testOptions, superuserToken);
+    let entry = await insertEntry(rawEntry, testOptions, superuserToken);
+    entry = await uploadFile(entry.id, testOptions, superuserToken);
     // @ts-expect-error - autodate_field is unknown
     entry.autodate_field = new Date(entry.autodate_field);
     // @ts-expect-error - date_field is unknown
     entry.date_field = new Date(entry.date_field);
+    entry.file_field = [
+      transformFileUrl(
+        testOptions.url,
+        testOptions.collectionName,
+        entry.id,
+        // @ts-expect-error - file_field is unknown
+        entry.file_field
+      )
+    ];
 
     const loader = pocketbaseLoader(testOptions);
     const { schema } = await loader.createSchema();

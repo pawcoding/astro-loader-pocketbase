@@ -19,6 +19,7 @@ import { deleteCollection } from "./_mocks/delete-collection";
 import { insertCollection } from "./_mocks/insert-collection";
 import { insertEntry } from "./_mocks/insert-entry";
 import { fields, rawEntry } from "./_mocks/test-fields";
+import { uploadFile } from "./_mocks/upload-file";
 
 describe("pocketbaseLiveLoader", () => {
   const superuserToken = inject("superuserToken");
@@ -50,6 +51,7 @@ describe("pocketbaseLiveLoader", () => {
       );
 
       entry = await insertEntry(rawEntry, testOptions, superuserToken);
+      entry = await uploadFile(entry.id, testOptions, superuserToken);
     });
 
     afterEach(async () => {
