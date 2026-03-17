@@ -1,7 +1,8 @@
 import { randomUUID } from "crypto";
 import type { LoaderContext, ParseDataOptions } from "astro/loaders";
 import {
-  afterEach,
+  afterAll,
+  beforeAll,
   beforeEach,
   describe,
   expect,
@@ -25,10 +26,36 @@ describe("pocketbaseLoader", () => {
   const superuserToken = inject("superuserToken");
   let collectionName: string;
   let testOptions: PocketBaseLoaderOptions;
+  let context: LoaderContext;
+  let originalEntry: PocketBaseEntry;
+  let testEntry: PocketBaseEntry;
 
-  beforeEach(() => {
+  beforeAll(async () => {
     collectionName = randomUUID().replaceAll("-", "");
     testOptions = createLoaderOptions({ collectionName });
+
+    await insertCollection(fields, testOptions, superuserToken);
+
+    const partialEntry = await insertEntry(
+      rawEntry,
+      testOptions,
+      superuserToken
+    );
+    originalEntry = await uploadFile(
+      partialEntry.id,
+      testOptions,
+      superuserToken
+    );
+  });
+
+  beforeEach(() => {
+    context = createLoaderContext();
+
+    testEntry = structuredClone(originalEntry);
+  });
+
+  afterAll(async () => {
+    await deleteCollection(testOptions, superuserToken);
   });
 
   it("should return a valid loader", () => {
@@ -41,32 +68,6 @@ describe("pocketbaseLoader", () => {
   });
 
   describe("load function", () => {
-    let context: LoaderContext;
-    let entry: PocketBaseEntry;
-
-    beforeEach(async () => {
-      await insertCollection(
-        [
-          { name: "title", type: "text" },
-          { name: "content", type: "text" }
-        ],
-        testOptions,
-        superuserToken
-      );
-
-      entry = await insertEntry(
-        { title: "Test Title", content: "Test Content" },
-        testOptions,
-        superuserToken
-      );
-
-      context = createLoaderContext();
-    });
-
-    afterEach(async () => {
-      await deleteCollection(testOptions, superuserToken);
-    });
-
     test("should load entries without errors", async () => {
       const loader = pocketbaseLoader(testOptions);
 
@@ -74,7 +75,7 @@ describe("pocketbaseLoader", () => {
 
       const values = context.store.values();
       expect(values).toHaveLength(1);
-      expect(values.at(0)?.id).toBe(entry.id);
+      expect(values.at(0)?.id).toBe(originalEntry.id);
     });
 
     test("should work with experimental liveTypesOnly mode", async () => {
@@ -93,36 +94,21 @@ describe("pocketbaseLoader", () => {
   });
 
   describe("createSchema function", () => {
-    beforeEach(async () => {
-      await insertCollection(fields, testOptions, superuserToken);
-    });
-
-    afterEach(async () => {
-      await deleteCollection(testOptions, superuserToken);
-    });
-
     test("should return valid schema for all field types", async () => {
       const loader = pocketbaseLoader(testOptions);
 
       const { schema, types } = await loader.createSchema();
 
-      for (const field of fields) {
-        const schemaForJson = schema.type === "pipe" ? schema.in : schema;
-        const jsonSchema = schemaForJson.toJSONSchema({
-          // Date fields cannot be represented in JSON schema, so we set them to `any` to avoid errors
-          unrepresentable: "any"
-        });
-        expect(jsonSchema.properties).toHaveProperty(field.name);
-      }
+      const actualSchema = schema.type === "pipe" ? schema.in : schema;
+      expect(Object.keys(actualSchema.shape)).toEqual(
+        expect.arrayContaining(fields.map((field) => field.name))
+      );
 
       expect(types).toMatchSnapshot();
     });
 
     test("should parse entry with generated schema", async () => {
-      let entry = await insertEntry(rawEntry, testOptions, superuserToken);
-      entry = await uploadFile(entry.id, testOptions, superuserToken);
-
-      const expected = structuredClone(entry);
+      const expected = structuredClone(testEntry);
       // @ts-expect-error - autodate_field is unknown
       expected.autodate_field = new Date(expected.autodate_field);
       // @ts-expect-error - date_field is unknown
@@ -140,29 +126,27 @@ describe("pocketbaseLoader", () => {
       const loader = pocketbaseLoader(testOptions);
       const { schema } = await loader.createSchema();
 
-      expect(() => schema.parse(structuredClone(entry))).not.toThrow();
+      expect(() => schema.parse(structuredClone(testEntry))).not.toThrow();
 
-      const result = schema.parse(structuredClone(entry)) as PocketBaseEntry;
+      const result = schema.parse(
+        structuredClone(testEntry)
+      ) as PocketBaseEntry;
       expect(result).toMatchObject(expected);
     });
   });
 
   test("should load and parse entries", async () => {
-    await insertCollection(fields, testOptions, superuserToken);
-
-    let entry = await insertEntry(rawEntry, testOptions, superuserToken);
-    entry = await uploadFile(entry.id, testOptions, superuserToken);
     // @ts-expect-error - autodate_field is unknown
-    entry.autodate_field = new Date(entry.autodate_field);
+    testEntry.autodate_field = new Date(testEntry.autodate_field);
     // @ts-expect-error - date_field is unknown
-    entry.date_field = new Date(entry.date_field);
-    entry.file_field = [
+    testEntry.date_field = new Date(testEntry.date_field);
+    testEntry.file_field = [
       transformFileUrl(
         testOptions.url,
         testOptions.collectionName,
-        entry.id,
+        testEntry.id,
         // @ts-expect-error - file_field is unknown
-        entry.file_field
+        testEntry.file_field
       )
     ];
 
@@ -179,8 +163,6 @@ describe("pocketbaseLoader", () => {
 
     const values = context.store.values();
     expect(values).toHaveLength(1);
-    expect(values[0].data).toMatchObject(entry);
-
-    await deleteCollection(testOptions, superuserToken);
+    expect(values[0].data).toMatchObject(testEntry);
   });
 });

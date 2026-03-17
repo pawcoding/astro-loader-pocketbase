@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import {
-  afterEach,
-  beforeEach,
+  afterAll,
+  beforeAll,
   describe,
   expect,
   inject,
@@ -26,7 +26,7 @@ describe("pocketbaseLiveLoader", () => {
   let collectionName: string;
   let testOptions: PocketBaseLiveLoaderOptions;
 
-  beforeEach(() => {
+  beforeAll(() => {
     collectionName = randomUUID().replaceAll("-", "");
     testOptions = createLiveLoaderOptions({ collectionName });
   });
@@ -43,7 +43,7 @@ describe("pocketbaseLiveLoader", () => {
   describe("data loading", () => {
     let entry: PocketBaseEntry;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
       await insertCollection(
         fields,
         testOptions as PocketBaseLoaderOptions,
@@ -54,7 +54,7 @@ describe("pocketbaseLiveLoader", () => {
       entry = await uploadFile(entry.id, testOptions, superuserToken);
     });
 
-    afterEach(async () => {
+    afterAll(async () => {
       await deleteCollection(testOptions, superuserToken);
     });
 
