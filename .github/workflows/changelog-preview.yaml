@@ -29,6 +29,9 @@ jobs:
         uses: cycjimmy/semantic-release-action@v5
         with:
           semantic_version: 25
+          extra_plugins: |
+            conventional-changelog-conventionalcommits
+            @semantic-release/changelog
           dry_run: true
           ci: false
           unset_gha_env: true

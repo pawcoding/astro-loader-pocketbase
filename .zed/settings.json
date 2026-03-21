@@ -11,15 +11,16 @@
           "run": "onType",
           "configPath": null,
           "tsConfigPath": null,
-          "unusedDisableDirectives": "warn",
-          "typeAware": true,
           "flags": {}
         }
       }
     },
     "oxfmt": {
       "initialization_options": {
-        "configPath": ".oxfmtrc.json"
+        "settings": {
+          "fmt.configPath": null,
+          "run": "onSave"
+        }
       }
     }
   }

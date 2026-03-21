@@ -1,8 +1,8 @@
-import type { ExperimentalPocketBaseLiveLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import type { PocketBaseLiveLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
 
 export function createLiveLoaderOptions(
-  options?: Partial<ExperimentalPocketBaseLiveLoaderOptions>
-): ExperimentalPocketBaseLiveLoaderOptions {
+  options?: Partial<PocketBaseLiveLoaderOptions>
+): PocketBaseLiveLoaderOptions {
   return {
     url: "http://127.0.0.1:8090",
     collectionName: "test",

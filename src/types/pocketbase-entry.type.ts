@@ -1,9 +1,9 @@
 import { z } from "astro/zod";
 
 /**
- * Base schema for all PocketBase entries.
+ * Schema for a PocketBase entry.
  */
-export const pocketBaseBaseEntry = z.object({
+export const pocketBaseEntry = z.looseObject({
   /**
    * ID of the entry.
    */
@@ -17,16 +17,6 @@ export const pocketBaseBaseEntry = z.object({
    */
   collectionName: z.string()
 });
-
-/**
- * Base interface for all PocketBase entries.
- */
-export type PocketBaseBaseEntry = z.infer<typeof pocketBaseBaseEntry>;
-
-/**
- * Schema for a PocketBase entry.
- */
-export const pocketBaseEntry = pocketBaseBaseEntry.passthrough();
 
 /**
  * Type for a PocketBase entry.

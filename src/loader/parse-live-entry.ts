@@ -2,14 +2,14 @@ import type { LiveDataEntry } from "astro";
 import { LiveCollectionValidationError } from "astro/content/runtime";
 import { z } from "astro/zod";
 import type { PocketBaseEntry } from "../types/pocketbase-entry.type";
-import type { ExperimentalPocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
+import type { PocketBaseLiveLoaderOptions } from "../types/pocketbase-loader-options.type";
 
 /**
  * Converts a PocketBase entry into a LiveDataEntry for Astro, extracting content and cache metadata.
  */
 export function parseLiveEntry<TEntry extends PocketBaseEntry>(
   entry: TEntry,
-  options: ExperimentalPocketBaseLiveLoaderOptions
+  options: PocketBaseLiveLoaderOptions
 ): LiveDataEntry<TEntry> {
   // Build a cache tag
   const tag = `${options.collectionName}-${entry.id}`;

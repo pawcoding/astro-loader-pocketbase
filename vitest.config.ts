@@ -6,7 +6,7 @@ export default defineConfig({
     silent: true,
     coverage: {
       include: ["src/**/*.ts"],
-      exclude: ["src/types/**/*.ts", "src/index.ts", "src/pocketbase-loader.ts"]
+      exclude: ["src/types/**/*.ts", "src/index.ts"]
     },
     restoreMocks: true,
     globalSetup: "./test/global-setup.ts"

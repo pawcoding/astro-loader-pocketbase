@@ -13,6 +13,11 @@
     "builtin": true,
     "node": true
   },
+  "options": {
+    "reportUnusedDisableDirectives": "warn",
+    "typeAware": true,
+    "typeCheck": true
+  },
   "rules": {
     // Correctness (in addition to the default rules)
     "typescript/no-base-to-string": "off",
@@ -37,6 +42,7 @@
     "eslint/no-iterator": "error",
     "eslint/no-param-reassign": "warn",
     "eslint/no-proto": "error",
+    "eslint/no-sequences": "error",
     "eslint/no-var": "error",
     "import/no-commonjs": "error",
     "import/no-cycle": "error",
@@ -194,6 +200,8 @@
     "typescript/consistent-type-imports": "error",
     "typescript/no-empty-interface": "error",
     "typescript/prefer-for-of": "error",
+    // Too many false positives, disabled for now until oxlint improves the rule
+    // "typescript/prefer-optional-chain": "warn",
     "typescript/prefer-reduce-type-parameter": "warn",
     "unicorn/catch-error-name": "warn",
     "unicorn/consistent-date-clone": "warn",
@@ -221,6 +229,7 @@
     "typescript/consistent-type-exports": "warn",
     "typescript/dot-notation": "warn",
     "typescript/no-unnecessary-condition": "warn",
+    "typescript/no-unnecessary-type-conversion": "warn",
     "typescript/no-useless-default-assignment": "warn",
     "typescript/prefer-find": "warn",
     "typescript/prefer-optional-chain": "warn",
@@ -234,6 +243,7 @@
         "eslint/max-lines": "off",
         "eslint/max-lines-per-function": "off",
         "eslint/max-nested-callbacks": "off",
+        "jest/prefer-to-contain": "warn",
         "typescript/no-unsafe-argument": "off",
         "typescript/no-unsafe-assignment": "off",
         "typescript/no-unsafe-call": "off",

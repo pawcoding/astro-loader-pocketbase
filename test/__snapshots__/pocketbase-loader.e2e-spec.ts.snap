@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pocketbaseLoader > createSchema function > should return valid schema for all field types 1`] = `
+"export type Entry = {
+    id: string;
+    collectionId: string;
+    collectionName: string;
+    bool_field: boolean;
+    number_field: number;
+    text_field?: string | undefined;
+    email_field?: string | undefined;
+    url_field?: string | undefined;
+    editor_field?: string | undefined;
+    date_field?: Date | undefined;
+    autodate_field: Date;
+    select_field?: ("option1" | "option2") | undefined;
+    file_field?: string[] | undefined;
+    json_field?: unknown | undefined;
+    geopoint_field?: {
+        lon: number;
+        lat: number;
+    } | undefined;
+};"
+`;
