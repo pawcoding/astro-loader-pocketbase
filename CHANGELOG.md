@@ -1,3 +1,54 @@
+## [3.0.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.10.2...v3.0.0) (2026-03-21)
+
+### ⚠ BREAKING CHANGES
+
+* **live-loader:** The `experimentalPocketbaseLiveLoader` as been renamed
+to `pocketbaseLiveLoader`, incl. all it's option and filter types. The
+`liveTypesOnly` option for the base loader is still experimental though.
+* **schema:** astro does not automatically generate typescript types
+anymore, instead content loaders need to implement this logic
+themselves.
+* **schema:** `improveTypes` is now always enabled, so the
+configuration option was removed entirely.
+* **deps:** With v6 astro changed the way custom content loaders
+provide their schemas. Please check the official documentation for
+breaking changes.
+
+### 🚀 Features
+
+* **live-loader:** stabilize live content loader ([8e55b4c](https://github.com/pawcoding/astro-loader-pocketbase/commit/8e55b4c2b6decfc4a3264251bc0c1df84e09d780))
+
+### 🩹 Bug Fixes
+
+* **schema:** get type generation working for collections with files again ([dab3c82](https://github.com/pawcoding/astro-loader-pocketbase/commit/dab3c82773402bb01c8be69e0fa08e72395f7c80))
+
+### 📖 Documentation
+
+* **README:** update compatibility table ([bdd690d](https://github.com/pawcoding/astro-loader-pocketbase/commit/bdd690dbb1929e5ece245b81cf8f2f770985256d))
+
+### 🛠️ Code Refactoring
+
+* replace `ZodSchema` with `ZodType` ([9ca5fc7](https://github.com/pawcoding/astro-loader-pocketbase/commit/9ca5fc7d7238f37fe2260f9cbd4bec4ae9c7fc11))
+* **schema:** remove `improveTypes` option ([0cd6445](https://github.com/pawcoding/astro-loader-pocketbase/commit/0cd64459ca2553c6734af4ba10884cdefa4e9387))
+* **schema:** update schema generation for astro@v6 ([f63c945](https://github.com/pawcoding/astro-loader-pocketbase/commit/f63c945079a65e804e4acdd7230a49525e87b924))
+* update deprecated zod usage ([720c7c2](https://github.com/pawcoding/astro-loader-pocketbase/commit/720c7c202cd9a5d5507724ef634b12058995a739))
+
+### 🧪 Tests
+
+* add tests for schema generation for collections with files ([31fa35a](https://github.com/pawcoding/astro-loader-pocketbase/commit/31fa35ada7ebea85226c5b5e1d7d8c2f59b9e924))
+* **e2e:** improve performance by sharing test collections for some tests ([44d299e](https://github.com/pawcoding/astro-loader-pocketbase/commit/44d299e7326a974033b97fe6a8fe378b88f823b8))
+* include pocketbase-loader in coverage ([16282dd](https://github.com/pawcoding/astro-loader-pocketbase/commit/16282dda592ac2f8532db0106ee839f4424f420a))
+* **pocketbase-loader:** add e2e test for loader and live loader ([c9462fc](https://github.com/pawcoding/astro-loader-pocketbase/commit/c9462fc924778ee2f146f1445eeb114bd9ad22e6))
+
+### 🏗 Dependency updates
+
+* **deps:** update dependencies ([3f0e737](https://github.com/pawcoding/astro-loader-pocketbase/commit/3f0e737c895927b3104bbb11c620811f348116e9))
+* **deps:** update dependencies ([d42b988](https://github.com/pawcoding/astro-loader-pocketbase/commit/d42b988ed0b2b7c0b40383b46eff3076319b07d3))
+* **deps:** update dependencies ([616f0d2](https://github.com/pawcoding/astro-loader-pocketbase/commit/616f0d2557dbe17e1cce63601c34e841af41c2ae))
+* **deps:** update dependencies ([f33c819](https://github.com/pawcoding/astro-loader-pocketbase/commit/f33c8196e0236d79924661a249e7c7de63e99d1c))
+* **deps:** update linter + rule set ([a351995](https://github.com/pawcoding/astro-loader-pocketbase/commit/a3519953d6eb56cbd4d1d8725f108d4b8c47f614))
+* **deps:** upgrade to astro@v6 ([0dd4456](https://github.com/pawcoding/astro-loader-pocketbase/commit/0dd4456965f35b572d998603dcb87180edad3c5d))
+
 ## [2.10.2](https://github.com/pawcoding/astro-loader-pocketbase/compare/v2.10.1...v2.10.2) (2026-02-28)
 
 
