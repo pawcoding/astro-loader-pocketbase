@@ -62,7 +62,7 @@ describe("isRealtimeData", () => {
 
     const data = {
       action: "create",
-      record: record
+      record
     };
 
     assert(!isRealtimeData(data));

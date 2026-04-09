@@ -72,11 +72,13 @@
     "import/no-unassigned-import": "warn",
     "oxc/misrefactored-assign-op": "error",
     "promise/no-promise-in-callback": "error",
+    "typescript/consistent-return": "warn",
     "typescript/no-confusing-non-null-assertion": "warn",
     "typescript/no-unnecessary-boolean-literal-compare": "error",
     "typescript/no-unnecessary-template-expression": "warn",
     "typescript/no-unnecessary-type-arguments": "error",
     "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/no-unnecessary-type-conversion": "warn",
     "typescript/no-unsafe-type-assertion": "error",
     "unicorn/consistent-function-scoping": "warn",
     "unicorn/no-instanceof-builtins": "warn",
@@ -174,6 +176,15 @@
     "eslint/no-nested-ternary": "warn",
     "eslint/no-return-assign": "error",
     "eslint/no-template-curly-in-string": "error",
+    "eslint/no-useless-computed-key": "error",
+    "eslint/object-shorthand": [
+      "warn",
+      "properties",
+      {
+        "avoidQuotes": true,
+        "avoidExplicitReturnArrows": true
+      }
+    ],
     "eslint/prefer-object-spread": "error",
     "eslint/prefer-promise-reject-errors": "warn",
     "eslint/prefer-template": "warn",
@@ -197,11 +208,12 @@
     "typescript/consistent-generic-constructors": "error",
     "typescript/consistent-indexed-object-style": ["error", "record"],
     "typescript/consistent-type-definitions": ["error", "interface"],
+    "typescript/consistent-type-exports": "warn",
     "typescript/consistent-type-imports": "error",
+    "typescript/dot-notation": "warn",
     "typescript/no-empty-interface": "error",
+    "typescript/prefer-find": "warn",
     "typescript/prefer-for-of": "error",
-    // Too many false positives, disabled for now until oxlint improves the rule
-    // "typescript/prefer-optional-chain": "warn",
     "typescript/prefer-reduce-type-parameter": "warn",
     "unicorn/catch-error-name": "warn",
     "unicorn/consistent-date-clone": "warn",
@@ -225,13 +237,10 @@
     "unicorn/switch-case-braces": ["error", "avoid"],
     "unicorn/throw-new-error": "error",
     // Nursery
-    "typescript/consistent-return": "warn",
-    "typescript/consistent-type-exports": "warn",
-    "typescript/dot-notation": "warn",
+    // Too many false positives, disabled for now until oxlint improves the rule
+    // "eslint/no-useless-assignment": "warn",
     "typescript/no-unnecessary-condition": "warn",
-    "typescript/no-unnecessary-type-conversion": "warn",
     "typescript/no-useless-default-assignment": "warn",
-    "typescript/prefer-find": "warn",
     "typescript/prefer-optional-chain": "warn",
     "typescript/strict-void-return": "warn"
   },
@@ -254,6 +263,7 @@
         "typescript/strict-void-return": "off",
         // Vitest specific rules
         "vitest/no-import-node-test": "warn",
+        "vitest/prefer-importing-vitest-globals": "error",
         "vitest/prefer-to-be-falsy": "warn",
         "vitest/prefer-to-be-object": "warn",
         "vitest/prefer-to-be-truthy": "warn"

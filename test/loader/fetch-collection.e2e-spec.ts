@@ -21,7 +21,9 @@ describe("fetchCollection", () => {
   let chunkLoadedMock: Mock<(_: Array<PocketBaseEntry>) => Promise<void>>;
 
   beforeEach(async () => {
-    chunkLoadedMock = vi.fn().mockResolvedValue(undefined);
+    chunkLoadedMock = vi
+      .fn<(_: Array<PocketBaseEntry>) => Promise<void>>()
+      .mockResolvedValue(undefined);
   });
 
   test("should fetch entries without errors", async () => {

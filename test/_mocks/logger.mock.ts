@@ -8,8 +8,8 @@ export class LoggerMock implements AstroIntegrationLogger {
   public fork(_label: string): AstroIntegrationLogger {
     return this;
   }
-  public info = vi.fn();
-  public warn = vi.fn();
-  public error = vi.fn();
-  public debug = vi.fn();
+  public info = vi.fn<AstroIntegrationLogger["info"]>();
+  public warn = vi.fn<AstroIntegrationLogger["warn"]>();
+  public error = vi.fn<AstroIntegrationLogger["error"]>();
+  public debug = vi.fn<AstroIntegrationLogger["debug"]>();
 }

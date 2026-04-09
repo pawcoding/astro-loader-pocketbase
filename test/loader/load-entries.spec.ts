@@ -1,3 +1,4 @@
+// oxlint-disable vitest/require-mock-type-parameters
 import type { LoaderContext } from "astro/loaders";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { loadEntries } from "../../src/loader/load-entries";

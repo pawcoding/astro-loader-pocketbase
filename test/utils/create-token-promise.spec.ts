@@ -9,7 +9,9 @@ describe("createTokenPromise", async () => {
   const gst = await import("../../src/utils/get-superuser-token");
 
   beforeEach(() => {
-    gst.getSuperuserToken = vi.fn().mockResolvedValue(superuserToken);
+    gst.getSuperuserToken = vi
+      .fn<typeof gst.getSuperuserToken>()
+      .mockResolvedValue(superuserToken);
   });
 
   it("should return impersonate token when provided", async () => {
