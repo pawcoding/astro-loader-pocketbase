@@ -11,5 +11,5 @@ export function extractFieldNames(
     return undefined;
   }
 
-  return fields.map((field) => field.split(":")[0]);
+  return fields.map((field) => field.split(":").at(0) ?? field);
 }

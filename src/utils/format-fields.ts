@@ -49,7 +49,10 @@ function splitFieldsString(fieldsString: string): Array<string> {
 
   const fields: Array<string> = [];
   for (let i = 0; i < initialSplit.length; i++) {
-    const part = initialSplit[i];
+    const part = initialSplit.at(i);
+    if (!part) {
+      continue;
+    }
 
     if (part.includes("(") && !part.includes(")")) {
       fields.push(`${part},${initialSplit[++i]}`);
