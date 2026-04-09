@@ -43,7 +43,6 @@ export function pocketbaseLoader(options: PocketBaseLoaderOptions) {
       // Load the entries from the collection
       await loader(context, options, token);
     },
-    // oxlint-disable-next-line explicit-module-boundary-types
     createSchema: async () => {
       const token = await tokenPromise;
 

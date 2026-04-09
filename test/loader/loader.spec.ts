@@ -30,7 +30,9 @@ describe("loader", async () => {
   });
 
   test('should not refresh if shouldRefresh returns "skip"', async () => {
-    srm.shouldRefresh = vi.fn().mockReturnValue("skip");
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("skip");
 
     await loader(context, options, undefined);
 
@@ -40,8 +42,12 @@ describe("loader", async () => {
   });
 
   test("should not refresh if handleRealtimeUpdates handled update", async () => {
-    srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
-    hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(true);
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("refresh");
+    hrum.handleRealtimeUpdates = vi
+      .fn<typeof hrum.handleRealtimeUpdates>()
+      .mockResolvedValue(true);
 
     await loader(context, options, undefined);
 
@@ -50,8 +56,12 @@ describe("loader", async () => {
   });
 
   test('should clear store and disable incremental builds if shouldRefresh returns "force"', async () => {
-    srm.shouldRefresh = vi.fn().mockReturnValue("force");
-    hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("force");
+    hrum.handleRealtimeUpdates = vi
+      .fn<typeof hrum.handleRealtimeUpdates>()
+      .mockResolvedValue(false);
     const storeClearSpy = vi.spyOn(context.store, "clear");
 
     await loader(context, options, undefined);
@@ -66,8 +76,12 @@ describe("loader", async () => {
   });
 
   test("should clear store and disable incremental builds if version changes", async () => {
-    srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
-    hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("refresh");
+    hrum.handleRealtimeUpdates = vi
+      .fn<typeof hrum.handleRealtimeUpdates>()
+      .mockResolvedValue(false);
     const storeClearSpy = vi.spyOn(context.store, "clear");
     context.meta.set("version", "invalidVersion");
 
@@ -83,8 +97,12 @@ describe("loader", async () => {
   });
 
   test("should disable incremental builds if no updatedField is provided", async () => {
-    srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
-    hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("refresh");
+    hrum.handleRealtimeUpdates = vi
+      .fn<typeof hrum.handleRealtimeUpdates>()
+      .mockResolvedValue(false);
     options.updatedField = undefined;
 
     await loader(context, options, undefined);
@@ -99,8 +117,12 @@ describe("loader", async () => {
 
   test("should use superuser token if provided", async () => {
     const token = "token";
-    srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
-    hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("refresh");
+    hrum.handleRealtimeUpdates = vi
+      .fn<typeof hrum.handleRealtimeUpdates>()
+      .mockResolvedValue(false);
     const entry = createPocketbaseEntry();
     context.store.set({ id: entry.id, data: entry });
 
@@ -116,8 +138,12 @@ describe("loader", async () => {
   });
 
   test("should cleanup old entries if store has keys", async () => {
-    srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
-    hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("refresh");
+    hrum.handleRealtimeUpdates = vi
+      .fn<typeof hrum.handleRealtimeUpdates>()
+      .mockResolvedValue(false);
     const entry = createPocketbaseEntry();
     context.store.set({ id: entry.id, data: entry });
 
@@ -127,8 +153,12 @@ describe("loader", async () => {
   });
 
   test("should set last-modified and version in meta after loading entries", async () => {
-    srm.shouldRefresh = vi.fn().mockReturnValue("refresh");
-    hrum.handleRealtimeUpdates = vi.fn().mockResolvedValue(false);
+    srm.shouldRefresh = vi
+      .fn<typeof srm.shouldRefresh>()
+      .mockReturnValue("refresh");
+    hrum.handleRealtimeUpdates = vi
+      .fn<typeof hrum.handleRealtimeUpdates>()
+      .mockResolvedValue(false);
     context.meta.delete("last-modified");
     context.meta.delete("version");
 

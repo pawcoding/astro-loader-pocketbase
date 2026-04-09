@@ -8,8 +8,11 @@ export function createLoaderContext(
 ): LoaderContext {
   return {
     collection: "testCollection",
-    generateDigest: vi.fn().mockReturnValue("digest"),
+    generateDigest: vi
+      .fn<LoaderContext["generateDigest"]>()
+      .mockReturnValue("digest"),
     logger: new LoggerMock(),
+    // oxlint-disable-next-line vitest/require-mock-type-parameters
     parseData: vi.fn().mockResolvedValue({}),
     store: new StoreMock(),
     meta: new Map<string, string>(),

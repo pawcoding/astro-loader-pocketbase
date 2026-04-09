@@ -1,3 +1,4 @@
+// oxlint-disable vitest/require-mock-type-parameters
 import { LiveCollectionError } from "astro/content/runtime";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { liveCollectionLoader } from "../../src/loader/live-collection-loader";
