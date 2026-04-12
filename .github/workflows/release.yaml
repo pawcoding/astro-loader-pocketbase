@@ -83,11 +83,6 @@ jobs:
       - name: 🧪 Run e2e tests
         run: npm run test:e2e
 
-      # Disable corepack to prevent issues with semantic-release
-      # See https://github.com/cycjimmy/semantic-release-action/issues/258
-      - name: ⚙️ Disable corepack
-        run: corepack disable && corepack disable npm
-
       # Create release
       - name: 🚀 Create release
         if: github.repository == 'pawcoding/astro-loader-pocketbase'
