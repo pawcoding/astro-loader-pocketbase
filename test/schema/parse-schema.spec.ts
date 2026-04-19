@@ -9,7 +9,15 @@ describe("parseSchema", () => {
       const collection: PocketBaseCollection = {
         name: "numberCollection",
         type: "base",
-        fields: [{ name: "age", type: "number", required: true, hidden: false }]
+        fields: [
+          {
+            id: "age",
+            name: "age",
+            type: "number",
+            required: true,
+            hidden: false
+          }
+        ]
       };
 
       const schema = parseSchema(collection, undefined, {
@@ -30,7 +38,13 @@ describe("parseSchema", () => {
         name: "numberCollection",
         type: "base",
         fields: [
-          { name: "age", type: "number", required: false, hidden: false }
+          {
+            id: "age",
+            name: "age",
+            type: "number",
+            required: false,
+            hidden: false
+          }
         ]
       };
 
@@ -53,7 +67,13 @@ describe("parseSchema", () => {
         name: "booleanCollection",
         type: "base",
         fields: [
-          { name: "isAdult", type: "bool", required: true, hidden: false }
+          {
+            id: "isAdult",
+            name: "isAdult",
+            type: "bool",
+            required: true,
+            hidden: false
+          }
         ]
       };
 
@@ -75,7 +95,13 @@ describe("parseSchema", () => {
         name: "booleanCollection",
         type: "base",
         fields: [
-          { name: "isAdult", type: "bool", required: false, hidden: false }
+          {
+            id: "isAdult",
+            name: "isAdult",
+            type: "bool",
+            required: false,
+            hidden: false
+          }
         ]
       };
 
@@ -98,7 +124,13 @@ describe("parseSchema", () => {
         name: "dateCollection",
         type: "base",
         fields: [
-          { name: "birthday", type: "date", required: true, hidden: false }
+          {
+            id: "birthday",
+            name: "birthday",
+            type: "date",
+            required: true,
+            hidden: false
+          }
         ]
       };
 
@@ -122,7 +154,13 @@ describe("parseSchema", () => {
         name: "dateCollection",
         type: "base",
         fields: [
-          { name: "birthday", type: "date", required: false, hidden: false }
+          {
+            id: "birthday",
+            name: "birthday",
+            type: "date",
+            required: false,
+            hidden: false
+          }
         ]
       };
 
@@ -146,6 +184,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "birthday",
             name: "birthday",
             type: "autodate",
             required: true,
@@ -175,6 +214,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "birthday",
             name: "birthday",
             type: "autodate",
             required: false,
@@ -201,6 +241,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "birthday",
             name: "birthday",
             type: "autodate",
             required: true,
@@ -230,6 +271,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "coordinates",
             name: "coordinates",
             type: "geoPoint",
             required: true,
@@ -260,6 +302,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "coordinates",
             name: "coordinates",
             type: "geoPoint",
             required: false,
@@ -288,6 +331,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "status",
             name: "status",
             type: "select",
             required: true,
@@ -316,6 +360,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "status",
             name: "status",
             type: "select",
             required: true,
@@ -337,6 +382,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "status",
             name: "status",
             type: "select",
             required: true,
@@ -368,6 +414,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "status",
             name: "status",
             type: "select",
             required: false,
@@ -398,6 +445,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "user",
             name: "user",
             type: "relation",
             required: true,
@@ -425,6 +473,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "user",
             name: "user",
             type: "relation",
             required: true,
@@ -453,6 +502,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "user",
             name: "user",
             type: "relation",
             required: false,
@@ -482,6 +532,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "avatar",
             name: "avatar",
             type: "file",
             required: true,
@@ -509,6 +560,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "avatar",
             name: "avatar",
             type: "file",
             required: true,
@@ -544,6 +596,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "avatar",
             name: "avatar",
             type: "file",
             required: false,
@@ -573,6 +626,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "settings",
             name: "settings",
             type: "json",
             required: true,
@@ -613,6 +667,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "settings",
             name: "settings",
             type: "json",
             required: true,
@@ -645,6 +700,7 @@ describe("parseSchema", () => {
         type: "base",
         fields: [
           {
+            id: "settings",
             name: "settings",
             type: "json",
             required: false,
@@ -674,7 +730,15 @@ describe("parseSchema", () => {
       const collection: PocketBaseCollection = {
         name: "stringCollection",
         type: "base",
-        fields: [{ name: "name", type: "text", required: true, hidden: false }]
+        fields: [
+          {
+            id: "name",
+            name: "name",
+            type: "text",
+            required: true,
+            hidden: false
+          }
+        ]
       };
 
       const schema = parseSchema(collection, undefined, {
@@ -694,7 +758,15 @@ describe("parseSchema", () => {
       const collection: PocketBaseCollection = {
         name: "stringCollection",
         type: "base",
-        fields: [{ name: "name", type: "text", required: false, hidden: false }]
+        fields: [
+          {
+            id: "name",
+            name: "name",
+            type: "text",
+            required: false,
+            hidden: false
+          }
+        ]
       };
 
       const schema = parseSchema(collection, undefined, {
@@ -716,7 +788,13 @@ describe("parseSchema", () => {
         name: "dateCollection",
         type: "base",
         fields: [
-          { name: "birthday", type: "date", required: true, hidden: false }
+          {
+            id: "birthday",
+            name: "birthday",
+            type: "date",
+            required: true,
+            hidden: false
+          }
         ]
       };
 
@@ -738,7 +816,13 @@ describe("parseSchema", () => {
         name: "dateCollection",
         type: "base",
         fields: [
-          { name: "created", type: "autodate", required: true, hidden: false }
+          {
+            id: "created",
+            name: "created",
+            type: "autodate",
+            required: true,
+            hidden: false
+          }
         ]
       };
 
@@ -760,7 +844,13 @@ describe("parseSchema", () => {
         name: "dateCollection",
         type: "base",
         fields: [
-          { name: "birthday", type: "date", required: true, hidden: false }
+          {
+            id: "birthday",
+            name: "birthday",
+            type: "date",
+            required: true,
+            hidden: false
+          }
         ]
       };
 
@@ -784,7 +874,13 @@ describe("parseSchema", () => {
         name: "dateCollection",
         type: "base",
         fields: [
-          { name: "birthday", type: "date", required: true, hidden: false }
+          {
+            id: "birthday",
+            name: "birthday",
+            type: "date",
+            required: true,
+            hidden: false
+          }
         ]
       };
 
@@ -807,10 +903,34 @@ describe("parseSchema", () => {
         name: "mixedCollection",
         type: "base",
         fields: [
-          { name: "title", type: "text", required: true, hidden: false },
-          { name: "birthday", type: "date", required: true, hidden: false },
-          { name: "created", type: "autodate", required: true, hidden: false },
-          { name: "count", type: "number", required: true, hidden: false }
+          {
+            id: "title",
+            name: "title",
+            type: "text",
+            required: true,
+            hidden: false
+          },
+          {
+            id: "birthday",
+            name: "birthday",
+            type: "date",
+            required: true,
+            hidden: false
+          },
+          {
+            id: "created",
+            name: "created",
+            type: "autodate",
+            required: true,
+            hidden: false
+          },
+          {
+            id: "count",
+            name: "count",
+            type: "number",
+            required: true,
+            hidden: false
+          }
         ]
       };
 
@@ -850,7 +970,13 @@ describe("parseSchema", () => {
         name: "dateCollection",
         type: "base",
         fields: [
-          { name: "birthday", type: "date", required: false, hidden: false }
+          {
+            id: "birthday",
+            name: "birthday",
+            type: "date",
+            required: false,
+            hidden: false
+          }
         ]
       };
 

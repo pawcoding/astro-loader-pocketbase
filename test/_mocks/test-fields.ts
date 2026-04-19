@@ -20,7 +20,7 @@ export const fields = [
   // { name: "relation_field", type: "relation" },
   { name: "json_field", type: "json" },
   { name: "geopoint_field", type: "geoPoint" }
-] as const satisfies Array<PocketBaseSchemaEntry>;
+] as const satisfies Array<Omit<PocketBaseSchemaEntry, "id">>;
 
 type Entry = Record<(typeof fields)[number]["name"], unknown>;
 

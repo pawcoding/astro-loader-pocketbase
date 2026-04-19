@@ -4,48 +4,56 @@ exports[`getRemoteSchema > should return schema if fetch request is successful 1
 {
   "fields": [
     {
+      "help": "",
       "hidden": false,
       "name": "id",
       "required": true,
       "type": "text",
     },
     {
+      "help": "",
       "hidden": true,
       "name": "password",
       "required": true,
       "type": "password",
     },
     {
+      "help": "",
       "hidden": true,
       "name": "tokenKey",
       "required": true,
       "type": "text",
     },
     {
+      "help": "",
       "hidden": false,
       "name": "email",
       "required": true,
       "type": "email",
     },
     {
+      "help": "",
       "hidden": false,
       "name": "emailVisibility",
       "required": false,
       "type": "bool",
     },
     {
+      "help": "",
       "hidden": false,
       "name": "verified",
       "required": false,
       "type": "bool",
     },
     {
+      "help": "",
       "hidden": false,
       "name": "name",
       "required": false,
       "type": "text",
     },
     {
+      "help": "",
       "hidden": false,
       "maxSelect": 1,
       "name": "avatar",
