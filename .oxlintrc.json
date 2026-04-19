@@ -140,7 +140,12 @@
     "typescript/prefer-ts-expect-error": "error",
     "typescript/restrict-plus-operands": "error",
     "typescript/return-await": "error",
-    "typescript/switch-exhaustiveness-check": "error",
+    "typescript/switch-exhaustiveness-check": [
+      "error",
+      {
+        "considerDefaultExhaustiveForUnions": true
+      }
+    ],
     "unicorn/consistent-empty-array-spread": "warn",
     "unicorn/explicit-length-check": "warn",
     "unicorn/new-for-builtins": "warn",

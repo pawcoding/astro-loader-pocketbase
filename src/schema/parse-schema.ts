@@ -45,7 +45,6 @@ export function parseSchema(
     let fieldType: z.ZodType;
 
     // Determine the field type and create the corresponding Zod type
-    // oxlint-disable-next-line switch-exhaustiveness-check
     switch (field.type) {
       case "number":
         fieldType = z.number();
