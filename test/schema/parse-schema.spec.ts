@@ -995,4 +995,145 @@ describe("parseSchema", () => {
       expect(z.object(schema).parse(validEmpty)).toEqual(validEmpty);
     });
   });
+
+  describe("help text / field descriptions", () => {
+    test("should use the field help text as the description when present", () => {
+      const collection: PocketBaseCollection = {
+        name: "helpCollection",
+        type: "base",
+        fields: [
+          {
+            id: "notes",
+            name: "notes",
+            type: "text",
+            required: false,
+            hidden: false,
+            help: "Enter any additional notes here."
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, {
+        hasSuperuserRights: false
+      });
+
+      expect(schema.notes.meta()?.description).toBe(
+        collection.fields.at(0)?.help
+      );
+    });
+
+    test("should use the onUpdate autodate description when the field has onUpdate set", () => {
+      const collection: PocketBaseCollection = {
+        name: "autodateCollection",
+        type: "base",
+        fields: [
+          {
+            id: "updated",
+            name: "updated",
+            type: "autodate",
+            required: false,
+            hidden: false,
+            onCreate: false,
+            onUpdate: true
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, {
+        hasSuperuserRights: false
+      });
+
+      expect(schema.updated.meta()?.description).toBeDefined();
+    });
+
+    test("should use the onCreate autodate description when the field has onCreate set", () => {
+      const collection: PocketBaseCollection = {
+        name: "autodateCollection",
+        type: "base",
+        fields: [
+          {
+            id: "created",
+            name: "created",
+            type: "autodate",
+            required: false,
+            hidden: false,
+            onCreate: true,
+            onUpdate: false
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, {
+        hasSuperuserRights: false
+      });
+
+      expect(schema.created.meta()?.description).toBeDefined();
+    });
+
+    test("should use the id field description for a field named 'id'", () => {
+      const collection: PocketBaseCollection = {
+        name: "idCollection",
+        type: "base",
+        fields: [
+          {
+            id: "id",
+            name: "id",
+            type: "text",
+            required: true,
+            hidden: false
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, {
+        hasSuperuserRights: false
+      });
+
+      expect(schema.id.meta()?.description).toBeDefined();
+    });
+
+    test("should use the hidden field description when the field is hidden", () => {
+      const collection: PocketBaseCollection = {
+        name: "hiddenCollection",
+        type: "base",
+        fields: [
+          {
+            id: "secret",
+            name: "secret",
+            type: "text",
+            required: false,
+            hidden: true
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, {
+        hasSuperuserRights: true
+      });
+
+      expect(schema.secret.meta()?.description).toBeDefined();
+    });
+
+    test("should return undefined description for a plain field with no special attributes", () => {
+      const collection: PocketBaseCollection = {
+        name: "plainCollection",
+        type: "base",
+        fields: [
+          {
+            id: "title",
+            name: "title",
+            type: "text",
+            required: true,
+            hidden: false
+          }
+        ]
+      };
+
+      const schema = parseSchema(collection, undefined, {
+        hasSuperuserRights: false
+      });
+
+      expect(schema.title.meta()?.description).toBeUndefined();
+    });
+  });
 });

@@ -3,6 +3,7 @@
 exports[`generateType > should generate typescript type for complex entry 1`] = `
 "export type Entry = {
     age: number;
+    /** Indicates if the person is an adult */
     isAdult: boolean;
     birthday: Date;
     location: {
@@ -19,6 +20,7 @@ exports[`generateType > should generate typescript type for complex entry 1`] = 
 exports[`generateType > should generate typescript type for transformed entry 1`] = `
 "export type Entry = {
     age: number;
+    /** Indicates if the person is an adult */
     isAdult: boolean;
     location: {
         lon: number;

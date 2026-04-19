@@ -6,7 +6,11 @@ describe("generateType", () => {
   test("should generate typescript type for complex entry", () => {
     const schema = z.object({
       age: z.number(),
-      isAdult: z.boolean(),
+      isAdult: z.boolean().meta({
+        id: "isAdult",
+        name: "isAdult",
+        description: "Indicates if the person is an adult"
+      }),
       birthday: z.coerce.date(),
       location: z.object({
         lon: z.number(),
@@ -25,7 +29,11 @@ describe("generateType", () => {
   test("should generate typescript type for transformed entry", () => {
     const schema = z.object({
       age: z.number(),
-      isAdult: z.boolean(),
+      isAdult: z.boolean().meta({
+        id: "isAdult",
+        name: "isAdult",
+        description: "Indicates if the person is an adult"
+      }),
       location: z.object({
         lon: z.number(),
         lat: z.number()
