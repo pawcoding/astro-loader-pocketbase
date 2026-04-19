@@ -136,10 +136,12 @@
     "typescript/no-unsafe-function-type": "error",
     "typescript/no-unsafe-member-access": "error",
     "typescript/no-unsafe-return": "error",
+    "typescript/no-useless-default-assignment": "warn",
     "typescript/only-throw-error": "error",
     "typescript/prefer-ts-expect-error": "error",
     "typescript/restrict-plus-operands": "error",
     "typescript/return-await": "error",
+    "typescript/strict-void-return": "warn",
     "typescript/switch-exhaustiveness-check": [
       "error",
       {
@@ -245,9 +247,7 @@
     // Too many false positives, disabled for now until oxlint improves the rule
     // "eslint/no-useless-assignment": "warn",
     "typescript/no-unnecessary-condition": "warn",
-    "typescript/no-useless-default-assignment": "warn",
-    "typescript/prefer-optional-chain": "warn",
-    "typescript/strict-void-return": "warn"
+    "typescript/prefer-optional-chain": "warn"
   },
   "overrides": [
     {
