@@ -50,20 +50,20 @@
     "@commitlint/cli": "20.5.0",
     "@commitlint/config-conventional": "20.5.0",
     "@types/node": "24.10.1",
-    "@vitest/coverage-v8": "4.1.4",
-    "astro": "6.1.8",
+    "@vitest/coverage-v8": "4.1.5",
+    "astro": "6.1.9",
     "globals": "17.5.0",
     "husky": "9.1.7",
     "lint-staged": "16.4.0",
-    "oxfmt": "0.45.0",
-    "oxlint": "1.60.0",
+    "oxfmt": "0.46.0",
+    "oxlint": "1.61.0",
     "oxlint-tsgolint": "0.21.1",
-    "vitest": "4.1.4",
+    "vitest": "4.1.5",
     "zod-to-ts": "2.0.0"
   },
   "peerDependencies": {
     "astro": "^6.0.0",
     "zod-to-ts": "^2.0.0"
   },
-  "packageManager": "npm@11.12.1"
+  "packageManager": "npm@11.13.0"
 }
