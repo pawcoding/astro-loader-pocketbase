@@ -1,3 +1,19 @@
+## [3.1.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v3.0.2...v3.1.0) (2026-04-24)
+
+### 🚀 Features
+
+* **schema:** extract help text and use it as property description ([a8ebe2b](https://github.com/pawcoding/astro-loader-pocketbase/commit/a8ebe2b47389ee9f76b47d933feca2f6705a4895))
+
+### 🧪 Tests
+
+* **schema:** add test cases for help text / property description ([2ce81a0](https://github.com/pawcoding/astro-loader-pocketbase/commit/2ce81a044ef80dc46d4db479511f93a7ecd1f5c3))
+* **schema:** update tests to handle added properties to schema entry ([691d6a8](https://github.com/pawcoding/astro-loader-pocketbase/commit/691d6a86daec5d17b076c7954e1a28a9794c059d))
+
+### 🏗 Dependency updates
+
+* **deps:** update dependencies ([c646b8e](https://github.com/pawcoding/astro-loader-pocketbase/commit/c646b8e43b6f6d74041fcf32cbae1b559c047be5))
+* **deps:** update dependencies ([6ee22d9](https://github.com/pawcoding/astro-loader-pocketbase/commit/6ee22d9b5ad87df30a6b43a75976b1f9982aad50))
+
 ## [3.0.2](https://github.com/pawcoding/astro-loader-pocketbase/compare/v3.0.1...v3.0.2) (2026-04-12)
 
 ### 🏗 Dependency updates
