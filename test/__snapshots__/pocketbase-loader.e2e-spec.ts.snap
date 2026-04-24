@@ -2,8 +2,11 @@
 
 exports[`pocketbaseLoader > createSchema function > should return valid schema for all field types 1`] = `
 "export type Entry = {
+    /** The unique identifier for the entry. */
     id: string;
+    /** The unique identifier for the collection the entity belongs to. */
     collectionId: string;
+    /** The name of the collection the entity belongs to. */
     collectionName: string;
     bool_field: boolean;
     number_field: number;
@@ -12,6 +15,7 @@ exports[`pocketbaseLoader > createSchema function > should return valid schema f
     url_field?: string | undefined;
     editor_field?: string | undefined;
     date_field?: Date | undefined;
+    /** Date when the entry was created. This field is automatically set by PocketBase when the entry is created. */
     autodate_field: Date;
     select_field?: ("option1" | "option2") | undefined;
     file_field?: string[] | undefined;

@@ -136,11 +136,18 @@
     "typescript/no-unsafe-function-type": "error",
     "typescript/no-unsafe-member-access": "error",
     "typescript/no-unsafe-return": "error",
+    "typescript/no-useless-default-assignment": "warn",
     "typescript/only-throw-error": "error",
     "typescript/prefer-ts-expect-error": "error",
     "typescript/restrict-plus-operands": "error",
     "typescript/return-await": "error",
-    "typescript/switch-exhaustiveness-check": "error",
+    "typescript/strict-void-return": "warn",
+    "typescript/switch-exhaustiveness-check": [
+      "error",
+      {
+        "considerDefaultExhaustiveForUnions": true
+      }
+    ],
     "unicorn/consistent-empty-array-spread": "warn",
     "unicorn/explicit-length-check": "warn",
     "unicorn/new-for-builtins": "warn",
@@ -240,9 +247,7 @@
     // Too many false positives, disabled for now until oxlint improves the rule
     // "eslint/no-useless-assignment": "warn",
     "typescript/no-unnecessary-condition": "warn",
-    "typescript/no-useless-default-assignment": "warn",
-    "typescript/prefer-optional-chain": "warn",
-    "typescript/strict-void-return": "warn"
+    "typescript/prefer-optional-chain": "warn"
   },
   "overrides": [
     {
@@ -253,6 +258,9 @@
         "eslint/max-lines-per-function": "off",
         "eslint/max-nested-callbacks": "off",
         "jest/prefer-to-contain": "warn",
+        "jest/require-to-throw-message": "off",
+        "jest/valid-describe-callback": "off",
+        "jest/no-conditional-expect": "off",
         "typescript/no-unsafe-argument": "off",
         "typescript/no-unsafe-assignment": "off",
         "typescript/no-unsafe-call": "off",

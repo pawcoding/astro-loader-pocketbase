@@ -13,9 +13,19 @@ import { transformFiles } from "./transform-files";
  * Basic schema for every PocketBase collection.
  */
 const BASIC_SCHEMA = z.object({
-  id: z.string(),
-  collectionId: z.string(),
-  collectionName: z.string()
+  id: z.string().meta({
+    title: "id",
+    description: "The unique identifier for the entry."
+  }),
+  collectionId: z.string().meta({
+    title: "collectionId",
+    description:
+      "The unique identifier for the collection the entity belongs to."
+  }),
+  collectionName: z.string().meta({
+    title: "collectionName",
+    description: "The name of the collection the entity belongs to."
+  })
 });
 
 /**

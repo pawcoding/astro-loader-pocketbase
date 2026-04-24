@@ -45,7 +45,6 @@ export function parseSchema(
     let fieldType: z.ZodType;
 
     // Determine the field type and create the corresponding Zod type
-    // oxlint-disable-next-line switch-exhaustiveness-check
     switch (field.type) {
       case "number":
         fieldType = z.number();
@@ -120,7 +119,11 @@ export function parseSchema(
     }
 
     // Add the field to the fields object
-    fields[field.name] = fieldType;
+    fields[field.name] = fieldType.meta({
+      id: field.id,
+      title: field.name,
+      description: getFieldDescription(field)
+    });
   }
 
   return fields;
@@ -144,4 +147,24 @@ function parseSingleOrMultipleValues(
   }
 
   return z.array(type);
+}
+
+/**
+ * Get the description for a field based on its help text and type.
+ */
+function getFieldDescription(field: PocketBaseSchemaEntry): string | undefined {
+  switch (true) {
+    case !!field.help:
+      return field.help;
+    case field.type === "autodate" && field.onUpdate:
+      return "Date when the entry was last updated. This field is automatically updated by PocketBase whenever the entry is updated.";
+    case field.type === "autodate" && field.onCreate:
+      return "Date when the entry was created. This field is automatically set by PocketBase when the entry is created.";
+    case field.name === "id":
+      return "The unique identifier for the entry.";
+    case field.hidden:
+      return "This field is hidden and may require superuser credentials to access.";
+    default:
+      return undefined;
+  }
 }

@@ -10,9 +10,18 @@ export const pocketBaseSchemaEntry = z.object({
    */
   hidden: z.optional(z.boolean()),
   /**
+   * Unique identifier for the field.
+   */
+  id: z.string(),
+  /**
    * Name of the field.
    */
   name: z.string(),
+  /**
+   * Help text for the field.
+   * This is only present if the field has help text defined.
+   */
+  help: z.optional(z.string()),
   /**
    * Type of the field.
    */

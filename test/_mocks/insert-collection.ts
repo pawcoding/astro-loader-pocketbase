@@ -3,7 +3,7 @@ import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-
 import type { PocketBaseSchemaEntry } from "../../src/types/pocketbase-schema.type";
 
 export async function insertCollection(
-  fields: Array<PocketBaseSchemaEntry>,
+  fields: Array<Omit<PocketBaseSchemaEntry, "id">>,
   options: PocketBaseLoaderOptions,
   superuserToken: string
 ): Promise<void> {

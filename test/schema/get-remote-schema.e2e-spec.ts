@@ -35,6 +35,12 @@ describe("getRemoteSchema", () => {
 
     assert(result, "Schema is not defined.");
 
+    for (const field of result.fields) {
+      // @ts-expect-error - Id is technically required, but we want to ignore it for snapshot testing
+      // since it is generated and can change between test runs thus causing snapshot failures
+      delete field.id;
+    }
+
     expect(result).toMatchSnapshot();
   });
 });
