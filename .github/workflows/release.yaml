@@ -27,13 +27,13 @@ jobs:
     steps:
       # Checkout repository
       - name: 📥 Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
       # Setup Node
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: .nvmrc
 
@@ -87,7 +87,7 @@ jobs:
       - name: 🚀 Create release
         if: github.repository == 'pawcoding/astro-loader-pocketbase'
         id: release
-        uses: cycjimmy/semantic-release-action@v5
+        uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
         with:
           semantic_version: 25
           extra_plugins: |
@@ -100,7 +100,7 @@ jobs:
       # Update project on website
       - name: 🖥️ Update website
         if: github.repository == 'pawcoding/astro-loader-pocketbase' && steps.release.outputs.new_release_published == 'true' && !steps.release.outputs.new_release_channel  && steps.release.outputs.new_release_patch_version == '0'
-        uses: pawcoding/update-project-action@v0.0.4
+        uses: pawcoding/update-project-action@14441f968c2a3a245654b87976680b89fc482f74 # v0.0.5
         with:
           pocketbase-url: ${{ vars.PB_URL }}
           collection-id: ${{ vars.PB_COLLECTION }}

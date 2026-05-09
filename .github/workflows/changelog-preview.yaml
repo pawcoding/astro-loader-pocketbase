@@ -17,7 +17,7 @@ jobs:
       # Checkout repository with full history for semantic-release
       # This checks out the PR merge commit to analyze what would be released
       - name: 📥 Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.head_ref }}
           persist-credentials: false
@@ -26,7 +26,7 @@ jobs:
       # This analyzes commits from the base branch to the PR head
       - name: 🔮 Generate changelog preview
         id: changelog
-        uses: cycjimmy/semantic-release-action@v5
+        uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
         with:
           semantic_version: 25
           extra_plugins: |
@@ -46,7 +46,7 @@ jobs:
 
       # Create or update PR comment with changelog
       - name: 💬 Post changelog preview
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         if: steps.changelog.outputs.new_release_version != ''
         with:
           header: changelog-preview
@@ -57,7 +57,7 @@ jobs:
 
       # Post comment if no release will be triggered
       - name: 💬 Post no release message
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         if: steps.changelog.outputs.new_release_version == ''
         with:
           header: changelog-preview
@@ -70,7 +70,7 @@ jobs:
 
       # Post comment if semantic-release fails
       - name: 💬 Post error message
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         if: failure() && steps.changelog.conclusion == 'failure'
         with:
           header: changelog-preview
