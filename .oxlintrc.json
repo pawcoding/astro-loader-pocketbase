@@ -257,10 +257,6 @@
         "eslint/max-lines": "off",
         "eslint/max-lines-per-function": "off",
         "eslint/max-nested-callbacks": "off",
-        "jest/prefer-to-contain": "warn",
-        "jest/require-to-throw-message": "off",
-        "jest/valid-describe-callback": "off",
-        "jest/no-conditional-expect": "off",
         "typescript/no-unsafe-argument": "off",
         "typescript/no-unsafe-assignment": "off",
         "typescript/no-unsafe-call": "off",
@@ -270,11 +266,16 @@
         "typescript/no-explicit-any": "off",
         "typescript/strict-void-return": "off",
         // Vitest specific rules
+        "jest/no-conditional-expect": "off",
+        "vitest/no-conditional-expect": "off",
         "vitest/no-import-node-test": "warn",
         "vitest/prefer-importing-vitest-globals": "error",
         "vitest/prefer-to-be-falsy": "warn",
         "vitest/prefer-to-be-object": "warn",
-        "vitest/prefer-to-be-truthy": "warn"
+        "vitest/prefer-to-be-truthy": "warn",
+        "vitest/prefer-to-contain": "warn",
+        "vitest/require-to-throw-message": "off",
+        "vitest/valid-describe-callback": "off"
       }
     }
   ],
