@@ -39,7 +39,7 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "prepare": "husky",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "test": "vitest run",
     "test:e2e": "vitest run $(find test -name '*.e2e-spec.ts')",
     "test:e2e:pocketbase": "npm run test:e2e:setup && ./.pocketbase/pocketbase serve",
