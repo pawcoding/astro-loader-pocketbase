@@ -12,4 +12,6 @@ export class LoggerMock implements AstroIntegrationLogger {
   public warn = vi.fn<AstroIntegrationLogger["warn"]>();
   public error = vi.fn<AstroIntegrationLogger["error"]>();
   public debug = vi.fn<AstroIntegrationLogger["debug"]>();
+  public flush = vi.fn<AstroIntegrationLogger["flush"]>();
+  public close = vi.fn<AstroIntegrationLogger["close"]>();
 }
