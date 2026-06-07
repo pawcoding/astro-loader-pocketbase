@@ -51,19 +51,19 @@
     "typecheck": "npx @typescript/native-preview --noEmit -p src/tsconfig.json && npx @typescript/native-preview --noEmit -p test/tsconfig.json"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.0.1",
-    "@commitlint/config-conventional": "21.0.1",
+    "@commitlint/cli": "21.0.2",
+    "@commitlint/config-conventional": "21.0.2",
     "@types/node": "24.12.4",
     "@vitest/coverage-v8": "4.1.7",
-    "astro": "6.3.7",
+    "astro": "6.4.2",
     "globals": "17.6.0",
     "husky": "9.1.7",
-    "lint-staged": "17.0.5",
-    "oxfmt": "0.51.0",
-    "oxlint": "1.66.0",
+    "lint-staged": "17.0.6",
+    "oxfmt": "0.52.0",
+    "oxlint": "1.67.0",
     "oxlint-tsgolint": "0.23.0",
     "publint": "0.3.21",
-    "tsdown": "0.22.0",
+    "tsdown": "0.22.1",
     "vitest": "4.1.7",
     "zod-to-ts": "2.0.0"
   },
@@ -74,5 +74,8 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "npm@11.15.0"
+  "packageManager": "npm@11.16.0",
+  "allowScripts": {
+    "esbuild@0.27.7": true
+  }
 }
