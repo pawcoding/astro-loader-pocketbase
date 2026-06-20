@@ -53,19 +53,19 @@
   "devDependencies": {
     "@commitlint/cli": "21.0.2",
     "@commitlint/config-conventional": "21.0.2",
-    "@types/node": "24.12.4",
-    "@vitest/coverage-v8": "4.1.7",
-    "astro": "6.4.2",
+    "@types/node": "24.13.2",
+    "@vitest/coverage-v8": "4.1.8",
+    "astro": "6.4.6",
     "globals": "17.6.0",
     "husky": "9.1.7",
-    "lint-staged": "17.0.6",
-    "oxfmt": "0.52.0",
-    "oxlint": "1.67.0",
+    "lint-staged": "17.0.7",
+    "oxfmt": "0.54.0",
+    "oxlint": "1.69.0",
     "oxlint-tsgolint": "0.23.0",
     "publint": "0.3.21",
-    "tsdown": "0.22.1",
-    "vitest": "4.1.7",
-    "zod-to-ts": "2.0.0"
+    "tsdown": "0.22.2",
+    "vitest": "4.1.8",
+    "zod-to-ts": "2.1.0"
   },
   "peerDependencies": {
     "astro": "^6.0.0",
@@ -74,7 +74,7 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "npm@11.16.0",
+  "packageManager": "npm@11.17.0",
   "allowScripts": {
     "esbuild@0.27.7": true
   }
