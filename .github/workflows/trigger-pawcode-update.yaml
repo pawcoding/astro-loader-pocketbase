@@ -7,7 +7,7 @@ on:
 jobs:
   trigger-update:
     if: github.repository == 'pawcoding/astro-loader-pocketbase'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - name: 📋 Extract release info
         id: release

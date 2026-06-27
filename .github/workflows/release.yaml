@@ -27,9 +27,26 @@ jobs:
     steps:
       # Checkout repository
       - name: 📥 Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+
+      # Setup PocketBase
+      - name: 🗄️ Download and setup PocketBase
+        id: setup-pocketbase
+        background: true
+        run: |
+          # Download and setup PocketBase
+          npm run test:e2e:setup
+
+          # Start PocketBase in the background
+          ./.pocketbase/pocketbase serve &
+
+          # Wait for PocketBase to be ready
+          until curl -s --fail http://localhost:8090/api/health; do
+            echo 'Waiting for PocketBase...'
+            sleep 5
+          done
 
       # Setup Node
       - name: 📦 Setup Node.js
@@ -45,43 +62,28 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      # Lint code
-      - name: 🧹 Lint code (includes type-check)
-        run: npm run lint
+      # Wait for PocketBase setup to complete
+      - name: ⏳ Wait for PocketBase setup
+        wait: [setup-pocketbase]
 
-      # Check format
-      - name: 🧹 Check format
-        run: npm run format:check
+      - parallel:
+          # Lint code
+          - name: 🧹 Lint code (includes type-check)
+            run: npm run lint
 
-      # Type check
-      #   Still included for now, since the oxlint built-in typecheck uses TypeScript v7.
-      #   This one uses the TypeScript version actually specified in the project.
-      - name: 🧪 Type check
-        run: npx tsc --noEmit
+          # Check format
+          - name: 🧹 Check format
+            run: npm run format:check
 
-      # Run tests
-      - name: 🧪 Run unit tests
-        run: npm run test:unit
+          # Type check
+          #   Still included for now, since the oxlint built-in typecheck uses TypeScript v7.
+          #   This one uses the TypeScript version actually specified in the project.
+          - name: 🧪 Type check
+            run: npx tsc --noEmit
 
-      # Setup PocketBase
-      - name: 🗄️ Download and setup PocketBase
-        run: npm run test:e2e:setup
-
-      # Start PocketBase
-      - name: 🚀 Start PocketBase
-        run: ./.pocketbase/pocketbase serve &
-
-      # Wait for PocketBase to be ready
-      - name: ⏳ Wait for PocketBase
-        run: |
-          until curl -s --fail http://localhost:8090/api/health; do
-            echo 'Waiting for PocketBase...'
-            sleep 5
-          done
-
-      # Run tests
-      - name: 🧪 Run e2e tests
-        run: npm run test:e2e
+          # Run tests
+          - name: 🧪 Run tests
+            run: npm run test
 
       # Create release
       - name: 🚀 Create release
