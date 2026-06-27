@@ -55,7 +55,7 @@
     "@commitlint/config-conventional": "21.0.2",
     "@types/node": "24.13.2",
     "@vitest/coverage-v8": "4.1.9",
-    "astro": "6.4.8",
+    "astro": "7.0.3",
     "globals": "17.6.0",
     "husky": "9.1.7",
     "lint-staged": "17.0.7",
@@ -68,7 +68,7 @@
     "zod-to-ts": "2.1.0"
   },
   "peerDependencies": {
-    "astro": "^6.0.0",
+    "astro": "^7.0.0",
     "zod-to-ts": "^2.0.0"
   },
   "engines": {
