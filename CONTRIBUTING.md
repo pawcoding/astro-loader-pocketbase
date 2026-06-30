@@ -121,10 +121,14 @@ Run tests locally before submitting a PR:
 npm run test
 ```
 
-For e2e tests, ensure you have a PocketBase instance running and configured correctly.
+For e2e tests, you need a PocketBase instance running locally. The `serve` command blocks the terminal, so use two separate terminal sessions:
 
 ```bash
-npm run test:e2e:pocketbase
+# Terminal 1 — download binary (once) and start the server (blocks)
+npm run test:e2e:setup
+./.pocketbase/pocketbase serve
+
+# Terminal 2 — run the tests
 npm run test:e2e
 ```
 
@@ -146,31 +150,13 @@ Ensure all tests pass and add new tests for your changes.
    git push origin feature/your-feature-name
    ```
 
-2. Create a pull request on GitHub using our PR template (target the `next` branch if available)
+2. Create a pull request on GitHub using our PR template (target the `next` branch)
 
-3. In your PR description:
+3. In your PR description, follow the PR template:
    - Clearly describe what your changes do and why
    - Reference any related issues
    - Include any breaking changes or migration notes
-   - Add screenshots or examples if applicable
-
-### PR Structure
-
-Your PR should follow this structure:
-
-```markdown
-## Changes
-
-- Clear bullet points describing what changed
-
-## Issues
-
-- Closes #123 (if applicable)
-
-## Dependencies
-
-- Depends on: #456 (if applicable)
-```
+   - Confirm manual testing and automated test coverage
 
 ### Review Process
 
