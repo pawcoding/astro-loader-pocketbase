@@ -120,5 +120,11 @@
         }
       ]
     }
+  },
+  "context_servers": {
+    "astro-docs": {
+      "enabled": true,
+      "url": "https://mcp.docs.astro.build/mcp"
+    }
   }
 }
