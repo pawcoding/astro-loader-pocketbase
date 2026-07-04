@@ -1,3 +1,22 @@
+## [4.0.0](https://github.com/pawcoding/astro-loader-pocketbase/compare/v3.1.4...v4.0.0) (2026-07-04)
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** Upgrade to Astro v7
+
+### 📖 Documentation
+
+* **agents:** update agent instructions ([7fcb172](https://github.com/pawcoding/astro-loader-pocketbase/commit/7fcb172be03620d224cf47e69df806851fc7cc82))
+* **README:** add version information ([4160d62](https://github.com/pawcoding/astro-loader-pocketbase/commit/4160d62573fc035d7fc62e6e85742ef53f094c51))
+* update readme and contributing instructions ([fa2b005](https://github.com/pawcoding/astro-loader-pocketbase/commit/fa2b005a99dd8fb699c13a64c42c173b4b9ae894))
+
+### 🏗 Dependency updates
+
+* **deps:** update dependencies ([825d109](https://github.com/pawcoding/astro-loader-pocketbase/commit/825d109effa220ff167c3248e5416ac3d6a01c26))
+* **deps:** update dependencies ([762ff1b](https://github.com/pawcoding/astro-loader-pocketbase/commit/762ff1b4a5e7db727ab5353f6823578886a69916))
+* **deps:** update dependencies ([ddc9aad](https://github.com/pawcoding/astro-loader-pocketbase/commit/ddc9aada96dc9e847fb21d7676e9c37254973a1c))
+* **deps:** upgrade packageManager ([1f4930e](https://github.com/pawcoding/astro-loader-pocketbase/commit/1f4930e7db7dc85020ac11b190654571269008db))
+
 ## [3.1.4](https://github.com/pawcoding/astro-loader-pocketbase/compare/v3.1.3...v3.1.4) (2026-06-27)
 
 ## [3.1.3](https://github.com/pawcoding/astro-loader-pocketbase/compare/v3.1.2...v3.1.3) (2026-06-20)
