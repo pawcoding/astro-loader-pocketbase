@@ -1,6 +1,6 @@
 {
   "name": "astro-loader-pocketbase",
-  "version": "3.1.4",
+  "version": "4.0.0-next.1",
   "description": "A content loader for Astro that uses the PocketBase API",
   "keywords": [
     "astro",
@@ -51,16 +51,16 @@
     "typecheck": "npx @typescript/native-preview --noEmit -p src/tsconfig.json && npx @typescript/native-preview --noEmit -p test/tsconfig.json"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.0.2",
-    "@commitlint/config-conventional": "21.0.2",
+    "@commitlint/cli": "21.1.0",
+    "@commitlint/config-conventional": "21.1.0",
     "@types/node": "24.13.2",
     "@vitest/coverage-v8": "4.1.9",
-    "astro": "6.4.8",
-    "globals": "17.6.0",
+    "astro": "7.0.3",
+    "globals": "17.7.0",
     "husky": "9.1.7",
-    "lint-staged": "17.0.7",
-    "oxfmt": "0.55.0",
-    "oxlint": "1.70.0",
+    "lint-staged": "17.0.8",
+    "oxfmt": "0.56.0",
+    "oxlint": "1.71.0",
     "oxlint-tsgolint": "0.23.0",
     "publint": "0.3.21",
     "tsdown": "0.22.3",
@@ -68,7 +68,7 @@
     "zod-to-ts": "2.1.0"
   },
   "peerDependencies": {
-    "astro": "^6.0.0",
+    "astro": "^7.0.0",
     "zod-to-ts": "^2.0.0"
   },
   "engines": {

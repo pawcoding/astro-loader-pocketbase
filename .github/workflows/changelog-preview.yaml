@@ -30,7 +30,7 @@ jobs:
         with:
           semantic_version: 25
           extra_plugins: |
-            conventional-changelog-conventionalcommits
+            conventional-changelog-conventionalcommits@9
             @semantic-release/changelog
           dry_run: true
           ci: false
