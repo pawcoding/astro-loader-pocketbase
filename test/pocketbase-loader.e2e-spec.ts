@@ -128,9 +128,7 @@ describe("pocketbaseLoader", () => {
 
       expect(() => schema.parse(structuredClone(testEntry))).not.toThrow();
 
-      const result = schema.parse(
-        structuredClone(testEntry)
-      ) as PocketBaseEntry;
+      const result = schema.parse(structuredClone(testEntry));
       expect(result).toMatchObject(expected);
     });
   });

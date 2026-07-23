@@ -10,10 +10,7 @@ import {
 } from "vitest";
 import { pocketbaseLiveLoader } from "../src/pocketbase-loader";
 import type { PocketBaseEntry } from "../src/types/pocketbase-entry.type";
-import type {
-  PocketBaseLiveLoaderOptions,
-  PocketBaseLoaderOptions
-} from "../src/types/pocketbase-loader-options.type";
+import type { PocketBaseLiveLoaderOptions } from "../src/types/pocketbase-loader-options.type";
 import { createLiveLoaderOptions } from "./_mocks/create-live-loader-options";
 import { deleteCollection } from "./_mocks/delete-collection";
 import { insertCollection } from "./_mocks/insert-collection";
@@ -44,11 +41,7 @@ describe("pocketbaseLiveLoader", () => {
     let entry: PocketBaseEntry;
 
     beforeAll(async () => {
-      await insertCollection(
-        fields,
-        testOptions as PocketBaseLoaderOptions,
-        superuserToken
-      );
+      await insertCollection(fields, testOptions, superuserToken);
 
       entry = await insertEntry(rawEntry, testOptions, superuserToken);
       entry = await uploadFile(entry.id, testOptions, superuserToken);

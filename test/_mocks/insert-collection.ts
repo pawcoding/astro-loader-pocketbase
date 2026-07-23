@@ -1,10 +1,10 @@
 import { assert } from "console";
-import type { PocketBaseLoaderOptions } from "../../src/types/pocketbase-loader-options.type";
+import type { PocketBaseLoaderBaseOptions } from "../../src/types/pocketbase-loader-options.type";
 import type { PocketBaseSchemaEntry } from "../../src/types/pocketbase-schema.type";
 
 export async function insertCollection(
   fields: Array<Omit<PocketBaseSchemaEntry, "id">>,
-  options: PocketBaseLoaderOptions,
+  options: PocketBaseLoaderBaseOptions,
   superuserToken: string
 ): Promise<void> {
   const insertRequest = await fetch(new URL(`api/collections`, options.url), {
