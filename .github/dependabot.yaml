@@ -1,0 +1,32 @@
+# `dependabot.yml` file with
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Only open security updates, not version bumps
+    open-pull-requests-limit: 0
+    # Raise all npm pull requests with custom labels
+    labels:
+      - "dependencies"
+      - "team/internal"
+      - "type/maintenance"
+    commit-message:
+      # Use conventional commits
+      prefix: "build(deps): "
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Only open security updates, not version bumps
+    open-pull-requests-limit: 0
+    # Raise all npm pull requests with custom labels
+    labels:
+      - "dependencies"
+      - "team/internal"
+      - "type/maintenance"
+    commit-message:
+      # Use conventional commits
+      prefix: "build(deps): "
