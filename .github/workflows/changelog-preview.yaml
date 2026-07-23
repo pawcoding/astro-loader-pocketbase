@@ -46,7 +46,7 @@ jobs:
 
       # Create or update PR comment with changelog
       - name: 💬 Post changelog preview
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         if: steps.changelog.outputs.new_release_version != ''
         with:
           header: changelog-preview
@@ -57,7 +57,7 @@ jobs:
 
       # Post comment if no release will be triggered
       - name: 💬 Post no release message
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         if: steps.changelog.outputs.new_release_version == ''
         with:
           header: changelog-preview
@@ -70,7 +70,7 @@ jobs:
 
       # Post comment if semantic-release fails
       - name: 💬 Post error message
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         if: failure() && steps.changelog.conclusion == 'failure'
         with:
           header: changelog-preview

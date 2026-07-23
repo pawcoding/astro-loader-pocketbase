@@ -21,7 +21,7 @@ Relevant upstream documentation:
 ```bash
 npm run format       # oxfmt — format all files
 npm run lint:fix     # oxlint --fix — lint + auto-fix
-npm run typecheck    # @typescript/native-preview on src/ and test/
+npm run typecheck    # tsc --noEmit on src/ and test/
 npm test             # vitest run (unit + e2e, needs PocketBase for e2e)
 npm run test:unit    # unit tests only — no PocketBase needed
 npm run test:e2e     # e2e tests only — PocketBase must be running first
@@ -62,10 +62,6 @@ npm run test:e2e
 Hardcoded test credentials: `test@pawcode.de` / `test1234` (created by the setup script).
 
 `npm run test:unit` is safe without PocketBase. The vitest global setup (`test/global-setup.ts`) skips the connection check when no e2e-spec files are in scope.
-
-## Typecheck quirk
-
-`npm run typecheck` uses `@typescript/native-preview` (TypeScript v7 internally), not `tsc`. CI additionally runs `npx tsc --noEmit` separately because results can differ. If you get typecheck failures from one but not the other, both matter.
 
 ## Code conventions (enforced by oxlint — violations are errors)
 
