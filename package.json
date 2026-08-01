@@ -51,6 +51,9 @@
     "typecheck": "tsc --noEmit -p src/tsconfig.json && tsc --noEmit -p test/tsconfig.json",
     "update-dependencies": "ncu -i -u --format group && ncu -i -u --target minor && actions-up --min-age 7"
   },
+  "dependencies": {
+    "zod-to-ts": "^2.1.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "21.2.1",
     "@commitlint/config-conventional": "21.2.0",
@@ -68,12 +71,10 @@
     "publint": "0.3.22",
     "tsdown": "0.22.14",
     "typescript": "6.0.3",
-    "vitest": "4.1.10",
-    "zod-to-ts": "2.1.0"
+    "vitest": "4.1.10"
   },
   "peerDependencies": {
-    "astro": "^7.0.0",
-    "zod-to-ts": "^2.0.0"
+    "astro": "^7.0.0"
   },
   "engines": {
     "node": ">=22.12.0"
