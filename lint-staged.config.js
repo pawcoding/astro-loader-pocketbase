@@ -2,6 +2,6 @@
  * @type {import('lint-staged').Configuration}
  */
 export default {
-  "*": "oxfmt --no-error-on-unmatched-pattern",
-  "*.ts": ["oxlint"]
+  "!(*.ts)": "oxfmt --no-error-on-unmatched-pattern",
+  "*.ts": ["oxlint", "oxfmt"]
 };

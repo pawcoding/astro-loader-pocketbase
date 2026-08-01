@@ -5,7 +5,7 @@ export default defineConfig({
     sourcemap: true
   },
   deps: {
-    skipNodeModulesBundle: true
+    neverBundle: true
   },
   publint: true,
   exports: true

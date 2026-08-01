@@ -27,7 +27,7 @@ jobs:
     steps:
       # Checkout repository
       - name: 📥 Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -102,7 +102,7 @@ jobs:
       # Update project on website
       - name: 🖥️ Update website
         if: github.repository == 'pawcoding/astro-loader-pocketbase' && steps.release.outputs.new_release_published == 'true' && !steps.release.outputs.new_release_channel  && steps.release.outputs.new_release_patch_version == '0'
-        uses: pawcoding/update-project-action@14441f968c2a3a245654b87976680b89fc482f74 # v0.0.5
+        uses: pawcoding/update-project-action@763d90ef8cacf8ee7e2711290f99eb00abce519d # v0.1.0
         with:
           pocketbase-url: ${{ vars.PB_URL }}
           collection-id: ${{ vars.PB_COLLECTION }}
