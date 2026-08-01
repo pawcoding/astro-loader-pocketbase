@@ -1,3 +1,9 @@
+## [4.0.3](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.2...v4.0.3) (2026-08-01)
+
+### 🏗 Dependency updates
+
+* **deps:** move `zod-to-ts` into dependencies ([8e089e4](https://github.com/pawcoding/astro-loader-pocketbase/commit/8e089e42c27edf7f7281a87aa19ed19c3f970ed2))
+
 ## [4.0.2](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.1...v4.0.2) (2026-08-01)
 
 ### 🏗 Dependency updates
