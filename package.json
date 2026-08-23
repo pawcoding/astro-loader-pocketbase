@@ -50,7 +50,7 @@
     "test:unit:watch": "vitest watch --tags-filter=\"unit\"",
     "test:watch": "vitest watch",
     "typecheck": "tsc --noEmit -p src/tsconfig.json && tsc --noEmit -p test/tsconfig.json",
-    "update-dependencies": "ncu -i -u --format group && ncu -i -u --target minor && npm update && actions-up --min-age 7"
+    "update-dependencies": "ncu -i -u --format group && ncu -i -u --target minor && npm update && actions-up --min-age 7 && npm run checks"
   },
   "dependencies": {
     "zod-to-ts": "^2.1.0"
