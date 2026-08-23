@@ -1,3 +1,13 @@
+## [4.0.5](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.4...v4.0.5) (2026-08-23)
+
+### 🧪 Tests
+
+* use test tags instead of filename based filters ([eafe16e](https://github.com/pawcoding/astro-loader-pocketbase/commit/eafe16e9ca733973c22dd48ad939575cb6fd86be))
+
+### 🏗 Dependency updates
+
+* **deps:** update dependencies ([b3ba40a](https://github.com/pawcoding/astro-loader-pocketbase/commit/b3ba40ae63d5c5934d63304d2c0c14d89bf881cc))
+
 ## [4.0.4](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.3...v4.0.4) (2026-08-15)
 
 ### 🏗 Dependency updates
