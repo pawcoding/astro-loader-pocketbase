@@ -5,7 +5,7 @@ import { generateSchema } from "../../src/schema/generate-schema";
 import { transformFileUrl } from "../../src/schema/transform-files";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 
-describe("generateSchema", () => {
+describe("generateSchema", { tags: ["e2e"] }, () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
   const token = inject("superuserToken");
 

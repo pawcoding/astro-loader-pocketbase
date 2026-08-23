@@ -10,7 +10,7 @@ import { deleteCollection } from "../_mocks/delete-collection";
 import { insertCollection } from "../_mocks/insert-collection";
 import { insertEntry } from "../_mocks/insert-entry";
 
-describe("fetchEntry", () => {
+describe("fetchEntry", { tags: ["e2e"] }, () => {
   const superuserToken = inject("superuserToken");
   let options: PocketBaseLoaderOptions;
   let originalEntry: PocketBaseEntry;

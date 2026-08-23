@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { parseSchema } from "../../src/schema/parse-schema";
 import type { PocketBaseCollection } from "../../src/types/pocketbase-schema.type";
 
-describe("parseSchema", () => {
+describe("parseSchema", { tags: ["unit"] }, () => {
   describe("number", () => {
     test("should parse number fields correctly", () => {
       const collection: PocketBaseCollection = {

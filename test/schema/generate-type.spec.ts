@@ -2,7 +2,7 @@ import { z } from "astro/zod";
 import { describe, expect, test } from "vitest";
 import { generateType } from "../../src/schema/generate-type";
 
-describe("generateType", () => {
+describe("generateType", { tags: ["unit"] }, () => {
   test("should generate typescript type for complex entry", () => {
     const schema = z.object({
       age: z.number(),

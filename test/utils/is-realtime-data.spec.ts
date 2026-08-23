@@ -2,7 +2,7 @@ import { assert, describe, test } from "vitest";
 import { isRealtimeData } from "../../src/utils/is-realtime-data";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 
-describe("isRealtimeData", () => {
+describe("isRealtimeData", { tags: ["unit"] }, () => {
   test("should return true for valid create action", () => {
     const data = {
       action: "create",

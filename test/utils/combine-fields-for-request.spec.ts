@@ -3,7 +3,7 @@ import { combineFieldsForRequest } from "../../src/utils/combine-fields-for-requ
 
 const SYSTEM_FIELDS = ["id", "collectionId", "collectionName"];
 
-describe("combineFieldsForRequest", () => {
+describe("combineFieldsForRequest", { tags: ["unit"] }, () => {
   describe("when no user fields are provided", () => {
     it("should return undefined for undefined input", () => {
       const result = combineFieldsForRequest(undefined, {});

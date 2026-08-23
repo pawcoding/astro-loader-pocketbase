@@ -3,7 +3,7 @@ import { getSuperuserToken } from "../../src/utils/get-superuser-token";
 import { createLoaderContext } from "../_mocks/create-loader-context";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 
-describe("getSuperuserToken", () => {
+describe("getSuperuserToken", { tags: ["e2e"] }, () => {
   const options = createLoaderOptions();
 
   it("should return undefined if superuser credentials are invalid", async () => {

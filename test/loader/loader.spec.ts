@@ -14,7 +14,7 @@ vi.mock("../../src/loader/cleanup-entries");
 vi.mock("../../src/loader/handle-realtime-updates");
 vi.mock("../../src/loader/load-entries");
 
-describe("loader", async () => {
+describe("loader", { tags: ["unit"] }, async () => {
   let context: LoaderContext;
   const options = createLoaderOptions({ updatedField: "updated" });
   const srm = await import("../../src/utils/should-refresh");

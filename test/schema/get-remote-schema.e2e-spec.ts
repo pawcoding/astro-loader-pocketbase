@@ -2,7 +2,7 @@ import { assert, describe, expect, inject, it } from "vitest";
 import { getRemoteSchema } from "../../src/schema/get-remote-schema";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 
-describe("getRemoteSchema", () => {
+describe("getRemoteSchema", { tags: ["e2e"] }, () => {
   const options = createLoaderOptions();
   const token = inject("superuserToken");
 

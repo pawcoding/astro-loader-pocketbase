@@ -10,7 +10,7 @@ import { deleteEntry } from "../_mocks/delete-entry";
 import { insertCollection } from "../_mocks/insert-collection";
 import { insertEntries, insertEntry } from "../_mocks/insert-entry";
 
-describe("cleanupEntries", () => {
+describe("cleanupEntries", { tags: ["e2e"] }, () => {
   const options = createLoaderOptions({ collectionName: "users" });
   let context: LoaderContext;
   const superuserToken = inject("superuserToken");

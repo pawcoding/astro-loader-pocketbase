@@ -4,7 +4,7 @@ import { createLoaderContext } from "../_mocks/create-loader-context";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 
-describe("handleRealtimeUpdates", () => {
+describe("handleRealtimeUpdates", { tags: ["unit"] }, () => {
   const options = createLoaderOptions();
   const record = createPocketbaseEntry();
 

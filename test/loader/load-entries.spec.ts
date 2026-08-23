@@ -9,7 +9,7 @@ import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 vi.mock("../../src/loader/fetch-collection");
 vi.mock("../../src/loader/parse-entry");
 
-describe("loadEntries", async () => {
+describe("loadEntries", { tags: ["unit"] }, async () => {
   let context: LoaderContext;
   const options = createLoaderOptions();
   const fcm = await import("../../src/loader/fetch-collection");

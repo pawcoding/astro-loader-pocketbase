@@ -5,7 +5,7 @@ import type { PocketBaseEntry } from "../../src/types/pocketbase-entry.type";
 import { createLiveLoaderOptions } from "../_mocks/create-live-loader-options";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 
-describe("parseLiveEntry", () => {
+describe("parseLiveEntry", { tags: ["unit"] }, () => {
   let entry: PocketBaseEntry;
 
   beforeEach(() => {

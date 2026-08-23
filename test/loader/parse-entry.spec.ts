@@ -6,7 +6,7 @@ import { createLoaderContext } from "../_mocks/create-loader-context";
 import { createLoaderOptions } from "../_mocks/create-loader-options";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 
-describe("parseEntry", () => {
+describe("parseEntry", { tags: ["unit"] }, () => {
   let context: LoaderContext;
   let entry: PocketBaseEntry;
 

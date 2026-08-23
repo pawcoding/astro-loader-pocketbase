@@ -1,7 +1,7 @@
 import { assert, describe, test } from "vitest";
 import { slugify } from "../../src/utils/slugify";
 
-describe("slugify", () => {
+describe("slugify", { tags: ["unit"] }, () => {
   test("should convert a simple string to a slug", () => {
     const input = "Hello World";
     const expected = "hello-world";

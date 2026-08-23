@@ -3,7 +3,7 @@ import { createTokenPromise } from "../../src/utils/create-token-promise";
 
 vi.mock("../../src/utils/get-superuser-token");
 
-describe("createTokenPromise", async () => {
+describe("createTokenPromise", { tags: ["unit"] }, async () => {
   const superuserToken = "superuser-token";
 
   const gst = await import("../../src/utils/get-superuser-token");

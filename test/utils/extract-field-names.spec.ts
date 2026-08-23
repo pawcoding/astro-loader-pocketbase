@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { extractFieldNames } from "../../src/utils/extract-field-names";
 
-describe("extractFieldNames", () => {
+describe("extractFieldNames", { tags: ["unit"] }, () => {
   it("should return undefined for undefined input", () => {
     const result = extractFieldNames(undefined);
     expect(result).toBeUndefined();

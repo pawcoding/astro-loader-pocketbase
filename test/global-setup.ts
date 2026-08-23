@@ -51,4 +51,8 @@ declare module "vitest" {
      */
     superuserToken: string;
   }
+
+  export interface TestTags {
+    tags: "e2e" | "unit";
+  }
 }

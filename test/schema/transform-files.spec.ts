@@ -3,7 +3,7 @@ import { transformFiles } from "../../src/schema/transform-files";
 import type { PocketBaseSchemaEntry } from "../../src/types/pocketbase-schema.type";
 import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 
-describe("transformFiles", () => {
+describe("transformFiles", { tags: ["unit"] }, () => {
   const baseUrl = "http://localhost:8090";
   const fileFields = [
     { name: "avatar", maxSelect: 1 },

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { formatFields } from "../../src/utils/format-fields";
 
-describe("formatFields", () => {
+describe("formatFields", { tags: ["unit"] }, () => {
   describe("when no fields are provided", () => {
     it("should return undefined for undefined input", () => {
       const result = formatFields(undefined);

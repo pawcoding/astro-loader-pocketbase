@@ -18,7 +18,7 @@ import { insertEntry } from "./_mocks/insert-entry";
 import { fields, rawEntry } from "./_mocks/test-fields";
 import { uploadFile } from "./_mocks/upload-file";
 
-describe("pocketbaseLiveLoader", () => {
+describe("pocketbaseLiveLoader", { tags: ["e2e"] }, () => {
   const superuserToken = inject("superuserToken");
   let collectionName: string;
   let testOptions: PocketBaseLiveLoaderOptions;

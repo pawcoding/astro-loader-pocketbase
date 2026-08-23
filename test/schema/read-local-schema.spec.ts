@@ -6,7 +6,7 @@ import type { PocketBaseCollection } from "../../src/types/pocketbase-schema.typ
 
 vi.mock("fs/promises");
 
-describe("readLocalSchema", () => {
+describe("readLocalSchema", { tags: ["unit"] }, () => {
   const localSchemaPath = "test/pb_schema.json";
   const collectionName = "users";
   const mockSchema: Array<PocketBaseCollection> = [

@@ -22,7 +22,7 @@ import { insertEntry } from "./_mocks/insert-entry";
 import { fields, rawEntry } from "./_mocks/test-fields";
 import { uploadFile } from "./_mocks/upload-file";
 
-describe("pocketbaseLoader", () => {
+describe("pocketbaseLoader", { tags: ["e2e"] }, () => {
   const superuserToken = inject("superuserToken");
   let collectionName: string;
   let testOptions: PocketBaseLoaderOptions;

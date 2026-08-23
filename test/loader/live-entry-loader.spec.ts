@@ -8,7 +8,7 @@ import { createPocketbaseEntry } from "../_mocks/create-pocketbase-entry";
 vi.mock("../../src/loader/fetch-entry");
 vi.mock("../../src/loader/parse-live-entry");
 
-describe("liveEntryLoader", async () => {
+describe("liveEntryLoader", { tags: ["unit"] }, async () => {
   const options = createLiveLoaderOptions();
   const fem = await import("../../src/loader/fetch-entry");
   const plem = await import("../../src/loader/parse-live-entry");

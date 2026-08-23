@@ -15,7 +15,7 @@ import { insertEntries, insertEntry } from "../_mocks/insert-entry";
 
 const DAY = 24 * 60 * 60 * 1000;
 
-describe("fetchCollection", () => {
+describe("fetchCollection", { tags: ["e2e"] }, () => {
   const options = createLoaderOptions({ collectionName: "_superusers" });
   const superuserToken = inject("superuserToken");
   let chunkLoadedMock: Mock<(_: Array<PocketBaseEntry>) => Promise<void>>;

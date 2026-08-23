@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { shouldRefresh } from "../../src/utils/should-refresh";
 
-describe("shouldRefresh", () => {
+describe("shouldRefresh", { tags: ["unit"] }, () => {
   test('should return "refresh" if context is undefined', () => {
     const context = undefined;
     const collectionName = "testCollection";
