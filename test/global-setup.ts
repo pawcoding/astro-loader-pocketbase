@@ -13,9 +13,8 @@ import { createLoaderOptions } from "./_mocks/create-loader-options";
  */
 export async function setup(project: TestProject): Promise<void> {
   // Only needed for e2e tests
-  const files = (project.vitest as { filenamePattern?: Array<string> })
-    .filenamePattern;
-  if (files && !files.some((file) => file.includes("e2e-spec"))) {
+  const tagFilter = project.config.tagsFilter;
+  if (tagFilter?.includes("unit")) {
     return;
   }
 
