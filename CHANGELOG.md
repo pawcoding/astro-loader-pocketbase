@@ -1,3 +1,13 @@
+## [4.0.6](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.5...v4.0.6) (2026-09-03)
+
+### 🧪 Tests
+
+* **setup:** do not run e2e setup when running unit tests only ([c697705](https://github.com/pawcoding/astro-loader-pocketbase/commit/c697705f134762c9b14fdf48bc39c4cd5c0b69b2))
+
+### 🏗 Dependency updates
+
+* **deps:** update dependencies ([045f12c](https://github.com/pawcoding/astro-loader-pocketbase/commit/045f12c3b4bdabd3667847772e71b3c0ba18a872))
+
 ## [4.0.5](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.4...v4.0.5) (2026-08-23)
 
 ### 🧪 Tests
