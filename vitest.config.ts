@@ -9,6 +9,7 @@ export default defineConfig({
       exclude: ["src/types/**/*.ts", "src/index.ts"]
     },
     restoreMocks: true,
+    fsModuleCache: true,
     globalSetup: "./test/global-setup.ts",
     tags: [
       {
