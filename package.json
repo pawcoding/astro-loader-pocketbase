@@ -34,7 +34,6 @@
   },
   "scripts": {
     "build": "tsdown",
-    "checks": "npm run format:check && npm run lint && npm run build && npm run test:unit",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
@@ -49,8 +48,7 @@
     "test:unit": "vitest run --tags-filter=\"unit\"",
     "test:unit:watch": "vitest watch --tags-filter=\"unit\"",
     "test:watch": "vitest watch",
-    "typecheck": "tsc --noEmit -p src/tsconfig.json && tsc --noEmit -p test/tsconfig.json",
-    "update-dependencies": "ncu -i -u --format group && ncu -i -u --target minor && npm update && actions-up --min-age 7 && npm run checks"
+    "typecheck": "tsc --noEmit -p src/tsconfig.json && tsc --noEmit -p test/tsconfig.json"
   },
   "dependencies": {
     "zod-to-ts": "^2.1.0"
@@ -60,12 +58,10 @@
     "@commitlint/config-conventional": "21.2.2",
     "@types/node": "24.13.4",
     "@vitest/coverage-v8": "5.0.0",
-    "actions-up": "1.20.0",
     "astro": "7.3.2",
     "globals": "17.12.0",
     "husky": "9.1.7",
     "lint-staged": "17.5.1",
-    "npm-check-updates": "23.1.0",
     "oxfmt": "0.67.0",
     "oxlint": "1.82.0",
     "oxlint-tsgolint": "7.0.2001",

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "baseBranchPatterns": ["staging"],
+  "extends": ["config:recommended", "group:allNonMajor"],
+  "ignorePresets": [":semanticPrefixFixDepsChoreOthers"],
+  "rangeStrategy": "bump",
+  "reviewers": ["pawcoding"],
+  "schedule": ["* * 1 * *"],
+  "timezone": "Europe/Berlin",
+  "semanticCommitType": "build",
+  "updateNotScheduled": false
+}
