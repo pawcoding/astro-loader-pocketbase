@@ -1,7 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranchPatterns": ["staging"],
-  "extends": ["config:recommended", "group:allNonMajor"],
+  "baseBranchPatterns": ["master"],
+  "extends": [
+    "config:recommended",
+    "group:allNonMajor",
+    ":disableDependencyDashboard"
+  ],
   "ignorePresets": [":semanticPrefixFixDepsChoreOthers"],
   "rangeStrategy": "bump",
   "reviewers": ["pawcoding"],
