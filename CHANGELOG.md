@@ -1,3 +1,10 @@
+## [4.0.8](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.7...v4.0.8) (2026-10-15)
+
+### 🏗 Dependency updates
+
+* **deps:** update dependencies ([e1f305e](https://github.com/pawcoding/astro-loader-pocketbase/commit/e1f305ee98c459ade1f2ee28ae3456b82530f8b9))
+* **deps:** update dependencies ([2995a44](https://github.com/pawcoding/astro-loader-pocketbase/commit/2995a449f99f619982c14e7fd9f4ac734ba87b78))
+
 ## [4.0.7](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.6...v4.0.7) (2026-09-20)
 
 ### 🏗 Dependency updates
