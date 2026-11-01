@@ -1,3 +1,11 @@
+## [4.0.9](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.8...v4.0.9) (2026-11-01)
+
+### 🏗 Dependency updates
+
+* **deps:** bump the npm_and_yarn group across 1 directory with 2 updates ([28ee511](https://github.com/pawcoding/astro-loader-pocketbase/commit/28ee5119a0627d5d67c3a7ba23d6c1692208b03b))
+* **deps:** update cycjimmy/semantic-release-action action to v8 ([533fd1f](https://github.com/pawcoding/astro-loader-pocketbase/commit/533fd1f559fe0c108d1e78b596a09463302278f1))
+* **deps:** update dependencies ([d6d3a33](https://github.com/pawcoding/astro-loader-pocketbase/commit/d6d3a3301cfd14075196bd4a980884dd3ce5a31d))
+
 ## [4.0.8](https://github.com/pawcoding/astro-loader-pocketbase/compare/v4.0.7...v4.0.8) (2026-10-15)
 
 ### 🏗 Dependency updates
